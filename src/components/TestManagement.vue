@@ -15,7 +15,10 @@
              <span class="badge-blue" v-if="test.time_limit">⏱ {{ test.time_limit }} мин</span>
              <span class="badge-gray" v-else>Без таймера</span>
         </div>
-        <button @click="editTest(test)" class="btn-outline">Редактировать</button>
+        <div class="flex gap-2 mt-auto">
+             <button @click="editTest(test)" class="btn-outline grow">Редактировать</button>
+             <button v-if="isAdmin" @click="deleteTest(test)" class="btn-delete" title="Удалить">🗑</button>
+        </div>
       </div>
     </div>
 
@@ -171,6 +174,15 @@ export default {
         } catch (err) {
             alert('Ошибка: ' + (err.response?.data?.message || err.message));
         }
+    },
+    async deleteTest(test) {
+        if(!confirm(`Вы уверены, что хотите удалить тест "${test.title}"?`)) return;
+        try {
+            await api.delete(`/tests/${test.id}`);
+            this.fetchTests();
+        } catch(err) {
+             alert('Ошибка: ' + (err.response?.data?.message || err.message));
+        }
     }
   }
 };
@@ -214,6 +226,9 @@ export default {
 .q-number { font-weight: 700; color: var(--primary-color); font-size: 1.1rem; }
 .btn-icon-danger { background: #ffebee; color: #d32f2f; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.2s; }
 .btn-icon-danger:hover { background: #ffcdd2; transform: scale(1.1); }
+.btn-delete { background: #ffebee; color: #c62828; border: none; border-radius: 8px; width: 42px; cursor: pointer; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; transition: 0.2s; }
+.btn-delete:hover { background: #ffcdd2; transform: scale(1.05); }
+.grow { flex: 1; }
 
 .question-main { display: flex; gap: 20px; margin-bottom: 20px; }
 .q-input { flex: 1; font-weight: 500; font-size: 1.1rem; }

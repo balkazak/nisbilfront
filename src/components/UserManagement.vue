@@ -21,7 +21,7 @@
             <td><span :class="'role-tag ' + u.role">{{ translateRole(u.role) }}</span></td>
             <td>
                 <button v-if="u.role === 'student'" @click="openAccessDetails(u)" class="btn-xs btn-outline">Доступы</button>
-                <small v-else class="text-muted">-</small>
+                <button v-if="canDelete(u)" @click="deleteUser(u)" class="btn-xs btn-outline-danger ml-2" title="Удалить">✕</button>
             </td>
           </tr>
         </tbody>
@@ -186,6 +186,20 @@ export default {
         } catch (err) {
             alert('Ошибка при сохранении: ' + err.message);
         }
+    },
+    canDelete(u) {
+        if(this.currentUser.role === 'admin') return true;
+        if(this.currentUser.role === 'teacher' && u.role === 'student') return true;
+        return false;
+    },
+    async deleteUser(u) {
+       if(!confirm(`Удалить пользователя ${u.username}?`)) return;
+       try {
+           await api.delete(`/users/${u.id}`);
+           this.fetchUsers();
+       } catch(err) {
+           alert(err.response?.data?.message || err.message);
+       }
     }
   }
 };
@@ -227,6 +241,9 @@ export default {
 
 .btn-xs { padding: 4px 8px; font-size: 0.75rem; border-radius: 4px; border: 1px solid #ddd; background: white; cursor: pointer; }
 .btn-xs:hover { background: #f0f0f0; border-color: #ccc; }
+.btn-xs:hover { background: #f0f0f0; border-color: #ccc; }
+.btn-outline-danger { color: #d32f2f; border-color: #ffcdd2; margin-left: 5px; }
+.btn-outline-danger:hover { background: #ffebee; border-color: #ef5350; }
 .btn-close { border: none; background: none; font-size: 1.5rem; cursor: pointer; color: #777; }
 .text-muted { color: #999; font-size: 0.85rem; }
 

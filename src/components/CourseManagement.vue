@@ -12,7 +12,10 @@
            <h3>{{ course.title }}</h3>
            <p>{{ course.description || 'Нет описания' }}</p>
         </div>
-        <button @click="editCourse(course)" class="btn-outline">Управление</button>
+        <div class="flex gap-2 mt-auto">
+             <button @click="editCourse(course)" class="btn-outline grow">Управление</button>
+             <button v-if="isAdmin" @click="deleteCourse(course)" class="btn-delete" title="Удалить">🗑</button>
+        </div>
       </div>
     </div>
 
@@ -301,6 +304,15 @@ export default {
        await api.post('/tests', payload);
        this.showCreateTest = false;
        this.editCourse(this.selectedCourse);
+    },
+    async deleteCourse(course) {
+        if(!confirm(`Вы уверены, что хотите удалить курс "${course.title}"? Это действие необратимо.`)) return;
+        try {
+            await api.delete(`/courses/${course.id}`);
+            this.fetchCourses();
+        } catch (err) {
+            alert('Ошибка удаления: ' + (err.response?.data?.message || err.message));
+        }
     }
   }
 };
@@ -322,8 +334,9 @@ export default {
 .btn-outline:hover { border-color: var(--primary-color); background: #f0faff; }
 .btn-close { font-size: 2rem; background: none; border: none; color: #bbb; cursor: pointer; line-height: 1; }
 .btn-close:hover { color: #555; }
-.btn-add-question { width: 100%; padding: 15px; border: 2px dashed #ddd; background: #fafafa; color: #666; font-weight: 600; border-radius: 12px; cursor: pointer; transition: 0.2s; }
 .btn-add-question:hover { border-color: var(--primary-color); color: var(--primary-color); background: #fff; }
+.btn-delete { background: #ffebee; color: #c62828; border: none; border-radius: 8px; width: 42px; cursor: pointer; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; transition: 0.2s; }
+.btn-delete:hover { background: #ffcdd2; transform: scale(1.05); }
 
 /* Course Grid */
 .course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
