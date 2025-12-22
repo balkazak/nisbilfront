@@ -148,14 +148,15 @@ export default {
 @media (max-width: 992px) {
   .sidebar {
     position: fixed;
-    left: -260px;
+    left: 0;
     top: 0;
     bottom: 0;
     z-index: 1001;
-    transition: left 0.3s ease;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
   }
   .sidebar-open .sidebar {
-    left: 0;
+    transform: translateX(0);
   }
   .sidebar-overlay {
     position: fixed;
