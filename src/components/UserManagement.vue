@@ -249,4 +249,10 @@ export default {
 
 .animate-zoom-in { animation: zoomIn 0.3s ease-out; }
 @keyframes zoomIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+/* Responsive */
+@media (max-width: 768px) {
+  .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .modal-content { width: 95%; padding: 15px; }
+  .role-tag { font-size: 0.7rem; padding: 2px 6px; }
+}
 </style>

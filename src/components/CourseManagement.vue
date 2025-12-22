@@ -419,4 +419,19 @@ export default {
 /* Animations */
 .animate-scale-up { animation: scaleUp 0.3s cubic-bezier(0.165, 0.84, 0.44, 1); }
 @keyframes scaleUp { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+/* Responsive */
+@media (max-width: 992px) {
+  .flex-row-layout { flex-direction: column; }
+  .course-info-sidebar { width: 100%; order: 2; }
+  .course-content-area { order: 1; }
+  .modal-xl { width: 100%; height: 100%; border-radius: 0; border: none; }
+}
+
+@media (max-width: 768px) {
+  .course-grid { grid-template-columns: 1fr; }
+  .modal-header h3 { font-size: 1.2rem; }
+  .modal-body { padding: 15px; }
+  .lesson-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .test-badge { align-items: flex-start; }
+}
 </style>

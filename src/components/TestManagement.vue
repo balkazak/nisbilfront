@@ -276,4 +276,11 @@ export default {
 
 .animate-scale-up { animation: scaleUp 0.3s cubic-bezier(0.165, 0.84, 0.44, 1); }
 @keyframes scaleUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+/* Responsive */
+@media (max-width: 768px) {
+  .test-grid { grid-template-columns: 1fr; }
+  .modal-content { width: 95%; padding: 15px; margin: 10px auto; overflow-y: auto; max-height: 90vh; }
+  .question-main { flex-direction: column; }
+  .options-grid { grid-template-columns: 1fr; }
+}
 </style>

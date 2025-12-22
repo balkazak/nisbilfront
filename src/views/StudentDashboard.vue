@@ -1,11 +1,12 @@
 <template>
-  <div class="student-dashboard">
+  <div class="student-dashboard" :class="{ 'sidebar-open': isSidebarOpen }">
+    <div v-if="isSidebarOpen" class="sidebar-overlay" @click="isSidebarOpen = false"></div>
     <aside class="sidebar">
       <div class="logo-area">nis-bil.online</div>
       <nav>
-        <button @click="currentView = 'courses'" :class="{active: currentView === 'courses'}">Мои Курсы</button>
-        <button @click="currentView = 'tests'" :class="{active: currentView === 'tests'}">Тесты</button>
-        <button @click="currentView = 'results'" :class="{active: currentView === 'results'}">Мои Результаты</button>
+        <button @click="selectView('courses')" :class="{active: currentView === 'courses'}">Мои Курсы</button>
+        <button @click="selectView('tests')" :class="{active: currentView === 'tests'}">Тесты</button>
+        <button @click="selectView('results')" :class="{active: currentView === 'results'}">Мои Результаты</button>
       </nav>
       <div style="margin-top: auto; padding: 20px;">
         <button @click="logout" class="btn-logout">Выйти</button>
@@ -13,6 +14,14 @@
     </aside>
 
     <main class="content">
+      <header class="mobile-header">
+        <button class="hamburger" @click="isSidebarOpen = !isSidebarOpen">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <div class="mobile-logo">nis-bil.online</div>
+      </header>
       <!-- Course List -->
       <div v-if="currentView === 'courses' && !activeCourse && !activeTestId" class="fade-in">
         <h2 class="title-lg">Доступные Курсы</h2>
@@ -164,7 +173,8 @@ export default {
       currentLesson: null,
       activeTestId: null, // For standalone tests
       showTest: false,
-      showSolution: false
+      showSolution: false,
+      isSidebarOpen: false
     };
   },
   mounted() {
@@ -173,6 +183,12 @@ export default {
     this.fetchStandaloneTests();
   },
   methods: {
+    selectView(view) {
+      this.currentView = view;
+      this.isSidebarOpen = false;
+      this.activeCourse = null;
+      this.activeTestId = null;
+    },
     async fetchCourses() {
        const res = await api.get('/courses');
        this.courses = res.data;
@@ -235,6 +251,80 @@ export default {
 <style scoped>
 .student-dashboard { display: flex; height: 100vh; background: var(--bg-color); }
 .sidebar { width: 260px; background: linear-gradient(180deg, var(--primary-color) 0%, #009ACD 100%); color: white; display: flex; flex-direction: column; padding: 20px; box-shadow: 2px 0 10px rgba(0,0,0,0.1); }
+
+.mobile-header {
+  display: none;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: white;
+  border-bottom: 1px solid #eee;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.hamburger span {
+  display: block;
+  width: 25px;
+  height: 3px;
+  background-color: var(--primary-color);
+  border-radius: 3px;
+}
+.mobile-logo {
+  font-weight: 800;
+  color: var(--primary-color);
+}
+
+@media (max-width: 992px) {
+  .sidebar {
+    position: fixed;
+    left: -260px;
+    top: 0;
+    bottom: 0;
+    z-index: 1001;
+    transition: left 0.3s ease;
+  }
+  .sidebar-open .sidebar {
+    left: 0;
+  }
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+  }
+  .mobile-header {
+    display: flex;
+  }
+  .player-layout {
+    flex-direction: column;
+    height: auto;
+  }
+  .lesson-sidebar {
+    width: 100%;
+    max-height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .content { padding: 15px; }
+  .title-lg { font-size: 1.5rem; }
+  .course-card { height: auto; min-height: 180px; }
+  .video-area { padding: 15px; }
+  .actions-bar { flex-direction: column; }
+}
+
 .logo-area { font-size: 1.4rem; font-weight: 800; text-align: center; margin-bottom: 40px; color: white; }
 .sidebar nav button { background: rgba(255,255,255,0.1); color: white; width: 100%; text-align: left; padding: 12px 15px; margin-bottom: 10px; border-radius: 8px; font-weight: 500; transition: 0.3s; }
 .sidebar nav button:hover, .sidebar nav button.active { background: white; color: var(--primary-color); transform: translateX(5px); }
