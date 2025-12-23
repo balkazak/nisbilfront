@@ -1,11 +1,6 @@
 <template>
   <div class="landing-page">
-    <header class="navbar">
-      <div class="logo">nis-bil.online</div>
-      <nav>
-        <router-link to="/login" class="nav-link">Войти</router-link>
-      </nav>
-    </header>
+    <MainHeader />
 
     <section class="hero">
       <div class="hero-content">
@@ -14,8 +9,16 @@
         <router-link to="/login" class="btn-primary animate-fade-in-up delay-2">Начать Обучение</router-link>
       </div>
       <div class="hero-image animate-fade-in">
-         <!-- Geometric CSS Shape as placeholder for modern graphic -->
          <div class="circle-graphic"></div>
+      </div>
+    </section>
+    
+    <section class="promo-video">
+      <div class="video-container">
+        <video autoplay loop playsinline controls class="promo-player">
+          <source src="/promo.webm" type="video/webm">
+        </video>
+        <div class="video-overlay"></div>
       </div>
     </section>
 
@@ -40,12 +43,41 @@
     </section>
 
     <footer class="footer">
-      <div class="container">
+      <div class="container footer-grid">
+        <div class="footer-col">
+          <div class="footer-logo">nis-bil.online</div>
+          <p>Ваш путь к успеху в образовании. Качественная подготовка к НЗМ и БИЛ.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Полезные ссылки</h4>
+          <ul>
+            <li><router-link to="/tariffs">Тарифы</router-link></li>
+            <li><router-link to="/calculator">Калькулятор</router-link></li>
+            <li><a href="/offert.pdf" target="_blank">Публичная оферта</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Контакты</h4>
+          <ul>
+            <li><a href="https://wa.me/77761555433" target="_blank">WhatsApp: +7 776 155 54 33</a></li>
+            <li><a href="https://www.instagram.com/dostyq.kyzylorda/" target="_blank">Instagram: @dostyq.kyzylorda</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
         <p>&copy; 2025 nis-bil.online. Все права защищены.</p>
       </div>
     </footer>
   </div>
 </template>
+
+<script>
+import MainHeader from '../components/MainHeader.vue';
+
+export default {
+  components: { MainHeader }
+};
+</script>
 
 <style scoped>
 .landing-page {
@@ -54,43 +86,6 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-}
-
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 40px;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
-
-.logo {
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: var(--primary-color);
-  background: -webkit-linear-gradient(45deg, var(--primary-color), #007bb5);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.nav-link {
-  text-decoration: none;
-  color: var(--text-color);
-  font-weight: 500;
-  padding: 8px 16px;
-  border-radius: 20px;
-  transition: all 0.3s;
-}
-
-.nav-link:hover {
-  background: var(--primary-color);
-  color: white;
 }
 
 .hero {
@@ -169,11 +164,77 @@
 }
 
 .footer {
+  background: #1e293b;
+  color: #94a3b8;
+  padding: 60px 0 30px;
+  border-top: none;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.footer-col h4 {
+  color: white;
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+}
+
+.footer-col ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-col ul li {
+  margin-bottom: 12px;
+}
+
+.footer-col ul li a {
+  color: #94a3b8;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.footer-col ul li a:hover {
+  color: #00bfff;
+}
+
+.footer-logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #00bfff;
+  margin-bottom: 15px;
+}
+
+.footer-bottom {
   text-align: center;
-  padding: 20px;
-  border-top: 1px solid #eee;
+  padding-top: 30px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  font-size: 0.9rem;
+}
+
+.promo-video {
+  padding: 40px 20px;
   background: white;
-  color: #888;
+}
+
+.promo-video .video-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  position: relative;
+  aspect-ratio: 16/9;
+}
+
+.promo-player {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 @media (max-width: 1024px) {
@@ -182,8 +243,6 @@
 }
 
 @media (max-width: 768px) {
-  .navbar { padding: 15px 20px; }
-  .logo { font-size: 1.2rem; }
   .hero { flex-direction: column; text-align: center; padding: 60px 20px; gap: 40px; }
   .hero-content { max-width: 100%; }
   .hero h1 { font-size: 2.5rem; }
