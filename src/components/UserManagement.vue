@@ -2,7 +2,13 @@
   <div>
     <div class="flex justify-between items-center header-section">
       <h2 class="title-lg">Управление Пользователями</h2>
-      <button v-if="canAddUser" @click="showAddForm = true" class="btn-primary">+ Добавить</button>
+      <div class="flex gap-4 items-center">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input v-model="searchQuery" placeholder="Поиск по логину..." class="search-input" />
+        </div>
+        <button v-if="canAddUser" @click="showAddForm = true" class="btn-primary">+ Добавить</button>
+      </div>
     </div>
 
     <!-- User List -->
@@ -16,7 +22,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="u in users" :key="u.id">
+          <tr v-for="u in filteredUsers" :key="u.id">
             <td>{{ u.username }}</td>
             <td><span :class="'role-tag ' + u.role">{{ translateRole(u.role) }}</span></td>
             <td>
@@ -29,7 +35,7 @@
     </div>
 
     <!-- Add User Modal -->
-    <div v-if="showAddForm" class="modal-overlay" @click.self="showAddForm = false">
+    <div v-if="showAddForm" class="modal-overlay">
       <!-- ... existing content ... -->
       <div class="card modal animate-zoom-in">
         <h3>Новый Пользователь</h3>
@@ -59,7 +65,7 @@
     </div>
 
     <!-- Access Control Modal -->
-    <div v-if="showAccessModal" class="modal-overlay" @click.self="showAccessModal = false">
+    <div v-if="showAccessModal" class="modal-overlay">
         <div class="card modal-wide animate-zoom-in">
             <div class="modal-header">
                 <h3>Доступы: {{ selectedUser?.username }}</h3>
@@ -102,8 +108,13 @@
 
 <script>
 import api from '../api';
+import { useToast } from '../composables/useToast';
 
 export default {
+  setup() {
+    const toast = useToast();
+    return { toast };
+  },
   data() {
     return {
       users: [],
@@ -117,11 +128,17 @@ export default {
       availableCourses: [],
       availableTests: [], // Standalone tests
       selectedCourseIds: [],
-      selectedTestIds: []
+      selectedTestIds: [],
+      searchQuery: ''
     };
   },
   computed: {
-    canAddUser() { return true; }
+    canAddUser() { return true; },
+    filteredUsers() {
+      if (!this.searchQuery) return this.users;
+      const q = this.searchQuery.toLowerCase();
+      return this.users.filter(u => u.username.toLowerCase().includes(q));
+    }
   },
   mounted() {
     this.fetchUsers();
@@ -141,8 +158,9 @@ export default {
         this.showAddForm = false;
         this.fetchUsers();
         this.newUser = { username: '', password: '', role: 'student' };
+        this.toast.success('Пользователь создан!');
       } catch (err) {
-        alert(err.response?.data?.message || 'Ошибка создания пользователя');
+        this.toast.error(err.response?.data?.message || 'Ошибка создания пользователя');
       }
     },
     translateRole(role) {
@@ -181,15 +199,16 @@ export default {
                 courseIds: this.selectedCourseIds,
                 testIds: this.selectedTestIds
             });
-            alert('Доступы обновлены!');
+            this.toast.success('Доступы обновлены!');
             this.showAccessModal = false;
         } catch (err) {
-            alert('Ошибка при сохранении: ' + err.message);
+            this.toast.error('Ошибка при сохранении: ' + err.message);
         }
     },
     canDelete(u) {
-        if(this.currentUser.role === 'admin') return true;
-        if(this.currentUser.role === 'teacher' && u.role === 'student') return true;
+        if (u.username === 'admin') return false; 
+        if (this.currentUser.role === 'admin') return true;
+        if (this.currentUser.role === 'teacher' && u.role === 'student') return true;
         return false;
     },
     async deleteUser(u) {
@@ -206,8 +225,21 @@ export default {
 </script>
 
 <style scoped>
-.header-section { margin-bottom: 20px; }
-.title-lg { font-size: 1.5rem; color: #333; }
+.header-section { margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
+.title-lg { font-size: 1.5rem; color: #333; margin: 0; }
+
+.search-box { position: relative; display: flex; align-items: center; }
+.search-icon { position: absolute; left: 12px; color: #94a3b8; font-size: 0.9rem; pointer-events: none; }
+.search-input {
+  padding: 10px 15px 10px 35px;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+  font-size: 0.9rem;
+  width: 250px;
+  transition: all 0.2s;
+}
+.search-input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.1); width: 300px; }
+
 .table-container { background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow: hidden; }
 .styled-table { width: 100%; border-collapse: collapse; }
 .styled-table th { background: #f8f9fa; padding: 15px; text-align: left; font-weight: 600; color: #555; }
@@ -239,12 +271,12 @@ export default {
 .check-item:hover { border-color: #b3e5fc; }
 .check-item label { display: flex; align-items: center; gap: 10px; cursor: pointer; width: 100%; font-size: 0.95rem; }
 
-.btn-xs { padding: 4px 8px; font-size: 0.75rem; border-radius: 4px; border: 1px solid #ddd; background: white; cursor: pointer; }
+.btn-xs { width: 36px; height: 36px; border-radius: 50%; border: 1px solid #ddd; background: white; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.2s; flex-shrink: 0; font-size: 0.8rem; }
 .btn-xs:hover { background: #f0f0f0; border-color: #ccc; }
-.btn-xs:hover { background: #f0f0f0; border-color: #ccc; }
-.btn-outline-danger { color: #d32f2f; border-color: #ffcdd2; margin-left: 5px; }
+.btn-outline-danger { color: #d32f2f; border-color: #ffcdd2; }
 .btn-outline-danger:hover { background: #ffebee; border-color: #ef5350; }
-.btn-close { border: none; background: none; font-size: 1.5rem; cursor: pointer; color: #777; }
+.btn-close { border: none; background: none; width: 36px; height: 36px; font-size: 1.5rem; cursor: pointer; color: #777; display: flex; justify-content: center; align-items: center; border-radius: 50%; }
+.btn-close:hover { background: #f5f5f5; color: #333; }
 .text-muted { color: #999; font-size: 0.85rem; }
 
 .animate-zoom-in { animation: zoomIn 0.3s ease-out; }

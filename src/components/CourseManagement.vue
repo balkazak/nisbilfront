@@ -20,7 +20,7 @@
     </div>
 
     <!-- Add Course Modal -->
-    <div v-if="showAddCourse" class="modal-overlay" @click.self="showAddCourse = false">
+    <div v-if="showAddCourse" class="modal-overlay">
       <div class="card modal animate-scale-up">
         <div class="modal-header">
            <h3>Создание Курса</h3>
@@ -43,7 +43,7 @@
     </div>
 
     <!-- Course Editor (Lessons & Tests) -->
-    <div v-if="selectedCourse" class="modal-overlay" @click.self="selectedCourse = null">
+    <div v-if="selectedCourse" class="modal-overlay">
       <div class="card modal-xl animate-scale-up">
         <div class="modal-header">
            <h3>{{ selectedCourse.title }}</h3>
@@ -52,14 +52,27 @@
         
         <div class="modal-body flex-row-layout">
            <!-- Sidebar Info -->
-           <div class="course-info-sidebar">
-               <h4>Информация</h4>
-               <p class="desc">{{ selectedCourse.description }}</p>
-               <div class="stat-box">
-                  <span>{{ selectedCourse.Lessons ? selectedCourse.Lessons.length : 0 }}</span>
-                  <small>Уроков</small>
-               </div>
-           </div>
+            <div class="course-info-sidebar">
+                <div class="flex justify-between items-center mb-2">
+                    <h4>Информация</h4>
+                    <button @click="startEditCourse" class="btn-icon-blue" title="Редактировать курс">✎</button>
+                </div>
+                <div v-if="!isEditingCourse">
+                    <p class="desc">{{ selectedCourse.description || 'Нет описания' }}</p>
+                </div>
+                <div v-else class="edit-course-form">
+                    <input v-model="courseEditData.title" class="input-field mb-2" placeholder="Название" />
+                    <textarea v-model="courseEditData.description" class="input-field mb-2" placeholder="Описание" rows="3"></textarea>
+                    <div class="flex gap-2">
+                        <button @click="saveCourseEdit" class="btn-primary btn-sm grow">OK</button>
+                        <button @click="isEditingCourse = false" class="btn-secondary btn-sm">X</button>
+                    </div>
+                </div>
+                <div class="stat-box">
+                   <span>{{ selectedCourse.Lessons ? selectedCourse.Lessons.length : 0 }}</span>
+                   <small>Уроков</small>
+                </div>
+            </div>
 
            <!-- Content Area -->
            <div class="course-content-area">
@@ -79,17 +92,26 @@
                             <span class="lesson-icon">🎥</span>
                             <div>
                                 <strong>{{ lesson.title }}</strong>
-                                <a :href="lesson.video_url" target="_blank" class="link-sm">Смотреть видео</a>
+                                <div class="flex gap-2 mt-1">
+                                    <button @click="startEditLesson(lesson)" class="btn-text-blue">Изменить</button>
+                                    <button @click="deleteLesson(lesson)" class="btn-text-danger">Удалить</button>
+                                </div>
                             </div>
                         </div>
                         
-                        <div class="lesson-actions">
-                           <div v-if="lesson.Test" class="test-badge">
-                               <span>✅ Тест прикреплен</span>
-                               <small v-if="lesson.Test.time_limit">⏱ {{ lesson.Test.time_limit }} мин</small>
-                           </div>
-                           <button v-else @click="attachTest(lesson)" class="btn-secondary btn-sm">+ Создать Тест</button>
-                        </div>
+                         <div class="lesson-actions">
+                            <div v-if="lesson.Test" class="test-badge-wrapper">
+                               <div class="test-badge">
+                                   <span>✅ Тест прикреплен</span>
+                                   <small v-if="lesson.Test.time_limit">⏱ {{ lesson.Test.time_limit }} мин</small>
+                               </div>
+                               <div class="test-badge-actions">
+                                   <button @click="editLessonTest(lesson)" class="btn-icon-blue small-circle" title="Изменить тест">✎</button>
+                                   <button @click="deleteLessonTest(lesson.Test.id)" class="btn-icon-danger small-circle" title="Удалить тест">✕</button>
+                               </div>
+                            </div>
+                            <button v-else @click="attachTest(lesson)" class="btn-secondary btn-sm">+ Создать Тест</button>
+                         </div>
                     </div>
                  </li>
                </ul>
@@ -99,10 +121,10 @@
     </div>
 
     <!-- Add Lesson Modal -->
-    <div v-if="showAddLesson" class="modal-overlay z-high" @click.self="showAddLesson = false">
+    <div v-if="showAddLesson" class="modal-overlay z-high">
        <div class="card modal animate-scale-up">
           <div class="modal-header">
-              <h3>Новый Урок</h3>
+              <h3>{{ isEditingLesson ? 'Редактирование Урока' : 'Новый Урок' }}</h3>
               <button @click="showAddLesson = false" class="btn-close">&times;</button>
           </div>
           <form @submit.prevent="addLesson" class="modal-body">
@@ -132,17 +154,17 @@
              </div>
 
              <div class="modal-footer">
-                <button type="submit" class="btn-primary btn-full">Добавить Урок</button>
+                <button type="submit" class="btn-primary btn-full">{{ isEditingLesson ? 'Сохранить изменения' : 'Добавить Урок' }}</button>
              </div>
           </form>
        </div>
     </div>
 
     <!-- Create Test Modal (Reused Logic, Improved UI) -->
-    <div v-if="showCreateTest" class="modal-overlay z-high" @click.self="showCreateTest = false">
+    <div v-if="showCreateTest" class="modal-overlay z-high">
        <div class="card modal-xl animate-scale-up">
           <div class="modal-header">
-              <h3>Тест к уроку: {{ targetLesson?.title }}</h3>
+              <h3>{{ isEditingTest ? 'Редактирование теста' : 'Тест к уроку' }}: {{ targetLesson?.title }}</h3>
               <button @click="showCreateTest = false" class="btn-close">&times;</button>
           </div>
           
@@ -211,7 +233,7 @@
 
              <div class="modal-footer">
                 <button type="button" @click="showCreateTest = false" class="btn-secondary">Отмена</button>
-                <button type="submit" class="btn-primary btn-lg">Сохранить Тест</button>
+                <button type="submit" class="btn-primary btn-lg">{{ isEditingTest ? 'Сохранить изменения' : 'Сохранить Тест' }}</button>
              </div>
           </form>
        </div>
@@ -222,8 +244,13 @@
 
 <script>
 import api from '../api';
+import { useToast } from '../composables/useToast';
 
 export default {
+  setup() {
+    const toast = useToast();
+    return { toast };
+  },
   data() {
     return {
       courses: [],
@@ -232,6 +259,10 @@ export default {
       showAddLesson: false,
       showCreateTest: false,
       targetLesson: null,
+      isEditingLesson: false,
+      isEditingCourse: false,
+      isEditingTest: false,
+      courseEditData: { title: '', description: '' },
       currentUser: JSON.parse(localStorage.getItem('user') || '{}'),
       newCourse: { title: '', description: '' },
       newLesson: { title: '', video_urls: [''], solution_video_urls: [] },
@@ -257,22 +288,14 @@ export default {
        const res = await api.get(`/courses/${course.id}`);
        this.selectedCourse = res.data;
     },
-    async addLesson() {
-       // Filter empty
-       this.newLesson.video_urls = this.newLesson.video_urls.filter(u => u.trim());
-       this.newLesson.solution_video_urls = this.newLesson.solution_video_urls.filter(u => u.trim());
-       
-       await api.post(`/courses/${this.selectedCourse.id}/lessons`, this.newLesson);
-       this.showAddLesson = false;
-       this.editCourse(this.selectedCourse); 
-       this.newLesson = { title: '', video_urls: [''], solution_video_urls: [] };
-    },
     attachTest(lesson) {
        this.targetLesson = lesson;
+       this.isEditingTest = false;
        this.showCreateTest = true;
        this.newTest = { 
            title: `Тест: ${lesson.title}`, 
-           time_limit: 15, 
+           time_limit: 15,
+           is_standalone: false,
            questions: [this.createEmptyQuestion()] 
        };
     },
@@ -294,24 +317,121 @@ export default {
         try {
             const res = await api.post('/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
             targetObject.image_url = res.data.url;
+            this.toast.success('Фото загружено!');
         } catch (err) {
-            alert('Ошибка загрузки фото: ' + err.message);
+            this.toast.error('Ошибка загрузки фото: ' + err.message);
         }
     },
 
-    async createTest() {
-       const payload = { ...this.newTest, lessonId: this.targetLesson.id };
-       await api.post('/tests', payload);
-       this.showCreateTest = false;
-       this.editCourse(this.selectedCourse);
+      async createTest() {
+        try {
+            const payload = { ...this.newTest, lessonId: this.targetLesson.id };
+            if (this.isEditingTest) {
+                await api.put(`/tests/${this.newTest.id}`, payload);
+                this.toast.success('Тест обновлен');
+            } else {
+                await api.post('/tests', payload);
+                this.toast.success('Тест создан');
+            }
+            this.showCreateTest = false;
+            this.editCourse(this.selectedCourse);
+        } catch (err) {
+            this.toast.error('Ошибка сохранения теста: ' + err.message);
+        }
+    },
+    async editLessonTest(lesson) {
+        try {
+            const res = await api.get(`/tests/${lesson.Test.id}`);
+            this.newTest = res.data;
+            if (!this.newTest.questions && this.newTest.Questions) {
+                this.newTest.questions = this.newTest.Questions;
+            }
+            this.targetLesson = lesson;
+            this.isEditingTest = true;
+            this.showCreateTest = true;
+        } catch (err) {
+            this.toast.error('Ошибка загрузки теста: ' + err.message);
+        }
+    },
+    async deleteLessonTest(testId) {
+        if (!confirm('Вы уверены, что хотите удалить этот тест?')) return;
+        try {
+            await api.delete(`/tests/${testId}`);
+            this.toast.success('Тест удален');
+            this.editCourse(this.selectedCourse);
+        } catch (err) {
+            this.toast.error('Ошибка удаления теста: ' + err.message);
+        }
     },
     async deleteCourse(course) {
         if(!confirm(`Вы уверены, что хотите удалить курс "${course.title}"? Это действие необратимо.`)) return;
         try {
             await api.delete(`/courses/${course.id}`);
+            this.toast.success('Курс удален');
             this.fetchCourses();
         } catch (err) {
-            alert('Ошибка удаления: ' + (err.response?.data?.message || err.message));
+            this.toast.error('Ошибка удаления: ' + (err.response?.data?.message || err.message));
+        }
+    },
+    // Lesson Edit/Delete
+    startEditLesson(lesson) {
+        this.newLesson = { 
+            id: lesson.id,
+            title: lesson.title, 
+            video_urls: lesson.video_urls && lesson.video_urls.length ? [...lesson.video_urls] : [''], 
+            solution_video_urls: lesson.solution_video_urls && lesson.solution_video_urls.length ? [...lesson.solution_video_urls] : [] 
+        };
+        this.isEditingLesson = true;
+        this.showAddLesson = true;
+    },
+    async deleteLesson(lesson) {
+        if (!confirm('Удалить этот урок?')) return;
+        try {
+            console.log(`Sending DELETE request to: /lessons/${lesson.id}`);
+            const res = await api.delete(`/lessons/${lesson.id}`);
+            console.log('DELETE response:', res.status, res.data);
+            this.toast.success('Урок удален');
+            this.editCourse(this.selectedCourse);
+        } catch (err) {
+            console.error('DELETE error:', err.response?.status, err.response?.data || err.message);
+            this.toast.error('Ошибка: ' + err.message);
+        }
+    },
+    // Adding/Overriding lesson method to handle edit
+    async addLesson() {
+       this.newLesson.video_urls = this.newLesson.video_urls.filter(u => u.trim());
+       this.newLesson.solution_video_urls = this.newLesson.solution_video_urls.filter(u => u.trim());
+       
+       if (this.isEditingLesson) {
+           console.log(`Sending PUT request to: /lessons/${this.newLesson.id}`);
+           const res = await api.put(`/lessons/${this.newLesson.id}`, this.newLesson);
+           console.log('PUT response:', res.status, res.data);
+           this.toast.success('Урок обновлен');
+       } else {
+           await api.post(`/courses/${this.selectedCourse.id}/lessons`, this.newLesson);
+           this.toast.success('Урок добавлен');
+       }
+       
+       this.showAddLesson = false;
+       this.isEditingLesson = false;
+       this.editCourse(this.selectedCourse); 
+       this.newLesson = { title: '', video_urls: [''], solution_video_urls: [] };
+    },
+    // Course Metadata Editing
+    startEditCourse() {
+        this.courseEditData = { title: this.selectedCourse.title, description: this.selectedCourse.description };
+        this.isEditingCourse = true;
+    },
+    async saveCourseEdit() {
+        try {
+            await api.put(`/courses/${this.selectedCourse.id}`, this.courseEditData);
+            this.selectedCourse.title = this.courseEditData.title;
+            this.selectedCourse.description = this.courseEditData.description;
+            this.toast.success('Курс обновлен');
+            this.isEditingCourse = false;
+            this.fetchCourses();
+        } catch (err) {
+            this.toast.error('Ошибка: ' + err.message);
         }
     }
   }
@@ -335,8 +455,14 @@ export default {
 .btn-close { font-size: 2rem; background: none; border: none; color: #bbb; cursor: pointer; line-height: 1; }
 .btn-close:hover { color: #555; }
 .btn-add-question:hover { border-color: var(--primary-color); color: var(--primary-color); background: #fff; }
-.btn-delete { background: #ffebee; color: #c62828; border: none; border-radius: 8px; width: 42px; cursor: pointer; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; transition: 0.2s; }
+.btn-delete { background: #ffebee; color: #c62828; border: none; border-radius: 50%; width: 44px; height: 44px; cursor: pointer; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; transition: 0.2s; flex-shrink: 0; }
 .btn-delete:hover { background: #ffcdd2; transform: scale(1.05); }
+.btn-icon-blue { background: #e3f2fd; color: var(--primary-color); border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; flex-shrink: 0; }
+.btn-icon-blue:hover { background: #bbdefb; }
+.btn-text-blue { background: none; border: none; color: var(--primary-color); font-weight: 600; font-size: 0.85rem; cursor: pointer; padding: 0; }
+.btn-text-blue:hover { opacity: 0.7; }
+.btn-text-danger { background: none; border: none; color: #ff4d4d; font-weight: 600; font-size: 0.85rem; cursor: pointer; padding: 0; }
+.btn-text-danger:hover { opacity: 0.7; }
 
 /* Course Grid */
 .course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
@@ -380,7 +506,10 @@ export default {
 .lesson-main { display: flex; gap: 15px; align-items: center; }
 .lesson-icon { font-size: 1.5rem; background: #e1f5fe; padding: 10px; border-radius: 50%; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; }
 .link-sm { color: var(--primary-color); font-size: 0.85rem; text-decoration: none; font-weight: 600; }
-.test-badge { background: #e8f5e9; color: #2e7d32; padding: 6px 12px; border-radius: 20px; font-weight: 600; font-size: 0.85rem; display: flex; flex-direction: column; align-items: flex-end; }
+.test-badge { background: #e8f5e9; color: #2e7d32; padding: 6px 12px; border-radius: 20px; font-weight: 600; font-size: 0.85rem; display: flex; flex-direction: column; align-items: flex-start; }
+.test-badge-wrapper { display: flex; gap: 8px; align-items: center; }
+.test-badge-actions { display: flex; gap: 4px; }
+.small-circle { width: 30px !important; height: 30px !important; font-size: 0.8rem !important; }
 .empty-state { text-align: center; padding: 40px; color: #999; border: 2px dashed #eee; border-radius: 12px; }
 
 /* Question Styles (Reused from TestManagement) */
@@ -390,8 +519,8 @@ export default {
 .question-card { background: white; padding: 20px; border-radius: 12px; border: 1px solid #eee; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
 .question-header { display: flex; justify-content: space-between; margin-bottom: 15px; }
 .q-number { font-weight: 700; color: var(--primary-color); }
-.btn-icon-danger { width: 32px; height: 32px; border-radius: 50%; background: #ffebee; color: #c62828; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; }
-.btn-icon-danger.small { width: 24px; height: 24px; font-size: 0.8rem; flex-shrink: 0; }
+.btn-icon-danger { width: 36px; height: 36px; border-radius: 50%; background: #ffebee; color: #c62828; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
+.btn-icon-danger.small { width: 28px; height: 28px; font-size: 0.8rem; flex-shrink: 0; }
 .grow { flex: 1; }
 .flex { display: flex; }
 .gap-2 { gap: 8px; }

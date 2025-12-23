@@ -11,7 +11,7 @@
         <h3>{{ test.title }}</h3>
         <p v-if="test.description">{{ test.description }}</p>
         <p class="text-muted" v-else>Нет описания</p>
-        <div style="margin-top: auto;">
+        <div>
              <span class="badge-blue" v-if="test.time_limit">⏱ {{ test.time_limit }} мин</span>
              <span class="badge-gray" v-else>Без таймера</span>
         </div>
@@ -23,7 +23,7 @@
     </div>
 
     <!-- Create/Edit Test Modal -->
-    <div v-if="showTestModal" class="modal-overlay" @click.self="showTestModal = false">
+    <div v-if="showTestModal" class="modal-overlay">
        <div class="card modal-xl animate-scale-up">
           <div class="modal-header">
               <h3>{{ isEditing ? 'Редактирование Теста' : 'Создание Теста' }}</h3>
@@ -111,8 +111,13 @@
 
 <script>
 import api from '../api';
+import { useToast } from '../composables/useToast';
 
 export default {
+  setup() {
+    const toast = useToast();
+    return { toast };
+  },
   data() {
     return {
       tests: [],
@@ -128,7 +133,7 @@ export default {
   mounted() { this.fetchTests(); },
   methods: {
     async fetchTests() {
-      const res = await api.get('/tests');
+      const res = await api.get('/tests?is_standalone=true');
       this.tests = res.data;
     },
     openCreateModal() {
@@ -162,26 +167,50 @@ export default {
         try {
             const res = await api.post('/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
             targetObject.image_url = res.data.url;
+            this.toast.success('Фото загружено!');
         } catch (err) {
-            alert('Ошибка загрузки фото: ' + err.message);
+            this.toast.error('Ошибка загрузки фото: ' + err.message);
         }
     },
     async saveTest() {
         try {
-             await api.post('/tests', this.currentTest);
+             // Clean up the payload - remove fields that shouldn't be sent
+             const payload = {
+                 title: this.currentTest.title,
+                 description: this.currentTest.description,
+                 time_limit: this.currentTest.time_limit,
+                 is_standalone: this.currentTest.is_standalone,
+                 questions: this.currentTest.questions.map(q => ({
+                     text: q.text,
+                     image_url: q.image_url,
+                     options: q.options,
+                     correct_option_index: q.correct_option_index,
+                     score_value: q.score_value || 1
+                 }))
+             };
+
+             if (this.isEditing) {
+                 await api.put(`/tests/${this.currentTest.id}`, payload);
+                 this.toast.success('Тест обновлен!');
+             } else {
+                 await api.post('/tests', payload);
+                 this.toast.success('Тест создан!');
+             }
+             
              this.showTestModal = false;
              this.fetchTests();
         } catch (err) {
-            alert('Ошибка: ' + (err.response?.data?.message || err.message));
+            this.toast.error('Ошибка: ' + (err.response?.data?.message || err.message));
         }
     },
     async deleteTest(test) {
         if(!confirm(`Вы уверены, что хотите удалить тест "${test.title}"?`)) return;
         try {
             await api.delete(`/tests/${test.id}`);
+            this.toast.success('Тест удален');
             this.fetchTests();
         } catch(err) {
-             alert('Ошибка: ' + (err.response?.data?.message || err.message));
+             this.toast.error('Ошибка: ' + (err.response?.data?.message || err.message));
         }
     }
   }
@@ -224,9 +253,9 @@ export default {
 
 .question-header { display: flex; justify-content: space-between; margin-bottom: 15px; }
 .q-number { font-weight: 700; color: var(--primary-color); font-size: 1.1rem; }
-.btn-icon-danger { background: #ffebee; color: #d32f2f; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.2s; }
+.btn-icon-danger { width: 36px; height: 36px; border-radius: 50%; background: #ffebee; color: #d32f2f; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.2s; flex-shrink: 0; }
 .btn-icon-danger:hover { background: #ffcdd2; transform: scale(1.1); }
-.btn-delete { background: #ffebee; color: #c62828; border: none; border-radius: 8px; width: 42px; cursor: pointer; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; transition: 0.2s; }
+.btn-delete { background: #ffebee; color: #c62828; border: none; border-radius: 50%; width: 44px; height: 44px; cursor: pointer; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; transition: 0.2s; flex-shrink: 0; }
 .btn-delete:hover { background: #ffcdd2; transform: scale(1.05); }
 .grow { flex: 1; }
 

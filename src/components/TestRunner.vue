@@ -66,8 +66,13 @@
 
 <script>
 import api from '../api';
+import { useToast } from '../composables/useToast';
 
 export default {
+  setup() {
+    const toast = useToast();
+    return { toast };
+  },
   props: ['testId', 'isStandalone'],
   emits: ['completed', 'cancel'],
   data() {

@@ -103,13 +103,13 @@ export default {
         },
         {
           id: "nzm_online",
-          name: "НЗМ Online",
+          name: "НИШ Online",
           duration: "3 месяца",
           price: 42000,
           originalPrice: 75000,
           features: {
             included: [
-              "Подготовка к экзаменам НЗМ",
+              "Подготовка к экзаменам НИШ",
               "2 прямых эфира в неделю",
               "Доступ 24/7",
               "Система кураторства",
@@ -121,7 +121,7 @@ export default {
         },
         {
           id: "math_package",
-          name: "Математика (БИЛ-НЗМ)",
+          name: "Математика (БИЛ-НИШ)",
           duration: "1 год",
           price: 19000,
           originalPrice: 53000,

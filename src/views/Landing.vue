@@ -6,10 +6,12 @@
       <div class="hero-content">
         <h1 class="animate-fade-in-up">Образование Будущего</h1>
         <p class="animate-fade-in-up delay-1">Учитесь, развивайтесь и достигайте новых высот с нашей платформой.</p>
-        <router-link to="/login" class="btn-primary animate-fade-in-up delay-2">Начать Обучение</router-link>
+        <router-link to="/login" class="btn-premium animate-fade-in-up delay-2">Начать Обучение</router-link>
       </div>
       <div class="hero-image animate-fade-in">
-         <div class="circle-graphic"></div>
+         <div class="circle-graphic">
+            <img src="/dostyk.jpg" alt="Dostyk" class="hero-ball-img">
+         </div>
       </div>
     </section>
     
@@ -46,7 +48,7 @@
       <div class="container footer-grid">
         <div class="footer-col">
           <div class="footer-logo">nis-bil.online</div>
-          <p>Ваш путь к успеху в образовании. Качественная подготовка к НЗМ и БИЛ.</p>
+          <p>Ваш путь к успеху в образовании. <br> Качественная подготовка к НИШ и БИЛ.</p>
         </div>
         <div class="footer-col">
           <h4>Полезные ссылки</h4>
@@ -116,7 +118,52 @@ export default {
 .hero p {
   font-size: 1.2rem;
   color: #666;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
+}
+
+.btn-premium {
+  display: inline-block;
+  background: linear-gradient(135deg, #00BFFF 0%, #009ACD 100%);
+  color: white;
+  text-decoration: none;
+  padding: 16px 40px;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  box-shadow: 0 10px 25px rgba(0, 191, 255, 0.4);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-premium:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 15px 30px rgba(0, 191, 255, 0.5);
+  filter: brightness(1.1);
+}
+
+.btn-premium:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+/* Shine Animation */
+.btn-premium::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 20%;
+  height: 200%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(30deg);
+  transition: none;
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  0% { left: -60%; }
+  20% { left: 120%; }
+  100% { left: 120%; }
 }
 
 .hero-image {
@@ -132,6 +179,18 @@ export default {
   border-radius: 50%;
   box-shadow: 0 20px 50px rgba(0, 191, 255, 0.3);
   animation: float 6s ease-in-out infinite;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4px solid white;
+}
+
+.hero-ball-img {
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
+  border-radius: 50%;
 }
 
 @keyframes float {
@@ -249,11 +308,14 @@ export default {
   .hero-image { margin-top: 0; }
   .hero-image .circle-graphic { width: 200px; height: 200px; }
   .grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; gap: 30px; text-align: center; }
+  .footer-col { display: flex; flex-direction: column; align-items: center; }
+  .footer-logo { margin-bottom: 20px; }
 }
 
 @media (max-width: 480px) {
   .hero h1 { font-size: 2rem; }
   .hero p { font-size: 1rem; }
-  .btn-primary { width: 100%; text-align: center; }
+  .btn-premium { width: 100%; text-align: center; padding: 14px 20px; }
 }
 </style>

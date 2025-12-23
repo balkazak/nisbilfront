@@ -46,9 +46,6 @@ export default {
   methods: {
     startTrial() {
       this.toast.info('Пробный тест находится в разработке.');
-      setTimeout(() => {
-        this.$router.push('/login');
-      }, 2000);
     }
   }
 };

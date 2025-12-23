@@ -4,6 +4,7 @@
     <aside class="sidebar">
       <div class="logo-area">nis-bil.online</div>
       <nav>
+        <button @click="$router.push('/')">Главная</button>
         <button @click="selectTab('courses')" :class="{ active: currentTab === 'courses' }">Курсы</button>
         <button @click="selectTab('tests')" :class="{ active: currentTab === 'tests' }">Тесты</button>
         <button @click="selectTab('users')" :class="{ active: currentTab === 'users' }">Пользователи</button>
@@ -68,7 +69,7 @@ export default {
     logout() {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      this.$router.push('/login');
+      this.$router.push('/');
     }
   }
 };

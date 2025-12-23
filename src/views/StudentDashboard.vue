@@ -73,7 +73,7 @@
          
          <div class="player-layout">
             <!-- Sidebar Lessons -->
-            <div class="lesson-sidebar card">
+            <div class="lesson-sidebar card" :class="{ 'hidden-mobile': currentLesson && !showTest }">
               <h3 class="sidebar-title">{{ activeCourse.title }}</h3>
               <ul class="lesson-nav">
                 <li v-for="lesson in activeCourse.Lessons" :key="lesson.id" 
@@ -87,9 +87,10 @@
 
             <!-- Main Content -->
             <div class="video-area card" v-if="currentLesson">
+               <button @click="currentLesson = null" class="btn-back-lessons mobile-only">&larr; Ко всем урокам</button>
                <!-- Video Video -->
                <div v-if="!showTest" class="fade-in">
-                  <h3 class="lesson-title">{{ currentLesson.title }}</h3>
+                  <h3 class="lesson-title mb-4">{{ currentLesson.title }}</h3>
                    <div v-for="(url, index) in currentLesson.video_urls" :key="'vid-'+index" class="video-block mb-4">
                        <h4 v-if="currentLesson.video_urls.length > 1" class="text-gray-500 text-sm mb-2">Видео {{ index + 1 }}</h4>
                        <div class="video-container">
@@ -166,7 +167,7 @@
                <div class="badge-blue">⏱ 20 мин</div>
                <div class="badge-blue">📝 15 вопр.</div>
             </div>
-            <button class="btn-primary" @click="alert('В разработке')">Начать Тест</button>
+            <button class="btn-primary" @click="toast.info('В разработке')">Начать Тест</button>
          </div>
       </div>
 
@@ -175,7 +176,7 @@
          <h2 class="title-lg">Калькулятор поступления</h2>
          <div class="card" style="padding: 30px; border-radius: 20px;">
             <div class="tabs" style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
-               <button :class="{ active: calcTab === 'nzm' }" @click="calcTab = 'nzm'" class="tab-btn">НЗМ</button>
+               <button :class="{ active: calcTab === 'nzm' }" @click="calcTab = 'nzm'" class="tab-btn">НИШ</button>
                <button :class="{ active: calcTab === 'bil' }" @click="calcTab = 'bil'" class="tab-btn">БИЛ</button>
             </div>
 
@@ -372,13 +373,13 @@ export default {
         },
         {
           id: "nzm_online",
-          name: "НЗМ Online",
+          name: "НИШ Online",
           duration: "3 месяца",
           price: 42000,
           originalPrice: 75000,
           features: {
             included: [
-              "Подготовка к НЗМ",
+              "Подготовка к НИШ",
               "2 эфира в неделю",
               "Доступ 24/7",
               "Система кураторства",
@@ -389,7 +390,7 @@ export default {
         },
         {
           id: "math_package",
-          name: "Математика (БИЛ-НЗМ)",
+          name: "Математика (БИЛ-НИШ)",
           duration: "1 год",
           price: 19000,
           originalPrice: 53000,
@@ -506,7 +507,7 @@ export default {
     logout() {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      this.$router.push('/login');
+      this.$router.push('/');
     },
     t_calc(key) {
       const map = {
@@ -675,8 +676,15 @@ export default {
   }
   .lesson-sidebar {
     width: 100%;
-    max-height: 300px;
+    max-height: 400px;
+    display: block;
   }
+  .sidebar-title { font-size: 0.9rem; padding: 8px 10px; font-weight: 700; color: var(--primary-color); }
+  .lesson-nav li { font-size: 0.8rem; padding: 8px 10px; margin-bottom: 4px; }
+  .lesson-title { font-size: 1rem; margin-bottom: 12px; font-weight: 800; line-height: 1.3; }
+  .btn-back { font-size: 0.75rem; padding: 6px 10px; margin-bottom: 10px; }
+  .video-area { padding: 15px; }
+  .btn-back-lessons { font-size: 0.8rem; padding: 8px; margin-bottom: 10px; }
 }
 
 @media (max-width: 480px) {
@@ -710,6 +718,12 @@ export default {
 .icon-play { font-size: 0.8rem; }
 
 .video-area { flex: 1; background: white; border-radius: 12px; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; }
+.mobile-only { display: none; }
+@media (max-width: 992px) {
+    .mobile-only { display: block; }
+}
+.btn-back-lessons { background: #f0f9ff; color: var(--primary-color); border: none; padding: 10px; border-radius: 8px; font-weight: 600; margin-bottom: 15px; text-align: left; }
+
 .video-container { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
 .video-container.secondary { aspect-ratio: 16/9; margin-top: 10px; }
 .actions-bar { display: flex; gap: 15px; }

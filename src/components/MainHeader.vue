@@ -3,10 +3,29 @@
     <div class="logo-wrapper" @click="$router.push('/')">
       <div class="logo">{{ displayedLogo }}<span class="cursor">|</span></div>
     </div>
-    <nav>
-      <router-link to="/trial-test" class="nav-link blinking-red">Пробный тест</router-link>
-      <router-link to="/calculator" class="nav-link">Калькулятор</router-link>
-      <router-link to="/tariffs" class="nav-link">Тарифы</router-link>
+    
+    <div class="nav-actions">
+      <!-- Mobile Login Icon/Avatar -->
+      <div class="mobile-only header-user-action">
+        <div v-if="user" class="mobile-user-avatar" @click="goToDashboard">
+          {{ user.username.charAt(0).toUpperCase() }}
+        </div>
+        <router-link v-else to="/login" class="mobile-login-icon" title="Войти">
+          👤
+        </router-link>
+      </div>
+
+      <button class="hamburger-btn" @click="isMenuOpen = !isMenuOpen" :class="{ active: isMenuOpen }">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <nav :class="{ 'mobile-nav-open': isMenuOpen }">
+      <router-link to="/trial-test" class="nav-link blinking-red" @click="isMenuOpen = false">Пробный тест</router-link>
+      <router-link to="/calculator" class="nav-link" @click="isMenuOpen = false">Калькулятор</router-link>
+      <router-link to="/tariffs" class="nav-link" @click="isMenuOpen = false">Тарифы</router-link>
       
       <div v-if="user" class="user-profile">
         <div class="profile-trigger" @click="isDropdownOpen = !isDropdownOpen">
@@ -22,7 +41,7 @@
           </div>
         </Transition>
       </div>
-      <router-link v-else to="/login" class="nav-link">Войти</router-link>
+      <router-link v-else to="/login" class="nav-link" @click="isMenuOpen = false">Войти</router-link>
     </nav>
   </header>
 </template>
@@ -33,6 +52,7 @@ export default {
     return {
       user: null,
       isDropdownOpen: false,
+      isMenuOpen: false,
       fullLogo: 'nis-bil.online',
       displayedLogo: '',
       typingIndex: 0
@@ -119,6 +139,9 @@ export default {
   z-index: 1000;
 }
 
+.mobile-only { display: none; }
+.desktop-only { display: block; }
+
 .logo-wrapper { display: flex; align-items: center; cursor: pointer; }
 
 .logo { 
@@ -131,6 +154,7 @@ export default {
   -webkit-text-fill-color: transparent;
   display: flex;
   align-items: center;
+  min-width: 180px; /* Stabilize right side during typing */
 }
 
 .cursor {
@@ -148,6 +172,39 @@ export default {
 }
 
 nav { display: flex; align-items: center; gap: 5px; }
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.hamburger-btn {
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 24px;
+  height: 18px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1001;
+}
+
+.hamburger-btn span {
+  width: 24px;
+  height: 2px;
+  background: var(--primary-color);
+  border-radius: 10px;
+  transition: all 0.3s linear;
+  position: relative;
+  transform-origin: 1px;
+}
+
+.hamburger-btn.active span:nth-child(1) { transform: rotate(45deg); }
+.hamburger-btn.active span:nth-child(2) { opacity: 0; transform: translateX(10px); }
+.hamburger-btn.active span:nth-child(3) { transform: rotate(-45deg); }
 
 .nav-link {
   text-decoration: none;
@@ -243,8 +300,88 @@ nav { display: flex; align-items: center; gap: 5px; }
 .dropdown-enter-from, .dropdown-leave-to { opacity: 0; transform: translateY(-10px); }
 
 @media (max-width: 768px) {
-  .navbar { padding: 10px 20px; }
-  .logo { font-size: 1.2rem; }
-  .username { display: none; }
+  .navbar { padding: 10px 15px; }
+  .logo { font-size: 1.1rem; }
+  .mobile-only { display: flex; }
+  
+  .hamburger-btn {
+    display: flex;
+  }
+
+  .header-user-action {
+    margin-right: 5px;
+  }
+
+  .mobile-login-icon {
+    font-size: 1.4rem;
+    text-decoration: none;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+  }
+
+  .mobile-user-avatar {
+    width: 32px;
+    height: 32px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.8rem;
+    cursor: pointer;
+  }
+
+  nav {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 250px;
+    background: white;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 80px 20px 20px;
+    gap: 15px;
+    box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+    z-index: 1000;
+  }
+
+  nav.mobile-nav-open {
+    transform: translateX(0);
+  }
+
+  .nav-link {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+  }
+
+  .user-profile {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .profile-trigger {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .dropdown-menu {
+    position: static;
+    margin-top: 10px;
+    box-shadow: none;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+  }
+
+  .username { display: inline-block; }
 }
 </style>
