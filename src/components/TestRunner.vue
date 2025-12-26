@@ -166,9 +166,9 @@ export default {
 .option-label.selected .custom-radio { border-color: var(--primary-color); background: var(--primary-color); }
 .option-label.selected .custom-radio::after { content: ''; position: absolute; top: 6px; left: 6px; width: 6px; height: 6px; background: white; border-radius: 50%; }
 
-.opt-content { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+.opt-content { display: flex; flex-direction: column; gap: 10px; width: 100%; align-items: flex-start; }
 .opt-text { font-size: 1.05rem; font-weight: 500; color: #444; line-height: 1.4; }
-.opt-image { max-width: 100%; border-radius: 8px; border: 1px solid #ddd; object-fit: contain; max-height: 200px; }
+.opt-image { width: auto; max-width: 100%; border-radius: 8px; border: 1px solid #ddd; object-fit: contain; max-height: 300px; }
 
 /* Buttons */
 .footer-actions { margin-top: 40px; display: flex; justify-content: flex-end; }

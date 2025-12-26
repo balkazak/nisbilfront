@@ -45,6 +45,7 @@ export default {
         localStorage.setItem('user', JSON.stringify(response.data));
         
         const role = response.data.role;
+        
         if (role === 'admin' || role === 'teacher') {
           this.$router.push('/dashboard');
         } else {
