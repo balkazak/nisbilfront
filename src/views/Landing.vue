@@ -316,6 +316,6 @@ export default {
 @media (max-width: 480px) {
   .hero h1 { font-size: 2rem; }
   .hero p { font-size: 1rem; }
-  .btn-premium { width: 100%; text-align: center; padding: 14px 20px; }
+  .btn-premium { width: 80%; text-align: center; padding: 14px 20px; }
 }
 </style>

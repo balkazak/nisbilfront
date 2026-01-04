@@ -73,8 +73,13 @@
          
          <div class="player-layout">
             <!-- Sidebar Lessons -->
-            <div class="lesson-sidebar card" :class="{ 'hidden-mobile': currentLesson && !showTest }">
-              <h3 class="sidebar-title">{{ activeCourse.title }}</h3>
+            <div v-if="showMobileLessons" class="lesson-overlay" @click="showMobileLessons = false"></div>
+            <div class="lesson-sidebar card" :class="{ 'mobile-open': showMobileLessons }">
+              <div class="sidebar-header-mobile" v-if="isMobile">
+                  <h3 class="sidebar-title">{{ activeCourse.title }}</h3>
+                  <button @click="showMobileLessons = false" class="btn-close-drawer">✕</button>
+              </div>
+              <h3 class="sidebar-title desktop-only">{{ activeCourse.title }}</h3>
               <ul class="lesson-nav">
                 <li v-for="lesson in activeCourse.Lessons" :key="lesson.id" 
                     :class="{ active: currentLesson?.id === lesson.id }"
@@ -87,7 +92,12 @@
 
             <!-- Main Content -->
             <div class="video-area card" v-if="currentLesson">
-               <button @click="currentLesson = null" class="btn-back-lessons mobile-only">&larr; Ко всем урокам</button>
+               <div class="mobile-actions">
+                  <button @click="currentLesson = null" class="btn-back-lessons">&larr; Ко всем урокам</button>
+                  <button @click="showMobileLessons = !showMobileLessons" class="btn-toggle-lessons">
+                      {{ showMobileLessons ? 'Скрыть уроки' : 'Список уроков' }}
+                  </button>
+               </div>
                <!-- Video Video -->
                <div v-if="!showTest" class="fade-in">
                   <h3 class="lesson-title mb-4">{{ currentLesson.title }}</h3>
@@ -342,6 +352,8 @@ export default {
       nzmResults: [],
       bilResults: [],
       calcShowResults: false,
+      showMobileLessons: false,
+      isMobile: window.innerWidth <= 992,
       nzmFields: [
         { id: 'mathematics', max: 400 },
         { id: 'numericalCharacteristics', max: 300 },
@@ -446,6 +458,10 @@ export default {
     this.fetchCourses();
     this.fetchResults();
     this.fetchStandaloneTests();
+    window.addEventListener('resize', this.checkMobile);
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.checkMobile);
   },
   methods: {
     selectView(view) {
@@ -492,11 +508,15 @@ export default {
        
        // Refresh course data to unlock solutions if we are in a course
        if (this.activeCourse) {
+           const currentLessonId = this.currentLesson ? this.currentLesson.id : null;
            await this.openCourse(this.activeCourse); 
-           // Ensure currentLesson is preserved if possible or reset to the same one
-           if (this.currentLesson) {
-               const found = this.activeCourse.Lessons.find(l => l.id === this.currentLesson.id);
-               if (found) this.currentLesson = found;
+           
+           // Restore currentLesson to the correct object from the new data
+           if (currentLessonId) {
+               const found = this.activeCourse.Lessons.find(l => l.id === currentLessonId);
+               if (found) {
+                   this.currentLesson = found;
+               }
            }
        }
     },
@@ -605,6 +625,9 @@ export default {
       if (p >= 40) return 'orange';
       if (p >= 20) return 'volcano';
       return 'red';
+    },
+    checkMobile() {
+        this.isMobile = window.innerWidth <= 992;
     }
   }
 };
@@ -671,20 +694,75 @@ export default {
     display: flex;
   }
   .player-layout {
+    display: flex;
     flex-direction: column;
     height: auto;
   }
-  .lesson-sidebar {
-    width: 100%;
-    max-height: 400px;
-    display: block;
+  .video-area {
+      order: 1;
+      padding: 15px;
   }
-  .sidebar-title { font-size: 0.9rem; padding: 8px 10px; font-weight: 700; color: var(--primary-color); }
-  .lesson-nav li { font-size: 0.8rem; padding: 8px 10px; margin-bottom: 4px; }
+  .lesson-sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 280px;
+    background: white;
+    z-index: 2000;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+    margin-top: 0;
+    max-height: none;
+    display: flex;
+    flex-direction: column;
+    border-radius: 0; 
+  }
+  .lesson-sidebar.mobile-open {
+      transform: translateX(0);
+  }
+  
+  .lesson-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1099;
+  }
+  
+  .sidebar-header-mobile {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+  }
+  .desktop-only { display: none; }
+  
+  .sidebar-title { border: none; padding: 0; margin: 0; font-size: 1rem; }
+  .btn-close-drawer { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #666; }
+  
+  .lesson-nav li { font-size: 0.9rem; padding: 12px 15px; margin-bottom: 4px; }
   .lesson-title { font-size: 1rem; margin-bottom: 12px; font-weight: 800; line-height: 1.3; }
   .btn-back { font-size: 0.75rem; padding: 6px 10px; margin-bottom: 10px; }
-  .video-area { padding: 15px; }
-  .btn-back-lessons { font-size: 0.8rem; padding: 8px; margin-bottom: 10px; }
+  
+  .mobile-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+  }
+  .btn-back-lessons, .btn-toggle-lessons { 
+      font-size: 0.8rem; 
+      padding: 8px 12px; 
+      border-radius: 8px; 
+      border: none;
+      font-weight: 600;
+  }
+  .btn-back-lessons { background: #f0f9ff; color: var(--primary-color); }
+  .btn-toggle-lessons { background: var(--primary-color); color: white; }
 }
 
 @media (max-width: 480px) {
@@ -718,11 +796,12 @@ export default {
 .icon-play { font-size: 0.8rem; }
 
 .video-area { flex: 1; background: white; border-radius: 12px; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; }
-.mobile-only { display: none; }
+.mobile-actions { display: none; }
 @media (max-width: 992px) {
-    .mobile-only { display: block; }
+    .mobile-actions { display: flex; }
 }
-.btn-back-lessons { background: #f0f9ff; color: var(--primary-color); border: none; padding: 10px; border-radius: 8px; font-weight: 600; margin-bottom: 15px; text-align: left; }
+
+/* Base styles for desktop buttons if needed, but they are inside mobile-actions which is hidden on desktop */
 
 .video-container { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
 .video-container.secondary { aspect-ratio: 16/9; margin-top: 10px; }
