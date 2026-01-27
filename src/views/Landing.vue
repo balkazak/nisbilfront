@@ -4,21 +4,25 @@
 
     <section class="hero">
       <div class="hero-content">
-        <h1 class="animate-fade-in-up">Образование Будущего</h1>
-        <p class="animate-fade-in-up delay-1">Учитесь, развивайтесь и достигайте новых высот с нашей платформой.</p>
-        <router-link to="/login" class="btn-premium animate-fade-in-up delay-2">Начать Обучение</router-link>
+        <h1 class="animate-fade-in-up">{{ t("landing.heroTitle") }}</h1>
+        <p class="animate-fade-in-up delay-1">{{ t("landing.heroSub") }}</p>
+        <router-link
+          to="/login"
+          class="btn-premium animate-fade-in-up delay-2"
+          >{{ t("landing.startBtn") }}</router-link
+        >
       </div>
       <div class="hero-image animate-fade-in">
-         <div class="circle-graphic">
-            <img src="/dostyk.jpg" alt="Dostyk" class="hero-ball-img">
-         </div>
+        <div class="circle-graphic">
+          <img src="/dostyk.jpg" alt="Dostyk" class="hero-ball-img" />
+        </div>
       </div>
     </section>
-    
+
     <section class="promo-video">
       <div class="video-container">
         <video autoplay loop playsinline controls class="promo-player">
-          <source src="/promo.webm" type="video/webm">
+          <source src="/promo.webm" type="video/webm" />
         </video>
         <div class="video-overlay"></div>
       </div>
@@ -26,19 +30,21 @@
 
     <section class="features">
       <div class="container">
-        <h2 style="text-align: center; margin-bottom: 40px;">Почему мы?</h2>
+        <h2 style="text-align: center; margin-bottom: 40px">
+          {{ t("landing.whyUs") }}
+        </h2>
         <div class="grid">
           <div class="feature-card">
-            <h3>Видео Курсы</h3>
-            <p>Доступ к качественным видеоурокам от лучших преподавателей.</p>
+            <h3>{{ t("landing.videoTitle") }}</h3>
+            <p>{{ t("landing.videoSub") }}</p>
           </div>
           <div class="feature-card">
-            <h3>Интерактивные Тесты</h3>
-            <p>Проверяйте свои знания и отслеживайте прогресс в реальном времени.</p>
+            <h3>{{ t("landing.testTitle") }}</h3>
+            <p>{{ t("landing.testSub") }}</p>
           </div>
           <div class="feature-card">
-             <h3>Удобный Кабинет</h3>
-             <p>Все материалы и статистика в одном месте, доступные 24/7.</p>
+            <h3>{{ t("landing.cabinetTitle") }}</h3>
+            <p>{{ t("landing.cabinetSub") }}</p>
           </div>
         </div>
       </div>
@@ -48,43 +54,63 @@
       <div class="container footer-grid">
         <div class="footer-col">
           <div class="footer-logo">nis-bil.online</div>
-          <p>Ваш путь к успеху в образовании. <br> Качественная подготовка к НИШ и БИЛ.</p>
+          <p>
+            {{ t("landing.footerTagline") }} <br />
+            {{ t("landing.footerQuality") }}
+          </p>
         </div>
         <div class="footer-col">
-          <h4>Полезные ссылки</h4>
+          <h4>{{ t("landing.usefulLinks") }}</h4>
           <ul>
-            <li><router-link to="/tariffs">Тарифы</router-link></li>
-            <li><router-link to="/calculator">Калькулятор</router-link></li>
-            <li><a href="/offert.pdf" target="_blank">Публичная оферта</a></li>
+            <li>
+              <router-link to="/tariffs">{{ t("nav.tariffs") }}</router-link>
+            </li>
+            <li>
+              <router-link to="/calculator">{{
+                t("nav.calculator")
+              }}</router-link>
+            </li>
+            <li>
+              <a href="/offert.pdf" target="_blank">{{ t("landing.offer") }}</a>
+            </li>
           </ul>
         </div>
         <div class="footer-col">
-          <h4>Контакты</h4>
+          <h4>{{ t("landing.contacts") }}</h4>
           <ul>
-            <li><a href="https://wa.me/77761555433" target="_blank">WhatsApp: +7 776 155 54 33</a></li>
-            <li><a href="https://www.instagram.com/dostyq.kyzylorda/" target="_blank">Instagram: @dostyq.kyzylorda</a></li>
+            <li>
+              <a href="https://wa.me/77761555433" target="_blank"
+                >WhatsApp: +7 776 155 54 33</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://www.instagram.com/dostyq.kyzylorda/"
+                target="_blank"
+                >Instagram: @dostyq.kyzylorda</a
+              >
+            </li>
           </ul>
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2025 nis-bil.online. Все права защищены.</p>
+        <p>&copy; 2025 nis-bil.online. {{ t("landing.rights") }}</p>
       </div>
     </footer>
   </div>
 </template>
 
-<script>
-import MainHeader from '../components/MainHeader.vue';
+<script setup>
+import MainHeader from "../components/MainHeader.vue";
+import { useLanguage } from "../composables/useLanguage";
 
-export default {
-  components: { MainHeader }
-};
+const { t } = useLanguage();
 </script>
 
 <style scoped>
 .landing-page {
-  font-family: 'Inter', sans-serif;
-  background-color: var(--secondary-color);
+  font-family: "Inter", sans-serif;
+  background-color: #f0f8ff;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -109,7 +135,7 @@ export default {
   font-size: 3.5rem;
   line-height: 1.2;
   margin-bottom: 20px;
-  background: -webkit-linear-gradient(45deg, #333, var(--primary-color));
+  background: -webkit-linear-gradient(45deg, #333, #00bfff);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -123,7 +149,7 @@ export default {
 
 .btn-premium {
   display: inline-block;
-  background: linear-gradient(135deg, #00BFFF 0%, #009ACD 100%);
+  background: linear-gradient(135deg, #00bfff 0%, #009acd 100%);
   color: white;
   text-decoration: none;
   padding: 16px 40px;
@@ -148,7 +174,7 @@ export default {
 
 /* Shine Animation */
 .btn-premium::after {
-  content: '';
+  content: "";
   position: absolute;
   top: -50%;
   left: -60%;
@@ -161,9 +187,15 @@ export default {
 }
 
 @keyframes shine {
-  0% { left: -60%; }
-  20% { left: 120%; }
-  100% { left: 120%; }
+  0% {
+    left: -60%;
+  }
+  20% {
+    left: 120%;
+  }
+  100% {
+    left: 120%;
+  }
 }
 
 .hero-image {
@@ -175,7 +207,7 @@ export default {
 .circle-graphic {
   width: 300px;
   height: 300px;
-  background: linear-gradient(135deg, var(--primary-color), #87CEFA);
+  background: linear-gradient(135deg, #00bfff, #87cefa);
   border-radius: 50%;
   box-shadow: 0 20px 50px rgba(0, 191, 255, 0.3);
   animation: float 6s ease-in-out infinite;
@@ -194,9 +226,15 @@ export default {
 }
 
 @keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
-  100% { transform: translateY(0px); }
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
 }
 
 .features {
@@ -213,13 +251,15 @@ export default {
 .feature-card {
   padding: 30px;
   border-radius: 12px;
-  background: var(--bg-color);
-  transition: transform 0.3s, box-shadow 0.3s;
+  background: #f9f9f9;
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
 }
 
 .feature-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
 .footer {
@@ -271,7 +311,7 @@ export default {
 .footer-bottom {
   text-align: center;
   padding-top: 30px;
-  border-top: 1px solid rgba(255,255,255,0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   font-size: 0.9rem;
 }
 
@@ -285,7 +325,7 @@ export default {
   margin: 0 auto;
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   position: relative;
   aspect-ratio: 16/9;
 }
@@ -297,25 +337,64 @@ export default {
 }
 
 @media (max-width: 1024px) {
-  .hero h1 { font-size: 3rem; }
-  .hero-image .circle-graphic { width: 250px; height: 250px; }
+  .hero h1 {
+    font-size: 3rem;
+  }
+  .hero-image .circle-graphic {
+    width: 250px;
+    height: 250px;
+  }
 }
 
 @media (max-width: 768px) {
-  .hero { flex-direction: column; text-align: center; padding: 60px 20px; gap: 40px; }
-  .hero-content { max-width: 100%; }
-  .hero h1 { font-size: 2.5rem; }
-  .hero-image { margin-top: 0; }
-  .hero-image .circle-graphic { width: 200px; height: 200px; }
-  .grid { grid-template-columns: 1fr; }
-  .footer-grid { grid-template-columns: 1fr; gap: 30px; text-align: center; }
-  .footer-col { display: flex; flex-direction: column; align-items: center; }
-  .footer-logo { margin-bottom: 20px; }
+  .hero {
+    flex-direction: column;
+    text-align: center;
+    padding: 60px 20px;
+    gap: 40px;
+  }
+  .hero-content {
+    max-width: 100%;
+  }
+  .hero h1 {
+    font-size: 2.5rem;
+  }
+  .hero-image {
+    margin-top: 0;
+  }
+  .hero-image .circle-graphic {
+    width: 200px;
+    height: 200px;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    text-align: center;
+  }
+  .footer-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .footer-logo {
+    margin-bottom: 20px;
+  }
 }
 
 @media (max-width: 480px) {
-  .hero h1 { font-size: 2rem; }
-  .hero p { font-size: 1rem; }
-  .btn-premium { width: 80%; text-align: center; padding: 14px 20px; }
+  .hero h1 {
+    font-size: 2rem;
+  }
+  .hero p {
+    font-size: 1rem;
+  }
+  .btn-premium {
+    width: 80%;
+    text-align: center;
+    padding: 14px 20px;
+  }
 }
 </style>

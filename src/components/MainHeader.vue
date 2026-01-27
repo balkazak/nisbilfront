@@ -1,10 +1,13 @@
 <template>
   <header class="navbar">
-    <div class="logo-wrapper" @click="$router.push('/')">
+    <div class="logo-wrapper" @click="router.push('/')">
       <div class="logo">{{ displayedLogo }}<span class="cursor">|</span></div>
     </div>
-    
+
     <div class="nav-actions">
+      <!-- Language Switcher -->
+      <LanguageSwitcher class="desktop-only" />
+
       <!-- Mobile Login Icon/Avatar -->
       <div class="mobile-only header-user-action">
         <div v-if="user" class="mobile-user-avatar" @click="goToDashboard">
@@ -15,7 +18,11 @@
         </router-link>
       </div>
 
-      <button class="hamburger-btn" @click="isMenuOpen = !isMenuOpen" :class="{ active: isMenuOpen }">
+      <button
+        class="hamburger-btn"
+        @click="isMenuOpen = !isMenuOpen"
+        :class="{ active: isMenuOpen }"
+      >
         <span></span>
         <span></span>
         <span></span>
@@ -23,107 +30,131 @@
     </div>
 
     <nav :class="{ 'mobile-nav-open': isMenuOpen }">
-      <router-link to="/trial-test" class="nav-link blinking-red" @click="isMenuOpen = false">Пробный тест</router-link>
-      <router-link to="/calculator" class="nav-link" @click="isMenuOpen = false">Калькулятор</router-link>
-      <router-link to="/tariffs" class="nav-link" @click="isMenuOpen = false">Тарифы</router-link>
-      
+      <LanguageSwitcher class="mobile-only mb-4" />
+      <router-link
+        to="/trial-test"
+        class="nav-link blinking-red"
+        @click="isMenuOpen = false"
+        >{{ t("nav.trial") }}</router-link
+      >
+      <router-link
+        to="/calculator"
+        class="nav-link"
+        @click="isMenuOpen = false"
+        >{{ t("nav.calculator") }}</router-link
+      >
+      <router-link to="/tariffs" class="nav-link" @click="isMenuOpen = false">{{
+        t("nav.tariffs")
+      }}</router-link>
+
       <div v-if="user" class="user-profile">
         <div class="profile-trigger" @click="isDropdownOpen = !isDropdownOpen">
           <div class="avatar">{{ user.username.charAt(0).toUpperCase() }}</div>
           <span class="username">{{ user.username }}</span>
           <span class="arrow" :class="{ open: isDropdownOpen }">▼</span>
         </div>
-        
+
         <Transition name="dropdown">
           <div v-if="isDropdownOpen" class="dropdown-menu">
-            <button @click="goToDashboard">Мой кабинет</button>
-            <button @click="logout" class="logout-btn">Выйти</button>
+            <button @click="goToDashboard">{{ t("nav.cabinet") }}</button>
+            <button @click="logout" class="logout-btn">
+              {{ t("nav.logout") }}
+            </button>
           </div>
         </Transition>
       </div>
-      <router-link v-else to="/login" class="nav-link" @click="isMenuOpen = false">Войти</router-link>
+      <router-link
+        v-else
+        to="/login"
+        class="nav-link"
+        @click="isMenuOpen = false"
+        >{{ t("nav.login") }}</router-link
+      >
     </nav>
   </header>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      user: null,
-      isDropdownOpen: false,
-      isMenuOpen: false,
-      fullLogo: 'nis-bil.online',
-      displayedLogo: '',
-      typingIndex: 0
-    };
-  },
-  mounted() {
-    this.checkUser();
-    this.startTyping();
-    window.addEventListener('click', this.closeDropdown);
-  },
-  beforeUnmount() {
-    window.removeEventListener('click', this.closeDropdown);
-  },
-  methods: {
-    checkUser() {
-      const userData = localStorage.getItem('user');
-      if (userData) {
-        this.user = JSON.parse(userData);
-      }
-    },
-    startTyping() {
-      let isDeleting = false;
-      const type = () => {
-        const currentLength = this.displayedLogo.length;
-        
-        if (!isDeleting) {
-          // Typing
-          if (currentLength < this.fullLogo.length) {
-            this.displayedLogo = this.fullLogo.substring(0, currentLength + 1);
-            setTimeout(type, 150);
-          } else {
-            // Wait before starting to delete
-            isDeleting = true;
-            setTimeout(type, 2000);
-          }
-        } else {
-          // Deleting
-          if (currentLength > 0) {
-            this.displayedLogo = this.fullLogo.substring(0, currentLength - 1);
-            setTimeout(type, 100);
-          } else {
-            // Wait before starting to type again
-            isDeleting = false;
-            setTimeout(type, 500);
-          }
-        }
-      };
-      type();
-    },
-    closeDropdown(e) {
-      if (!this.$el.contains(e.target)) {
-        this.isDropdownOpen = false;
-      }
-    },
-    goToDashboard() {
-      if (this.user.role === 'admin' || this.user.role === 'teacher') {
-        this.$router.push('/dashboard');
-      } else {
-        this.$router.push('/student-dashboard');
-      }
-      this.isDropdownOpen = false;
-    },
-    logout() {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      this.user = null;
-      this.isDropdownOpen = false;
-      this.$router.push('/');
-    }
+<script setup>
+import { ref, onMounted, onBeforeUnmount } from "vue";
+import { useRouter } from "vue-router";
+import LanguageSwitcher from "./LanguageSwitcher.vue";
+import { useLanguage } from "../composables/useLanguage";
+
+const router = useRouter();
+const { t } = useLanguage();
+
+const user = ref(null);
+const isDropdownOpen = ref(false);
+const isMenuOpen = ref(false);
+const fullLogo = "nis-bil.online";
+const displayedLogo = ref("");
+
+const checkUser = () => {
+  const userData = localStorage.getItem("user");
+  if (userData) {
+    user.value = JSON.parse(userData);
   }
 };
+
+const startTyping = () => {
+  let isDeleting = false;
+  const type = () => {
+    const currentLength = displayedLogo.value.length;
+
+    if (!isDeleting) {
+      if (currentLength < fullLogo.length) {
+        displayedLogo.value = fullLogo.substring(0, currentLength + 1);
+        setTimeout(type, 150);
+      } else {
+        isDeleting = true;
+        setTimeout(type, 2000);
+      }
+    } else {
+      if (currentLength > 0) {
+        displayedLogo.value = fullLogo.substring(0, currentLength - 1);
+        setTimeout(type, 100);
+      } else {
+        isDeleting = false;
+        setTimeout(type, 500);
+      }
+    }
+  };
+  type();
+};
+
+const closeDropdown = (e) => {
+  const dropdown = document.querySelector(".user-profile");
+  if (dropdown && !dropdown.contains(e.target)) {
+    isDropdownOpen.value = false;
+  }
+};
+
+const goToDashboard = () => {
+  if (user.value.role === "admin" || user.value.role === "teacher") {
+    router.push("/dashboard");
+  } else {
+    router.push("/student-dashboard");
+  }
+  isDropdownOpen.value = false;
+};
+
+const logout = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  user.value = null;
+  isDropdownOpen.value = false;
+  router.push("/");
+};
+
+onMounted(() => {
+  checkUser();
+  startTyping();
+  window.addEventListener("click", closeDropdown);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("click", closeDropdown);
+});
 </script>
 
 <style scoped>
@@ -133,28 +164,36 @@ export default {
   align-items: center;
   padding: 10px 40px;
   background: white;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   position: sticky;
   top: 0;
   z-index: 1000;
 }
 
-.mobile-only { display: none; }
-.desktop-only { display: block; }
+.mobile-only {
+  display: none;
+}
+.desktop-only {
+  display: block;
+}
 
-.logo-wrapper { display: flex; align-items: center; cursor: pointer; }
+.logo-wrapper {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
 
-.logo { 
-  font-size: 1.45rem; 
-  font-weight: 800; 
-  color: #00bfff; 
-  background: -webkit-linear-gradient(45deg, #00bfff, #009ACD);
+.logo {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #00bfff;
+  background: -webkit-linear-gradient(45deg, #00bfff, #009acd);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   display: flex;
   align-items: center;
-  min-width: 180px; /* Stabilize right side during typing */
+  min-width: 180px;
 }
 
 .cursor {
@@ -167,11 +206,20 @@ export default {
 }
 
 @keyframes cursor-blink {
-  from, to { opacity: 1; }
-  50% { opacity: 0; }
+  from,
+  to {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }
 
-nav { display: flex; align-items: center; gap: 5px; }
+nav {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
 
 .nav-actions {
   display: flex;
@@ -195,16 +243,23 @@ nav { display: flex; align-items: center; gap: 5px; }
 .hamburger-btn span {
   width: 24px;
   height: 2px;
-  background: var(--primary-color);
+  background: #00bfff;
   border-radius: 10px;
   transition: all 0.3s linear;
   position: relative;
   transform-origin: 1px;
 }
 
-.hamburger-btn.active span:nth-child(1) { transform: rotate(45deg); }
-.hamburger-btn.active span:nth-child(2) { opacity: 0; transform: translateX(10px); }
-.hamburger-btn.active span:nth-child(3) { transform: rotate(-45deg); }
+.hamburger-btn.active span:nth-child(1) {
+  transform: rotate(45deg);
+}
+.hamburger-btn.active span:nth-child(2) {
+  opacity: 0;
+  transform: translateX(10px);
+}
+.hamburger-btn.active span:nth-child(3) {
+  transform: rotate(-45deg);
+}
 
 .nav-link {
   text-decoration: none;
@@ -216,7 +271,10 @@ nav { display: flex; align-items: center; gap: 5px; }
   font-size: 0.95rem;
 }
 
-.nav-link:hover { background: #f1f5f9; color: #00bfff; }
+.nav-link:hover {
+  background: #f1f5f9;
+  color: #00bfff;
+}
 
 .blinking-red {
   color: #ef4444 !important;
@@ -224,12 +282,21 @@ nav { display: flex; align-items: center; gap: 5px; }
 }
 
 @keyframes blink {
-  0% { opacity: 1; }
-  50% { opacity: 0.4; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
-.user-profile { position: relative; margin-left: 10px; }
+.user-profile {
+  position: relative;
+  margin-left: 10px;
+}
 
 .profile-trigger {
   display: flex;
@@ -243,7 +310,10 @@ nav { display: flex; align-items: center; gap: 5px; }
   border: 1px solid #e2e8f0;
 }
 
-.profile-trigger:hover { background: #f1f5f9; border-color: #00bfff; }
+.profile-trigger:hover {
+  background: #f1f5f9;
+  border-color: #00bfff;
+}
 
 .avatar {
   width: 32px;
@@ -258,10 +328,20 @@ nav { display: flex; align-items: center; gap: 5px; }
   font-size: 0.9rem;
 }
 
-.username { font-weight: 600; color: #1e293b; font-size: 0.9rem; }
+.username {
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 0.9rem;
+}
 
-.arrow { font-size: 0.7rem; color: #94a3b8; transition: 0.3s; }
-.arrow.open { transform: rotate(180deg); }
+.arrow {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  transition: 0.3s;
+}
+.arrow.open {
+  transform: rotate(180deg);
+}
 
 .dropdown-menu {
   position: absolute;
@@ -269,7 +349,7 @@ nav { display: flex; align-items: center; gap: 5px; }
   right: 0;
   background: white;
   border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   padding: 8px;
   min-width: 180px;
   display: flex;
@@ -291,19 +371,46 @@ nav { display: flex; align-items: center; gap: 5px; }
   font-size: 0.9rem;
 }
 
-.dropdown-menu button:hover { background: #f1f5f9; color: #00bfff; }
+.dropdown-menu button:hover {
+  background: #f1f5f9;
+  color: #00bfff;
+}
 
-.logout-btn { color: #ef4444 !important; }
-.logout-btn:hover { background: #fee2e2 !important; }
+.logout-btn {
+  color: #ef4444 !important;
+}
+.logout-btn:hover {
+  background: #fee2e2 !important;
+}
 
-.dropdown-enter-active, .dropdown-leave-active { transition: all 0.2s ease; }
-.dropdown-enter-from, .dropdown-leave-to { opacity: 0; transform: translateY(-10px); }
+.dropdown-enter-active,
+.dropdown-leave-active {
+  transition: all 0.2s ease;
+}
+.dropdown-enter-from,
+.dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
 
 @media (max-width: 768px) {
-  .navbar { padding: 10px 15px; }
-  .logo { font-size: 1.1rem; }
-  .mobile-only { display: flex; }
-  
+  .navbar {
+    padding: 10px 15px;
+  }
+  .logo {
+    font-size: 1.1rem;
+  }
+  .mobile-only {
+    display: flex;
+  }
+  .desktop-only {
+    display: none;
+  }
+
   .hamburger-btn {
     display: flex;
   }
@@ -315,7 +422,7 @@ nav { display: flex; align-items: center; gap: 5px; }
   .mobile-login-icon {
     font-size: 1.4rem;
     text-decoration: none;
-    color: var(--primary-color);
+    color: #00bfff;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -326,7 +433,7 @@ nav { display: flex; align-items: center; gap: 5px; }
   .mobile-user-avatar {
     width: 32px;
     height: 32px;
-    background: var(--primary-color);
+    background: #00bfff;
     color: white;
     border-radius: 50%;
     display: flex;
@@ -348,7 +455,7 @@ nav { display: flex; align-items: center; gap: 5px; }
     align-items: flex-start;
     padding: 80px 20px 20px;
     gap: 15px;
-    box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
     transform: translateX(100%);
     transition: transform 0.3s ease-in-out;
     z-index: 1000;
@@ -382,6 +489,8 @@ nav { display: flex; align-items: center; gap: 5px; }
     border: 1px solid #e2e8f0;
   }
 
-  .username { display: inline-block; }
+  .username {
+    display: inline-block;
+  }
 }
 </style>
