@@ -13,7 +13,12 @@
         <div v-if="user" class="mobile-user-avatar" @click="goToDashboard">
           {{ user.username.charAt(0).toUpperCase() }}
         </div>
-        <router-link v-else to="/login" class="mobile-login-icon" title="Войти">
+        <router-link
+          v-else
+          to="/login"
+          class="mobile-login-icon"
+          :title="t('nav.login')"
+        >
           👤
         </router-link>
       </div>

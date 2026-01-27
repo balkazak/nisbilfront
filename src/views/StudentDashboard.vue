@@ -9,7 +9,7 @@
       <div class="logo-area">nis-bil.online</div>
       <nav>
         <button @click="router.push('/')">
-          {{ t("nav.main") || "Главная" }}
+          {{ t("nav.main") }}
         </button>
         <button
           @click="selectView('courses')"
@@ -74,7 +74,7 @@
         class="fade-in"
       >
         <h2 class="title-lg">
-          {{ t("dashboard.availableCourses") || "Доступные Курсы" }}
+          {{ t("dashboard.availableCourses") }}
         </h2>
         <div class="course-grid">
           <div
@@ -109,11 +109,9 @@
               <p>{{ test.description || "Без описания" }}</p>
               <div style="margin-top: 10px">
                 <span class="badge-blue" v-if="test.time_limit"
-                  >⏱ {{ test.time_limit }} {{ t("trial.min") || "мин" }}</span
+                  >⏱ {{ test.time_limit }} {{ t("trial.min") }}</span
                 >
-                <span class="badge-blue" v-else>{{
-                  t("trial.noTimer") || "Без таймера"
-                }}</span>
+                <span class="badge-blue" v-else>{{ t("trial.noTimer") }}</span>
               </div>
             </div>
             <button v-if="test.isOwned" class="btn-start">
@@ -132,7 +130,7 @@
             </button>
           </div>
           <div v-if="standaloneTests.length === 0" style="color: #666">
-            {{ t("dashboard.noTests") || "Нет доступных тестов." }}
+            {{ t("dashboard.noTests") }}
           </div>
         </div>
       </div>
@@ -146,7 +144,7 @@
           "
           class="btn-back"
         >
-          &larr; {{ t("dashboard.backToTests") || "Вернуться к тестам" }}
+          &larr; {{ t("dashboard.backToTests") }}
         </button>
         <TestRunner
           :testId="activeTestId"
