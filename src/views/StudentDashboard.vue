@@ -372,10 +372,7 @@
             <div class="badge-blue">⏱ {{ t("trial.duration") }}</div>
             <div class="badge-blue">📝 {{ t("trial.questions") }}</div>
           </div>
-          <button
-            class="btn-primary"
-            @click="toast.info(t('trial.developing'))"
-          >
+          <button class="btn-primary" @click="activeTestId = 'trial'">
             {{ t("trial.startBtn") }}
           </button>
         </div>

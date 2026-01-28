@@ -1,7 +1,9 @@
 <template>
   <div>
     <div class="flex justify-between items-center header-section">
-      <h2 class="title-lg">{{ t("testManagement.title") }}</h2>
+      <h2 class="title-lg">
+        {{ isTrialView ? t("admin.trialTests") : t("testManagement.title") }}
+      </h2>
       <button v-if="isAdmin" @click="openCreateModal" class="btn-primary">
         + {{ t("testManagement.newBtn") }}
       </button>
@@ -274,10 +276,23 @@ import api from "../api";
 import { useToast } from "../composables/useToast";
 import { useLanguage } from "../composables/useLanguage";
 
+const props = defineProps({
+  isTrialView: {
+    type: Boolean,
+    default: false,
+  },
+});
+
 const toast = useToast();
 const { t } = useLanguage();
 
-const tests = ref([]);
+const allTests = ref([]);
+const tests = computed(() => {
+  if (props.isTrialView) {
+    return allTests.value.filter((t) => t.is_trial);
+  }
+  return allTests.value;
+});
 const showTestModal = ref(false);
 const isEditing = ref(false);
 const currentUser = ref(JSON.parse(localStorage.getItem("user") || "{}"));
@@ -297,7 +312,7 @@ const isAdmin = computed(() => currentUser.value.role === "admin");
 
 const fetchTests = async () => {
   const res = await api.get("/tests?is_standalone=true");
-  tests.value = res.data;
+  allTests.value = res.data;
 };
 
 const createEmptyQuestion = () => {
@@ -323,7 +338,7 @@ const openCreateModal = () => {
     time_limit: null,
     is_standalone: true,
     category: "standard",
-    is_trial: false,
+    is_trial: props.isTrialView,
     coin_price: 0,
     questions: [createEmptyQuestion()],
   };

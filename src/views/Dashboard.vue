@@ -24,6 +24,13 @@
           {{ t("admin.tests") }}
         </button>
         <button
+          v-if="user.role === 'admin'"
+          @click="selectTab('trial')"
+          :class="{ active: currentTab === 'trial' }"
+        >
+          {{ t("admin.trialTests") }}
+        </button>
+        <button
           @click="selectTab('users')"
           :class="{ active: currentTab === 'users' }"
         >
@@ -63,6 +70,9 @@
       </div>
       <div v-if="currentTab === 'tests'" class="fade-in">
         <TestManagement />
+      </div>
+      <div v-if="currentTab === 'trial'" class="fade-in">
+        <TestManagement :isTrialView="true" />
       </div>
       <div v-if="currentTab === 'results'" class="fade-in">
         <ResultsView />
