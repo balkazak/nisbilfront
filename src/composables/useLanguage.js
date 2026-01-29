@@ -2,7 +2,7 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export function useLanguage() {
-  const { locale, t: i18nT } = useI18n();
+  const { locale, t: i18nT, tm } = useI18n();
 
   const currentLang = computed(() => locale.value);
 
@@ -28,6 +28,7 @@ export function useLanguage() {
     currentLang,
     setLanguage,
     t,
+    tm,
     format
   };
 }

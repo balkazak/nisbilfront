@@ -132,7 +132,7 @@ const props = defineProps(["testId", "isStandalone"]);
 const emit = defineEmits(["completed", "cancel"]);
 
 const toast = useToast();
-const { t } = useLanguage();
+const { t, format } = useLanguage();
 
 const test = ref({ Questions: [] });
 const answers = ref({});

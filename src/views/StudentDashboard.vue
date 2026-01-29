@@ -48,7 +48,11 @@
           {{ t("nav.tariffs") }}
         </button>
       </nav>
-      <div class="coins-balance" v-if="user">
+      <div
+        class="coins-balance"
+        v-if="user"
+        :title="t('dashboard.coinsTooltip')"
+      >
         <span class="coin-icon">🟡</span>
         <span class="coin-text">{{ user.coins || 0 }}</span>
       </div>
@@ -76,6 +80,11 @@
         <h2 class="title-lg">
           {{ t("dashboard.availableCourses") }}
         </h2>
+
+        <div class="info-banner mb-4">
+          💡 {{ t("dashboard.earnCoinsPrompt") }}
+        </div>
+
         <div class="course-grid">
           <div
             v-for="course in courses"
@@ -97,6 +106,11 @@
       <!-- Test List -->
       <div v-if="currentView === 'tests' && !activeTestId" class="fade-in">
         <h2 class="title-lg">{{ t("dashboard.availableTests") }}</h2>
+
+        <div class="info-banner mb-4">
+          💡 {{ t("dashboard.earnCoinsPrompt") }}
+        </div>
+
         <div class="course-grid">
           <div
             v-for="test in standaloneTests"
@@ -123,7 +137,7 @@
               @click.stop="buyTest(test)"
               :disabled="user.coins < test.coin_price"
             >
-              {{ format(t("dashboard.buyTest"), { price: test.coin_price }) }}
+              {{ t("dashboard.buyTest", { price: test.coin_price }) }}
             </button>
             <button v-else class="btn-start">
               {{ t("dashboard.startBtn") }} &rarr;
@@ -347,7 +361,7 @@
                     >{{ res.score }} / {{ res.max_score }}</span
                   >
                 </td>
-                <td>{{ new Date(res.createdAt).toLocaleDateString() }}</td>
+                <td>{{ new Date(res.createdAt).toLocaleString() }}</td>
               </tr>
             </tbody>
           </table>
@@ -677,7 +691,7 @@ import { useLanguage } from "../composables/useLanguage";
 
 const router = useRouter();
 const toast = useToast();
-const { t } = useLanguage();
+const { t, tm, format } = useLanguage();
 
 const nzmSchools = [
   { name: "Almaty FM", totalMin: 1261 },
@@ -781,38 +795,38 @@ const nzmFields = [
 const localPricingPlans = computed(() => [
   {
     id: "bil_online",
-    name: t("tariffs.p5.name") || "БИЛ Online",
+    name: t("tariffs.p5.name"),
     price: 69000,
     originalPrice: 125000,
-    features: t("tariffs.p5.features", { returnObjects: true }) || [],
+    features: tm("tariffs.p5.features") || [],
   },
   {
     id: "nzm_online",
-    name: t("tariffs.p1.name") || "НИШ Online",
+    name: t("tariffs.p1.name"),
     price: 42000,
     originalPrice: 75000,
-    features: t("tariffs.p1.features", { returnObjects: true }) || [],
+    features: tm("tariffs.p1.features") || [],
   },
   {
     id: "math_package",
-    name: t("tariffs.p2.name") || "Математика",
+    name: t("tariffs.p2.name"),
     price: 19000,
     originalPrice: 53000,
-    features: t("tariffs.p2.features", { returnObjects: true }) || [],
+    features: tm("tariffs.p2.features") || [],
   },
   {
     id: "logic_package",
-    name: t("tariffs.p3.name") || "Логика",
+    name: t("tariffs.p3.name"),
     price: 14900,
     originalPrice: 20000,
-    features: t("tariffs.p3.features", { returnObjects: true }) || [],
+    features: tm("tariffs.p3.features") || [],
   },
   {
     id: "bil_bundle",
-    name: t("tariffs.p4.name") || "БИЛ Пакет",
+    name: t("tariffs.p4.name"),
     price: 29900,
     originalPrice: 76000,
-    features: t("tariffs.p4.features", { returnObjects: true }) || [],
+    features: tm("tariffs.p4.features") || [],
   },
 ]);
 
@@ -849,10 +863,13 @@ const fetchResults = async () => {
 };
 
 const fetchUser = async () => {
-  // To refresh coins from server if needed, or we just trust our local update for now.
-  // Let's assume login returns coins and we update it on submission.
-  const userData = JSON.parse(localStorage.getItem("user") || "{}");
-  user.value = userData;
+  try {
+    const res = await api.get("/auth/me");
+    user.value = res.data;
+    localStorage.setItem("user", JSON.stringify(res.data));
+  } catch (err) {
+    console.error("Failed to fetch user data", err);
+  }
 };
 
 const fetchStandaloneTests = async () => {
@@ -1317,6 +1334,18 @@ onBeforeUnmount(() => {
   opacity: 0.5;
   cursor: not-allowed;
   filter: grayscale(1);
+}
+
+.info-banner {
+  background: #fffbeb;
+  color: #92400e;
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid #fcd34d;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .content {
