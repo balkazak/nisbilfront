@@ -230,11 +230,11 @@
             </div>
             <!-- Video Video -->
             <div v-if="!showTest" class="fade-in">
-              <h3 class="lesson-title mb-4">{{ currentLesson.title }}</h3>
+              <h3 class="lesson-title mb-6">{{ currentLesson.title }}</h3>
               <div
                 v-for="(url, index) in currentLesson.video_urls"
                 :key="'vid-' + index"
-                class="video-block mb-4"
+                class="video-block mb-6"
               >
                 <h4
                   v-if="currentLesson.video_urls.length > 1"
@@ -1416,36 +1416,41 @@ onBeforeUnmount(() => {
 
 .player-layout {
   display: flex;
-  gap: 20px;
-  height: calc(100vh - 100px);
+  gap: 30px;
+  height: calc(100vh - 120px);
 }
 .lesson-sidebar {
-  width: 300px;
+  width: 320px;
   background: white;
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: 16px;
+  padding: 24px;
   overflow-y: auto;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 .sidebar-title {
-  font-size: 1.1rem;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 10px;
-  margin-bottom: 10px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #1e293b;
+  border-bottom: 2px solid #f1f5f9;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
 }
 .lesson-nav {
   list-style: none;
   padding: 0;
 }
 .lesson-nav li {
-  padding: 12px;
+  padding: 14px 18px;
   cursor: pointer;
-  border-radius: 8px;
-  margin-bottom: 5px;
-  font-size: 0.95rem;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  font-size: 1rem;
   display: flex;
   align-items: center;
-  gap: 8px;
-  color: #555;
+  gap: 12px;
+  color: #475569;
+  transition: all 0.2s;
+  font-weight: 500;
 }
 .lesson-nav li:hover {
   background: #f5f5f5;
@@ -1462,11 +1467,12 @@ onBeforeUnmount(() => {
 .video-area {
   flex: 1;
   background: white;
-  border-radius: 12px;
-  padding: 25px;
+  border-radius: 16px;
+  padding: 30px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 .mobile-actions {
   display: none;
@@ -1494,6 +1500,9 @@ onBeforeUnmount(() => {
 .actions-bar {
   display: flex;
   gap: 15px;
+  margin-top: 10px;
+  padding-top: 20px;
+  border-top: 1px solid #f1f5f9;
 }
 .btn-back {
   background: none;
@@ -1506,6 +1515,14 @@ onBeforeUnmount(() => {
 }
 .btn-primary.animate-pulse {
   animation: pulse 2s infinite;
+}
+.lesson-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #1e293b;
+}
+.video-block {
+  margin-bottom: 30px;
 }
 
 .styled-table {
@@ -1649,47 +1666,69 @@ onBeforeUnmount(() => {
 }
 
 /* Materials */
+.materials-section {
+  margin-top: 35px;
+  margin-bottom: 35px;
+  padding-top: 25px;
+  border-top: 1px solid #f1f5f9;
+}
 .materials-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 15px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 15px;
 }
 .material-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 15px;
-  background: white;
-  border: 1px solid #eee;
-  border-radius: 12px;
+  gap: 16px;
+  padding: 16px 20px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
   text-decoration: none;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .material-item:hover {
   border-color: #00bfff;
   background: #f0f9ff;
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 191, 255, 0.1);
 }
 .material-icon {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
+  background: white;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 .material-info {
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
 .material-name {
-  font-weight: 600;
-  color: #334155;
-  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1e293b;
+  font-size: 0.95rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 150px;
+  max-width: 180px;
 }
 .material-ext {
   font-size: 0.75rem;
-  color: #94a3b8;
-  font-weight: 700;
+  color: #64748b;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.mb-6 {
+  margin-bottom: 2.5rem;
 }
 .tag.red {
   background: #fef2f2;
