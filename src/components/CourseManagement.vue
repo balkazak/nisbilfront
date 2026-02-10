@@ -323,6 +323,42 @@
             </button>
           </div>
 
+          <!-- Additional Materials -->
+          <div class="input-group">
+            <label>{{ t("courseManagement.additionalMaterials") }}</label>
+            <div
+              v-for="(m, idx) in newLesson.materials"
+              :key="'m-' + idx"
+              class="flex gap-2 mb-2 items-center"
+            >
+              <input
+                v-model="m.name"
+                placeholder="Name"
+                class="input-field grow"
+                required
+              />
+              <a :href="m.url" target="_blank" class="btn-icon-blue small"
+                >👁</a
+              >
+              <button
+                type="button"
+                @click="newLesson.materials.splice(idx, 1)"
+                class="btn-icon-danger small"
+              >
+                x
+              </button>
+            </div>
+            <label class="btn-secondary btn-sm cursor-pointer inline-block">
+              + {{ t("courseManagement.addMaterial") }}
+              <input
+                type="file"
+                @change="uploadMaterial"
+                accept="application/pdf"
+                hidden
+              />
+            </label>
+          </div>
+
           <div class="modal-footer">
             <button type="submit" class="btn-primary btn-full">
               {{
@@ -541,6 +577,7 @@ const newLesson = reactive({
   title: "",
   video_urls: [""],
   solution_video_urls: [],
+  materials: [],
 });
 const newTest = ref({
   id: null,
@@ -578,6 +615,7 @@ const openAddLessonModal = () => {
   newLesson.title = "";
   newLesson.video_urls = [""];
   newLesson.solution_video_urls = [];
+  newLesson.materials = [];
   showAddLesson.value = true;
 };
 
@@ -592,6 +630,8 @@ const startEditLesson = (lesson) => {
     lesson.solution_video_urls && lesson.solution_video_urls.length
       ? [...lesson.solution_video_urls]
       : [];
+  newLesson.materials =
+    lesson.materials && lesson.materials.length ? [...lesson.materials] : [];
   isEditingLesson.value = true;
   showAddLesson.value = true;
 };
@@ -601,6 +641,7 @@ const addLesson = async () => {
     title: newLesson.title,
     video_urls: newLesson.video_urls.filter((u) => u.trim()),
     solution_video_urls: newLesson.solution_video_urls.filter((u) => u.trim()),
+    materials: newLesson.materials,
   };
 
   if (isEditingLesson.value) {
@@ -723,6 +764,24 @@ const uploadImage = async (event, targetObject) => {
     });
     targetObject.image_url = res.data.url;
     toast.success(t("courseManagement.successPhotoUploaded"));
+  } catch (err) {
+    toast.error("Error: " + err.message);
+  }
+};
+const uploadMaterial = async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+  const formData = new FormData();
+  formData.append("file", file);
+  try {
+    const res = await api.post("/upload", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    newLesson.materials.push({
+      name: file.name.replace(".pdf", ""),
+      url: res.data.url,
+    });
+    toast.success(t("courseManagement.successMaterialUploaded"));
   } catch (err) {
     toast.error("Error: " + err.message);
   }
@@ -884,6 +943,33 @@ onMounted(fetchCourses);
 }
 .btn-icon-blue:hover {
   background: #bbdefb;
+}
+.btn-icon-danger {
+  background: #ffebee;
+  color: #c62828;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+  flex-shrink: 0;
+}
+.btn-icon-danger:hover {
+  background: #ffcdd2;
+}
+.btn-icon-danger.small {
+  width: 24px;
+  height: 24px;
+  font-size: 0.8rem;
+}
+.btn-icon-blue.small {
+  width: 24px;
+  height: 24px;
+  font-size: 0.8rem;
 }
 .btn-text-blue {
   background: none;

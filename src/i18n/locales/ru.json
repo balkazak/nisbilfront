@@ -306,6 +306,9 @@
     "confirmDeleteCourse": "Вы уверены, что хотите удалить курс? Это действие необратимо.",
     "confirmDeleteLesson": "Удалить этот урок?",
     "confirmDeleteTest": "Вы уверены, что хотите удалить этот тест?",
+    "additionalMaterials": "Дополнительные материалы",
+    "addMaterial": "Добавить PDF",
+    "successMaterialUploaded": "Файл загружен!",
     "cancel": "Отмена"
   }
 }

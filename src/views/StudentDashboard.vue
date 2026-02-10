@@ -253,6 +253,33 @@
                 </div>
               </div>
 
+              <!-- Additional Materials -->
+              <div
+                v-if="
+                  currentLesson.materials && currentLesson.materials.length > 0
+                "
+                class="materials-section mb-6"
+              >
+                <h4 class="font-bold text-lg mb-3">
+                  {{ t("courseManagement.additionalMaterials") }}
+                </h4>
+                <div class="materials-grid">
+                  <a
+                    v-for="(m, mIdx) in currentLesson.materials"
+                    :key="'mat-' + mIdx"
+                    :href="m.url"
+                    target="_blank"
+                    class="material-item"
+                  >
+                    <span class="material-icon">📄</span>
+                    <div class="material-info">
+                      <span class="material-name">{{ m.name }}</span>
+                      <span class="material-ext">PDF</span>
+                    </div>
+                  </a>
+                </div>
+              </div>
+
               <div class="actions-bar">
                 <button
                   v-if="currentLesson.Test"
@@ -1619,6 +1646,50 @@ onBeforeUnmount(() => {
 .tag.volcano {
   background: #fee2e2;
   color: #991b1b;
+}
+
+/* Materials */
+.materials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+}
+.material-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 15px;
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.material-item:hover {
+  border-color: #00bfff;
+  background: #f0f9ff;
+  transform: translateY(-2px);
+}
+.material-icon {
+  font-size: 1.5rem;
+}
+.material-info {
+  display: flex;
+  flex-direction: column;
+}
+.material-name {
+  font-weight: 600;
+  color: #334155;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+.material-ext {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-weight: 700;
 }
 .tag.red {
   background: #fef2f2;

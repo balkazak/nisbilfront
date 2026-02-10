@@ -306,6 +306,9 @@
     "confirmDeleteCourse": "Бұл курсты жойғыңыз келетініне сенімдісіз бе? Бұл әрекетті қайтару мүмкін емес.",
     "confirmDeleteLesson": "Бұл сабақты жою керек пе?",
     "confirmDeleteTest": "Бұл тестті жойғыңыз келетініне сенімдісіз бе?",
+    "additionalMaterials": "Қосымша материалдар",
+    "addMaterial": "PDF қосу",
+    "successMaterialUploaded": "Файл жүктелді!",
     "cancel": "Бас тарту"
   }
 }
