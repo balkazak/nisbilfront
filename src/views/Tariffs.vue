@@ -20,16 +20,6 @@
         >
           <div class="card-header">
             <h2 class="plan-name">{{ plan.name }}</h2>
-            <div v-if="plan.originalPrice" class="original-price">
-              {{ plan.originalPrice.toLocaleString() }}
-              {{ t("tariffs.currency") }}
-            </div>
-            <div class="current-price">
-              <span
-                >{{ plan.price.toLocaleString() }}
-                {{ t("tariffs.currency") }}</span
-              >
-            </div>
           </div>
 
           <div class="features-list">
@@ -71,8 +61,7 @@
                   :key="plan.id"
                   :value="plan.id"
                 >
-                  {{ plan.name }} - {{ plan.price.toLocaleString() }}
-                  {{ t("tariffs.currency") }}
+                  {{ plan.name }}
                 </option>
               </select>
             </div>
@@ -255,8 +244,9 @@ const submitApplication = async () => {
 }
 
 .pricing-card.active {
-  border-color: #00bfff;
-  background: #f0f9ff;
+  border-color: #ff2e93;
+  background: #fff5f9;
+  box-shadow: 0 0 20px rgba(255, 46, 147, 0.15);
 }
 
 .pricing-card.featured::before {
@@ -264,12 +254,13 @@ const submitApplication = async () => {
   position: absolute;
   top: 12px;
   right: -30px;
-  background: #00bfff;
+  background: linear-gradient(135deg, #ff2e93, #ff007a);
   color: white;
   font-size: 0.65rem;
   font-weight: 900;
   padding: 4px 40px;
   transform: rotate(45deg);
+  box-shadow: 0 0 10px rgba(255, 46, 147, 0.5);
 }
 
 .card-header {
@@ -297,7 +288,7 @@ const submitApplication = async () => {
 .current-price {
   font-size: 2rem;
   font-weight: 900;
-  color: #00bfff;
+  color: #ff2e93;
 }
 
 .features-list {
@@ -315,7 +306,7 @@ const submitApplication = async () => {
 }
 .icon {
   font-weight: bold;
-  color: #00bfff;
+  color: #ff2e93;
   flex-shrink: 0;
 }
 
@@ -328,7 +319,7 @@ const submitApplication = async () => {
   border-radius: 24px;
   padding: 40px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
-  border-top: 6px solid #00bfff;
+  border-top: 6px solid #ff2e93;
 }
 .application-card h2 {
   text-align: center;
@@ -373,9 +364,9 @@ const submitApplication = async () => {
 .form-group input:focus,
 .form-group select:focus,
 .comment-textarea:focus {
-  border-color: #00bfff;
+  border-color: #ff2e93;
   background: white;
-  box-shadow: 0 0 0 4px rgba(0, 191, 255, 0.1);
+  box-shadow: 0 0 0 4px rgba(255, 46, 147, 0.15);
 }
 
 .comment-textarea {
@@ -384,7 +375,7 @@ const submitApplication = async () => {
 }
 
 .btn-submit {
-  background: linear-gradient(135deg, #00bfff 0%, #009acd 100%);
+  background: linear-gradient(135deg, #ff2e93 0%, #ff007a 50%, #9333ea 100%);
   color: white;
   padding: 16px;
   border: none;

@@ -94,10 +94,27 @@
           >
             <div class="card-content">
               <h3>{{ course.title }}</h3>
-              <p>{{ course.description }}</p>
+              <p>{{ course.description || "Курс подготовки" }}</p>
+
+              <!-- Course Progress bar on card -->
+              <div class="course-card-progress" v-if="course.Lessons && course.Lessons.length > 0">
+                <div class="progress-info-row">
+                  <span class="progress-label">{{ t("dashboard.courseProgress") }}</span>
+                  <span class="progress-pct">{{ getCourseProgress(course) }}%</span>
+                </div>
+                <div class="progress-track-sm">
+                  <div
+                    class="progress-fill-sm"
+                    :style="{ width: getCourseProgress(course) + '%' }"
+                  ></div>
+                </div>
+                <span class="progress-count-text">
+                  {{ getCompletedLessonsCount(course) }} / {{ course.Lessons.length }} {{ t("courseManagement.lessonsCount") || "уроков" }}
+                </span>
+              </div>
             </div>
             <button class="btn-start">
-              {{ t("dashboard.startBtn") }} &rarr;
+              {{ getCourseProgress(course) > 0 ? t("dashboard.continueBtn") : t("dashboard.startBtn") }} &rarr;
             </button>
           </div>
         </div>
@@ -121,7 +138,9 @@
             <div class="card-content">
               <h3>{{ test.title }}</h3>
               <p>{{ test.description || "Без описания" }}</p>
-              <div style="margin-top: 10px">
+              <div class="test-badges-row mt-2 flex gap-2 flex-wrap items-center">
+                <span v-if="test.category === 'nis'" class="badge-nis">🏛️ {{ t("testManagement.categoryNIS") || 'НИШ' }}</span>
+                <span v-else-if="test.category === 'bil'" class="badge-bil">🏫 {{ t("testManagement.categoryBIL") || 'БИЛ' }}</span>
                 <span class="badge-blue" v-if="test.time_limit"
                   >⏱ {{ test.time_limit }} {{ t("trial.min") }}</span
                 >
@@ -174,6 +193,31 @@
           &larr; {{ t("dashboard.backToCourses") }}
         </button>
 
+        <!-- Course Progress & Resume Banner -->
+        <div class="course-progress-banner card mb-4">
+          <div class="progress-banner-main">
+            <div>
+              <span class="resume-badge">
+                📍 {{ t("dashboard.currentPosition") }}:
+                <strong>{{ currentLesson?.title || "Урок" }}</strong>
+              </span>
+              <h2 class="course-player-title">{{ activeCourse.title }}</h2>
+            </div>
+            <div class="banner-pct-box">
+              <span class="banner-pct-num">{{ getCourseProgress(activeCourse) }}%</span>
+              <span class="banner-pct-sub">
+                {{ getCompletedLessonsCount(activeCourse) }} / {{ activeCourse.Lessons ? activeCourse.Lessons.length : 0 }} {{ t("courseManagement.lessonsCount") || "уроков" }}
+              </span>
+            </div>
+          </div>
+          <div class="progress-track mt-3">
+            <div
+              class="progress-bar-fill"
+              :style="{ width: getCourseProgress(activeCourse) + '%' }"
+            ></div>
+          </div>
+        </div>
+
         <div class="player-layout">
           <!-- Sidebar Lessons -->
           <div
@@ -197,16 +241,27 @@
             <h3 class="sidebar-title desktop-only">{{ activeCourse.title }}</h3>
             <ul class="lesson-nav">
               <li
-                v-for="lesson in activeCourse.Lessons"
+                v-for="(lesson, lIdx) in activeCourse.Lessons"
                 :key="lesson.id"
-                :class="{ active: currentLesson?.id === lesson.id }"
-                @click="
-                  currentLesson = lesson;
-                  showTest = false;
-                "
+                :class="{
+                  active: currentLesson?.id === lesson.id,
+                  completed: isLessonCompleted(activeCourse, lesson)
+                }"
+                @click="selectLesson(lesson)"
               >
-                <span class="icon-play">▶</span>
-                {{ lesson.title }}
+                <span
+                  class="lesson-marker"
+                  :class="{
+                    'marker-done': isLessonCompleted(activeCourse, lesson),
+                    'marker-current': currentLesson?.id === lesson.id
+                  }"
+                >
+                  {{ isLessonCompleted(activeCourse, lesson) ? "✓" : (currentLesson?.id === lesson.id ? "▶" : (lIdx + 1)) }}
+                </span>
+                <span class="lesson-title-text">{{ lesson.title }}</span>
+                <span v-if="isLessonCompleted(activeCourse, lesson)" class="badge-done-check">
+                  ✓
+                </span>
               </li>
             </ul>
           </div>
@@ -353,6 +408,36 @@
                   </div>
                 </div>
               </div>
+
+              <!-- Lesson Navigation and Progress Action Footer -->
+              <div class="lesson-nav-footer mt-6">
+                <button
+                  type="button"
+                  @click="goToPrevLesson"
+                  :disabled="!hasPrevLesson"
+                  class="btn-secondary btn-nav-step"
+                >
+                  ← {{ t("dashboard.prevLesson") }}
+                </button>
+
+                <button
+                  type="button"
+                  v-if="!currentLesson.Test && !isLessonCompleted(activeCourse, currentLesson)"
+                  @click="markCurrentLessonDone"
+                  class="btn-mark-done"
+                >
+                  ✓ {{ t("dashboard.markDone") }}
+                </button>
+
+                <button
+                  type="button"
+                  @click="goToNextLesson"
+                  :disabled="!hasNextLesson"
+                  class="btn-primary btn-nav-step"
+                >
+                  {{ t("dashboard.nextLesson") }} →
+                </button>
+              </div>
             </div>
 
             <!-- Test Runner (Lesson Attached) -->
@@ -378,20 +463,174 @@
                 <th>{{ t("dashboard.test") || "Тест" }}</th>
                 <th>{{ t("dashboard.results") }}</th>
                 <th>{{ t("dashboard.date") }}</th>
+                <th style="text-align: right">Разбор ошибок</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="res in myResults" :key="res.id">
-                <td>{{ res.Test.title }}</td>
+                <td class="font-bold">
+                  {{ res.Test ? res.Test.title : "Тест" }}
+                  <span v-if="res.Test?.category === 'nis'" class="badge-nis ml-2" style="font-size: 0.72rem; padding: 2px 7px;">НИШ</span>
+                  <span v-else-if="res.Test?.category === 'bil'" class="badge-bil ml-2" style="font-size: 0.72rem; padding: 2px 7px;">БИЛ</span>
+                </td>
                 <td>
                   <span class="score-badge"
                     >{{ res.score }} / {{ res.max_score }}</span
                   >
                 </td>
                 <td>{{ new Date(res.createdAt).toLocaleString() }}</td>
+                <td style="text-align: right">
+                  <button
+                    @click="openReviewModal(res)"
+                    class="btn-sm btn-secondary"
+                    style="padding: 6px 14px; font-size: 0.85rem; border-radius: 8px;"
+                  >
+                    📝 Смотреть ошибки
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- Past Test Review Modal -->
+      <div v-if="showReviewModal" class="modal-overlay" @click.self="showReviewModal = false">
+        <div class="card modal-wide animate-zoom-in" style="max-height: 90vh; overflow-y: auto; padding: 25px; max-width: 800px; width: 95%;">
+          <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px;">
+            <div>
+              <h3 style="margin: 0; font-size: 1.3rem;">📝 Разбор теста: {{ selectedReviewResult?.Test?.title }}</h3>
+              <p class="text-muted text-sm mt-1" v-if="selectedReviewResult">
+                Результат: <strong>{{ selectedReviewResult.score }} / {{ selectedReviewResult.max_score }}</strong>
+              </p>
+            </div>
+            <button @click="showReviewModal = false" class="btn-close" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+          </div>
+
+          <div v-if="loadingReview" class="loading-state" style="text-align: center; padding: 40px;">
+            <div class="spinner"></div>
+          </div>
+          <div v-else-if="selectedReviewResult && selectedReviewResult.questionsReview">
+            <!-- Filter Pills -->
+            <div class="review-filters mb-4">
+              <button
+                type="button"
+                class="filter-pill"
+                :class="{ active: historyReviewFilter === 'all' }"
+                @click="historyReviewFilter = 'all'"
+              >
+                Все вопросы ({{ selectedReviewResult.questionsReview.length }})
+              </button>
+              <button
+                type="button"
+                class="filter-pill filter-pill-error"
+                :class="{ active: historyReviewFilter === 'errors' }"
+                @click="historyReviewFilter = 'errors'"
+              >
+                ❌ Ошибки ({{ selectedReviewResult.questionsReview.filter(q => !q.isCorrect).length }})
+              </button>
+              <button
+                type="button"
+                class="filter-pill filter-pill-correct"
+                :class="{ active: historyReviewFilter === 'correct' }"
+                @click="historyReviewFilter = 'correct'"
+              >
+                ✅ Верные ({{ selectedReviewResult.questionsReview.filter(q => q.isCorrect).length }})
+              </button>
+            </div>
+
+            <!-- List of Questions -->
+            <div class="review-list">
+              <div
+                v-for="(q, qIndex) in filteredHistoryQuestions"
+                :key="q.id"
+                class="review-card"
+                :class="{
+                  'status-correct': q.isCorrect,
+                  'status-error': !q.isCorrect && q.userAnswer !== null,
+                  'status-unanswered': q.userAnswer === null
+                }"
+              >
+                <div class="review-card-header">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="review-q-num">Вопрос #{{ q.order || qIndex + 1 }}</span>
+                    <span
+                      v-if="selectedReviewResult?.Test?.category === 'nis' || selectedReviewResult?.category === 'nis' || q.question_type"
+                      class="nis-badge"
+                      :class="q.question_type === 'sandyk_sippattama' ? 'badge-sandyk' : 'badge-standard'"
+                    >
+                      {{ q.question_type === 'sandyk_sippattama' ? '📗 ' + (t("testManagement.questionTypeSandyk") || 'Сандық сипаттама (+5)') : '📘 ' + (t("testManagement.questionTypeStandard") || 'Стандарт (+10)') }}
+                    </span>
+                  </div>
+                  <div class="review-status-badge">
+                    <span v-if="q.isCorrect" class="badge-status badge-success">
+                      ✅ Верно (+{{ getReviewQuestionScore(q) }})
+                    </span>
+                    <span v-else-if="q.userAnswer !== null" class="badge-status badge-danger">
+                      ❌ Ошибка
+                    </span>
+                    <span v-else class="badge-status badge-warning">
+                      ⚠️ Пропущено
+                    </span>
+                  </div>
+                </div>
+
+                <p class="review-q-text">{{ q.text }}</p>
+                <div v-if="q.image_url" class="review-image-wrap">
+                  <img :src="q.image_url" class="review-q-image" alt="Question Image" />
+                </div>
+
+                <div class="review-options-list">
+                  <div
+                    v-for="(opt, optIdx) in q.options"
+                    :key="optIdx"
+                    class="review-option"
+                    :class="{
+                      'is-correct-target': optIdx === q.correct_option_index,
+                      'is-user-wrong': optIdx === q.userAnswer && !q.isCorrect,
+                      'is-user-correct': optIdx === q.userAnswer && q.isCorrect
+                    }"
+                  >
+                    <div class="option-marker">
+                      <span v-if="optIdx === q.correct_option_index">✓</span>
+                      <span v-else-if="optIdx === q.userAnswer && !q.isCorrect">✕</span>
+                      <span v-else>{{ String.fromCharCode(65 + optIdx) }}</span>
+                    </div>
+
+                    <div class="review-opt-body">
+                      <span v-if="opt.text" class="review-opt-text">{{ opt.text }}</span>
+                      <img v-if="opt.image_url" :src="opt.image_url" class="review-opt-image" alt="Option Image" />
+                    </div>
+
+                    <div class="review-option-tag">
+                      <span
+                        v-if="optIdx === q.correct_option_index && optIdx === q.userAnswer"
+                        class="tag-pill tag-correct"
+                      >
+                        ✓ Ваш ответ (верно)
+                      </span>
+                      <span
+                        v-else-if="optIdx === q.correct_option_index"
+                        class="tag-pill tag-correct"
+                      >
+                        ✓ Правильный ответ
+                      </span>
+                      <span
+                        v-else-if="optIdx === q.userAnswer && !q.isCorrect"
+                        class="tag-pill tag-wrong"
+                      >
+                        ✕ Ваш ответ (неверно)
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="text-align: right; margin-top: 25px;">
+            <button @click="showReviewModal = false" class="btn-primary" style="padding: 10px 24px;">Закрыть</button>
+          </div>
         </div>
       </div>
 
@@ -613,31 +852,9 @@
               border: 2px solid transparent;
             "
           >
-            <h3 style="margin-bottom: 5px; font-size: 1.1rem">
+            <h3 style="margin-bottom: 12px; font-size: 1.15rem; font-weight: 700; color: #111827">
               {{ plan.name }}
             </h3>
-            <div
-              style="
-                font-size: 0.8rem;
-                text-decoration: line-through;
-                color: #ef4444;
-                margin-bottom: 2px;
-              "
-              v-if="plan.originalPrice"
-            >
-              {{ plan.originalPrice.toLocaleString() }}
-              {{ t("tariffs.currency") }}
-            </div>
-            <div
-              style="
-                font-size: 1.3rem;
-                font-weight: 800;
-                color: #00bfff;
-                margin-bottom: 10px;
-              "
-            >
-              {{ plan.price.toLocaleString() }} {{ t("tariffs.currency") }}
-            </div>
             <ul
               style="
                 list-style: none;
@@ -692,10 +909,11 @@
             <button
               class="btn-primary"
               style="
-                background: #00bfff;
+                background: linear-gradient(135deg, #ff2e93, #ff007a);
                 border: none;
                 padding: 12px;
                 font-weight: bold;
+                box-shadow: 0 4px 15px rgba(255, 46, 147, 0.4);
               "
               @click="submitApp"
             >
@@ -810,6 +1028,51 @@ const calcShowResults = ref(false);
 const showMobileLessons = ref(false);
 const isMobile = ref(window.innerWidth <= 992);
 
+// Past test review modal
+const showReviewModal = ref(false);
+const loadingReview = ref(false);
+const selectedReviewResult = ref(null);
+const historyReviewFilter = ref("all");
+
+const getReviewQuestionScore = (q) => {
+  if (q.points_awarded !== undefined) return q.points_awarded;
+  if (q.question_type === 'sandyk_sippattama') return 5;
+  const isNis = selectedReviewResult.value?.Test?.category === 'nis' || selectedReviewResult.value?.category === 'nis';
+  if (isNis) return 10;
+  const isBil = selectedReviewResult.value?.Test?.category === 'bil' || selectedReviewResult.value?.category === 'bil';
+  if (isBil) return 4;
+  return q.score_value || 1;
+};
+
+const openReviewModal = async (resItem) => {
+  showReviewModal.value = true;
+  loadingReview.value = true;
+  historyReviewFilter.value = "all";
+  selectedReviewResult.value = null;
+  try {
+    const res = await api.get(`/results/${resItem.id}/review`);
+    selectedReviewResult.value = res.data;
+  } catch (err) {
+    toast.error("Не удалось загрузить разбор: " + (err.response?.data?.message || err.message));
+    showReviewModal.value = false;
+  } finally {
+    loadingReview.value = false;
+  }
+};
+
+const filteredHistoryQuestions = computed(() => {
+  if (!selectedReviewResult.value || !selectedReviewResult.value.questionsReview)
+    return [];
+  const list = selectedReviewResult.value.questionsReview;
+  if (historyReviewFilter.value === "errors") {
+    return list.filter((q) => !q.isCorrect);
+  }
+  if (historyReviewFilter.value === "correct") {
+    return list.filter((q) => q.isCorrect);
+  }
+  return list;
+});
+
 const nzmFields = [
   { id: "mathematics", max: 400 },
   { id: "numericalCharacteristics", max: 300 },
@@ -904,12 +1167,161 @@ const fetchStandaloneTests = async () => {
   standaloneTests.value = res.data;
 };
 
+const getProgressStorageKey = (courseId) => {
+  const userId = user.value?.id || "guest";
+  return `nisbil_student_course_${userId}_${courseId}`;
+};
+
+const getStoredProgress = (courseId) => {
+  try {
+    const raw = localStorage.getItem(getProgressStorageKey(courseId));
+    return raw ? JSON.parse(raw) : { lastLessonId: null, completedLessonIds: [] };
+  } catch (e) {
+    return { lastLessonId: null, completedLessonIds: [] };
+  }
+};
+
+const saveStoredProgress = (courseId, lastLessonId, completedLessonIds) => {
+  try {
+    const current = getStoredProgress(courseId);
+    const updated = {
+      lastLessonId:
+        lastLessonId !== undefined && lastLessonId !== null
+          ? lastLessonId
+          : current.lastLessonId,
+      completedLessonIds: completedLessonIds || current.completedLessonIds || [],
+    };
+    localStorage.setItem(getProgressStorageKey(courseId), JSON.stringify(updated));
+  } catch (e) {
+    console.error("Failed to save progress in localStorage", e);
+  }
+};
+
+const isLessonCompleted = (course, lesson) => {
+  if (!course || !lesson) return false;
+  if (lesson.isTestCompleted) return true;
+  if (
+    lesson.Test &&
+    myResults.value &&
+    myResults.value.some((r) => r.TestId === lesson.Test.id)
+  ) {
+    return true;
+  }
+  const prog = getStoredProgress(course.id);
+  return (prog.completedLessonIds || []).includes(lesson.id);
+};
+
+const getCompletedLessonsCount = (course) => {
+  if (!course || !course.Lessons || course.Lessons.length === 0) return 0;
+  return course.Lessons.filter((l) => isLessonCompleted(course, l)).length;
+};
+
+const getCourseProgress = (course) => {
+  if (!course || !course.Lessons || course.Lessons.length === 0) return 0;
+  const done = getCompletedLessonsCount(course);
+  return Math.round((done / course.Lessons.length) * 100);
+};
+
 const openCourse = async (course) => {
   const res = await api.get(`/courses/${course.id}`);
   activeCourse.value = res.data;
-  if (activeCourse.value.Lessons.length > 0) {
-    currentLesson.value = activeCourse.value.Lessons[0];
+  showTest.value = false;
+  showSolution.value = false;
+
+  const lessons = activeCourse.value.Lessons || [];
+  if (lessons.length === 0) {
+    currentLesson.value = null;
+    return;
   }
+
+  // Check saved progress: where student stopped
+  const prog = getStoredProgress(course.id);
+  let targetLesson = null;
+
+  if (prog.lastLessonId) {
+    targetLesson = lessons.find((l) => l.id === prog.lastLessonId);
+  }
+
+  // If not found, find first uncompleted lesson
+  if (!targetLesson) {
+    targetLesson = lessons.find((l) => !isLessonCompleted(activeCourse.value, l));
+  }
+
+  // Fallback to first lesson
+  if (!targetLesson) {
+    targetLesson = lessons[0];
+  }
+
+  selectLesson(targetLesson);
+};
+
+const selectLesson = (lesson) => {
+  currentLesson.value = lesson;
+  showTest.value = false;
+  showSolution.value = false;
+  showMobileLessons.value = false;
+
+  // Save last opened lesson where student stopped
+  if (activeCourse.value && lesson) {
+    const prog = getStoredProgress(activeCourse.value.id);
+    saveStoredProgress(activeCourse.value.id, lesson.id, prog.completedLessonIds);
+  }
+};
+
+const currentLessonIndex = computed(() => {
+  if (!activeCourse.value || !currentLesson.value || !activeCourse.value.Lessons)
+    return -1;
+  return activeCourse.value.Lessons.findIndex(
+    (l) => l.id === currentLesson.value.id,
+  );
+});
+
+const hasPrevLesson = computed(() => {
+  return currentLessonIndex.value > 0;
+});
+
+const hasNextLesson = computed(() => {
+  if (!activeCourse.value || !activeCourse.value.Lessons) return false;
+  return (
+    currentLessonIndex.value >= 0 &&
+    currentLessonIndex.value < activeCourse.value.Lessons.length - 1
+  );
+});
+
+const goToPrevLesson = () => {
+  if (hasPrevLesson.value) {
+    selectLesson(activeCourse.value.Lessons[currentLessonIndex.value - 1]);
+  }
+};
+
+const goToNextLesson = () => {
+  if (hasNextLesson.value) {
+    // If current lesson has no test, automatically mark it done as student advances
+    if (!currentLesson.value.Test) {
+      const prog = getStoredProgress(activeCourse.value.id);
+      const completed = new Set(prog.completedLessonIds || []);
+      completed.add(currentLesson.value.id);
+      saveStoredProgress(
+        activeCourse.value.id,
+        currentLesson.value.id,
+        Array.from(completed),
+      );
+    }
+    selectLesson(activeCourse.value.Lessons[currentLessonIndex.value + 1]);
+  }
+};
+
+const markCurrentLessonDone = () => {
+  if (!activeCourse.value || !currentLesson.value) return;
+  const prog = getStoredProgress(activeCourse.value.id);
+  const completed = new Set(prog.completedLessonIds || []);
+  completed.add(currentLesson.value.id);
+  saveStoredProgress(
+    activeCourse.value.id,
+    currentLesson.value.id,
+    Array.from(completed),
+  );
+  toast.success("Урок пройден! Прогресс обновлен");
 };
 
 const getEmbedUrl = (url) => {
@@ -957,6 +1369,16 @@ const onTestCompleted = async () => {
 
   if (activeCourse.value) {
     const currentLessonId = currentLesson.value ? currentLesson.value.id : null;
+    if (currentLessonId) {
+      const prog = getStoredProgress(activeCourse.value.id);
+      const completed = new Set(prog.completedLessonIds || []);
+      completed.add(currentLessonId);
+      saveStoredProgress(
+        activeCourse.value.id,
+        currentLessonId,
+        Array.from(completed),
+      );
+    }
     await openCourse(activeCourse.value);
 
     if (currentLessonId) {
@@ -964,7 +1386,7 @@ const onTestCompleted = async () => {
         (l) => l.id === currentLessonId,
       );
       if (found) {
-        currentLesson.value = found;
+        selectLesson(found);
       }
     }
   }
@@ -1619,11 +2041,11 @@ onBeforeUnmount(() => {
   transform: translateY(-5px);
 }
 .pricing-item.active {
-  border-color: #00bfff !important;
-  background: #f0f9ff;
+  border-color: #ff2e93 !important;
+  background: #fff5f9;
 }
 .pricing-item.popular.active {
-  border-color: #00bfff !important;
+  border-color: #ff2e93 !important;
 }
 
 .tab-btn {
@@ -1690,10 +2112,10 @@ onBeforeUnmount(() => {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .material-item:hover {
-  border-color: #00bfff;
-  background: #f0f9ff;
+  border-color: #ff2e93;
+  background: #fff5f9;
   transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(0, 191, 255, 0.1);
+  box-shadow: 0 10px 20px rgba(255, 46, 147, 0.15);
 }
 .material-icon {
   font-size: 1.8rem;
@@ -1733,5 +2155,318 @@ onBeforeUnmount(() => {
 .tag.red {
   background: #fef2f2;
   color: #dc2626;
+}
+
+/* Course Progress on Cards */
+.course-card-progress {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid #f1f5f9;
+}
+.progress-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.progress-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748b;
+}
+.progress-pct {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #ff2e93;
+}
+.progress-track-sm {
+  width: 100%;
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+.progress-fill-sm {
+  height: 100%;
+  background: linear-gradient(90deg, #ff2e93, #ff007a);
+  border-radius: 10px;
+  transition: width 0.4s ease;
+}
+.progress-count-text {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+/* Course Player Banner */
+.course-progress-banner {
+  background: white;
+  padding: 18px 24px;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  border: 1px solid #e2e8f0;
+}
+.progress-banner-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+.resume-badge {
+  display: inline-block;
+  background: #fdf2f8;
+  color: #be185d;
+  border: 1px solid #fbcfe8;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  margin-bottom: 6px;
+}
+.course-player-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+.banner-pct-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.banner-pct-num {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #ff2e93;
+  line-height: 1;
+}
+.banner-pct-sub {
+  font-size: 0.8rem;
+  color: #64748b;
+  font-weight: 600;
+  margin-top: 4px;
+}
+.progress-track {
+  width: 100%;
+  height: 8px;
+  background: #f1f5f9;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff2e93, #ff007a);
+  border-radius: 10px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Lesson Nav List Items */
+.lesson-nav li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #334155;
+  font-weight: 500;
+  margin-bottom: 6px;
+  position: relative;
+}
+.lesson-nav li:hover {
+  background: #fff5f9;
+  color: #ff2e93;
+}
+.lesson-nav li.active {
+  background: #fff0f6;
+  color: #ff2e93;
+  font-weight: 700;
+}
+.lesson-nav li.completed:not(.active) {
+  color: #475569;
+}
+.lesson-marker {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.marker-current {
+  background: #ff2e93;
+  color: white;
+}
+.marker-done {
+  background: #10b981;
+  color: white;
+}
+.lesson-title-text {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.badge-done-check {
+  font-size: 0.85rem;
+  color: #10b981;
+  font-weight: 800;
+}
+
+/* Lesson Navigation Footer */
+.lesson-nav-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-top: 20px;
+  border-top: 1px solid #f1f5f9;
+}
+.btn-nav-step {
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.btn-mark-done {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-mark-done:hover {
+  background: #d1fae5;
+  border-color: #6ee7b7;
+}
+
+/* Video Player Container */
+.video-container {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #090c15;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Mobile Player Adaptations */
+@media (max-width: 768px) {
+  .player-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .lesson-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 290px;
+    max-width: 85vw;
+    z-index: 1050;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    border-radius: 0;
+    overflow-y: auto;
+    background: white;
+    padding: 24px 16px;
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.2);
+  }
+  .lesson-sidebar.mobile-open {
+    transform: translateX(0);
+  }
+  .lesson-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 1049;
+    backdrop-filter: blur(4px);
+  }
+  .lesson-nav-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .btn-nav-step, .btn-mark-done {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+  .content {
+    padding: 16px 12px;
+  }
+}
+
+.badge-nis {
+  background: #ede9fe;
+  color: #5b21b6;
+  border: 1px solid #c4b5fd;
+  font-weight: 700;
+  font-size: 0.78rem;
+  padding: 3px 8px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.badge-bil {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+  font-weight: 700;
+  font-size: 0.78rem;
+  padding: 3px 8px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nis-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.nis-badge.badge-standard {
+  background: #eff6ff;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+}
+
+.nis-badge.badge-sandyk {
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
 }
 </style>

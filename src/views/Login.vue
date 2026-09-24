@@ -74,7 +74,7 @@ const handleLogin = async () => {
 
     const role = response.data.role;
 
-    if (role === "admin" || role === "teacher") {
+    if (role === "admin" || role === "curator" || role === "operator" || role === "teacher") {
       router.push("/dashboard");
     } else {
       router.push("/student-dashboard");
@@ -90,35 +90,81 @@ const handleLogin = async () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  background: linear-gradient(
-    135deg,
-    var(--secondary-color),
-    var(--primary-color)
-  );
+  min-height: 100vh;
+  background: #070a14;
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
 }
+
+.login-container::before {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(255, 46, 147, 0.25) 0%, transparent 70%);
+  filter: blur(100px);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
 .login-card {
   width: 100%;
-  max-width: 400px;
-  padding: 40px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
+  max-width: 420px;
+  padding: 44px 36px;
+  background: rgba(18, 24, 43, 0.85);
+  border: 1.5px solid rgba(255, 46, 147, 0.35);
+  border-radius: 24px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(255, 46, 147, 0.2);
+  backdrop-filter: blur(20px);
+  position: relative;
+  z-index: 2;
 }
+
+.login-card h2 {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 1.8rem;
+  letter-spacing: -0.01em;
+  background: linear-gradient(135deg, #ffffff 30%, #ff2e93 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 24px;
+}
+
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 18px;
 }
+
 .form-group label {
   display: block;
-  margin-bottom: 5px;
-  color: #555;
-  font-size: 0.9rem;
+  margin-bottom: 6px;
+  color: #cbd5e1;
+  font-size: 0.88rem;
+  font-weight: 600;
 }
+
+.input-field {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1.5px solid rgba(255, 46, 147, 0.25);
+  color: #ffffff;
+}
+
+.input-field:focus {
+  border-color: #ff2e93;
+  box-shadow: 0 0 15px rgba(255, 46, 147, 0.35);
+}
+
 .animate-zoom-in {
-  animation: zoomIn 0.3s ease-out;
+  animation: zoomIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
 @keyframes zoomIn {
   from {
-    transform: scale(0.9);
+    transform: scale(0.92);
     opacity: 0;
   }
   to {

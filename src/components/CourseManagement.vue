@@ -156,23 +156,28 @@
 
             <ul class="lesson-list">
               <li
-                v-for="lesson in selectedCourse.Lessons"
+                v-for="(lesson, lIdx) in selectedCourse.Lessons"
                 :key="lesson.id"
                 class="lesson-item"
               >
                 <div class="lesson-row">
                   <div class="lesson-main">
-                    <span class="lesson-icon">{{
-                      t("courseManagement.lessonIcon")
-                    }}</span>
+                    <span class="lesson-icon">{{ lIdx + 1 }}</span>
                     <div>
                       <strong>{{ lesson.title }}</strong>
-                      <div class="flex gap-2 mt-1">
+                      <div class="flex gap-2 mt-1 items-center flex-wrap">
                         <button
                           @click="startEditLesson(lesson)"
                           class="btn-text-blue"
                         >
                           {{ t("courseManagement.editLesson") }}
+                        </button>
+                        <button
+                          @click="duplicateLesson(lesson)"
+                          class="btn-text-blue"
+                          title="Дублировать урок"
+                        >
+                          📋 Копировать
                         </button>
                         <button
                           @click="handleDeleteLesson(lesson)"
@@ -664,6 +669,22 @@ const handleDeleteLesson = async (lesson) => {
     editCourse(selectedCourse.value);
   } catch (err) {
     toast.error("Error: " + err.message);
+  }
+};
+
+const duplicateLesson = async (lesson) => {
+  try {
+    const payload = {
+      title: `${lesson.title} (Копия)`,
+      video_urls: lesson.video_urls ? [...lesson.video_urls] : [],
+      solution_video_urls: lesson.solution_video_urls ? [...lesson.solution_video_urls] : [],
+      materials: lesson.materials ? [...lesson.materials] : [],
+    };
+    await api.post(`/courses/${selectedCourse.value.id}/lessons`, payload);
+    toast.success("Урок успешно скопирован");
+    editCourse(selectedCourse.value);
+  } catch (err) {
+    toast.error("Ошибка при копировании урока: " + err.message);
   }
 };
 

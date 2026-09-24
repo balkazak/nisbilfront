@@ -392,8 +392,9 @@ const resetBil = () => {
   transition: 0.3s;
 }
 .tabs button.active {
-  background: #00bfff;
+  background: linear-gradient(135deg, #ff2e93, #ff007a);
   color: white;
+  box-shadow: 0 4px 15px rgba(255, 46, 147, 0.4);
 }
 
 .form-grid {
@@ -421,8 +422,8 @@ const resetBil = () => {
   font-size: 1rem;
 }
 .form-group input:focus {
-  border-color: #00bfff;
-  box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.1);
+  border-color: #ff2e93;
+  box-shadow: 0 0 0 3px rgba(255, 46, 147, 0.15);
 }
 .max-hint {
   font-size: 0.75rem;
@@ -441,17 +442,18 @@ const resetBil = () => {
 .btn-primary {
   flex: 2;
   padding: 14px;
-  background: #00bfff;
+  background: linear-gradient(135deg, #ff2e93 0%, #ff007a 50%, #9333ea 100%);
   color: white;
   border: none;
   border-radius: 12px;
   font-weight: 700;
   cursor: pointer;
   transition: 0.3s;
+  box-shadow: 0 4px 15px rgba(255, 46, 147, 0.35);
 }
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 191, 255, 0.3);
+  box-shadow: 0 6px 20px rgba(255, 46, 147, 0.5);
 }
 
 .btn-secondary {
@@ -488,7 +490,7 @@ const resetBil = () => {
   font-weight: 500;
 }
 .score-summary span {
-  color: #00bfff;
+  color: #ff2e93;
   font-weight: 800;
   font-size: 1.2rem;
 }

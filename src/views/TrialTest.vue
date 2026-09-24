@@ -60,9 +60,10 @@ const onCompleted = () => {
 
 <style scoped>
 .trial-test-page {
-  font-family: "Inter", sans-serif;
-  background-color: #f0f8ff;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  background-color: #070a14;
   min-height: 100vh;
+  color: #f1f5f9;
 }
 
 .container {
@@ -83,28 +84,32 @@ const onCompleted = () => {
 }
 
 .trial-card {
-  background: white;
-  padding: 60px;
+  background: rgba(18, 24, 43, 0.85);
+  border: 1.5px solid rgba(255, 46, 147, 0.35);
+  padding: 60px 40px;
   border-radius: 32px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 35px rgba(255, 46, 147, 0.2);
   max-width: 800px;
   width: 100%;
   text-align: center;
+  backdrop-filter: blur(20px);
 }
 
 .title {
+  font-family: 'Outfit', sans-serif;
   font-size: 3rem;
   margin-bottom: 20px;
-  background: -webkit-linear-gradient(45deg, #333, #00bfff);
+  background: linear-gradient(135deg, #ffffff 20%, #ff2e93 60%, #ff007a 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: 800;
+  filter: drop-shadow(0 0 20px rgba(255, 46, 147, 0.4));
 }
 
 .description {
-  font-size: 1.25rem;
-  color: #666;
+  font-size: 1.15rem;
+  color: #cbd5e1;
   line-height: 1.6;
   margin-bottom: 40px;
 }
@@ -123,42 +128,46 @@ const onCompleted = () => {
   align-items: center;
   gap: 10px;
   font-weight: 600;
-  color: #444;
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 18px 24px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 46, 147, 0.2);
 }
 
 .icon {
-  font-size: 2.5rem;
+  font-size: 2.2rem;
+  filter: drop-shadow(0 0 10px rgba(255, 46, 147, 0.5));
 }
 
 .action-area {
   padding-top: 30px;
-  border-top: 1px solid #eee;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .cta {
   font-size: 1.2rem;
   font-weight: 700;
-  margin-bottom: 20px;
-  color: #333;
+  margin-bottom: 24px;
+  color: #ffffff;
 }
 
 .btn-start-trial {
-  padding: 18px 50px;
-  font-size: 1.2rem;
+  padding: 18px 54px;
+  font-size: 1.15rem;
   font-weight: 800;
-  background: #00bfff;
+  background: linear-gradient(135deg, #ff2e93 0%, #ff007a 50%, #9333ea 100%);
   color: white;
   border: none;
-  border-radius: 16px;
+  border-radius: 50px;
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(0, 191, 255, 0.3);
-  transition: all 0.3s;
+  box-shadow: 0 0 25px rgba(255, 46, 147, 0.6);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn-start-trial:hover {
-  background: #009acd;
-  transform: translateY(-3px);
-  box-shadow: 0 8px 30px rgba(0, 191, 255, 0.4);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 0 35px rgba(255, 46, 147, 0.8);
 }
 
 @keyframes fadeInUp {

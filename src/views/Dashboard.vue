@@ -31,17 +31,16 @@
           {{ t("admin.trialTests") }}
         </button>
         <button
+          @click="selectTab('groups')"
+          :class="{ active: currentTab === 'groups' }"
+        >
+          {{ t("admin.groups") }}
+        </button>
+        <button
           @click="selectTab('users')"
           :class="{ active: currentTab === 'users' }"
         >
           {{ t("admin.users") }}
-        </button>
-        <button
-          v-if="user.role === 'admin'"
-          @click="selectTab('results')"
-          :class="{ active: currentTab === 'results' }"
-        >
-          {{ t("admin.results") }}
         </button>
       </nav>
       <div style="margin-top: auto">
@@ -62,6 +61,9 @@
         </h3>
       </header>
 
+      <div v-if="currentTab === 'groups'" class="fade-in">
+        <GroupManagement />
+      </div>
       <div v-if="currentTab === 'users'" class="fade-in">
         <UserManagement />
       </div>
@@ -85,6 +87,7 @@
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import UserManagement from "../components/UserManagement.vue";
+import GroupManagement from "../components/GroupManagement.vue";
 import CourseManagement from "../components/CourseManagement.vue";
 import TestManagement from "../components/TestManagement.vue";
 import ResultsView from "../components/ResultsView.vue";
@@ -94,7 +97,12 @@ const router = useRouter();
 const { t } = useLanguage();
 
 const user = ref(JSON.parse(localStorage.getItem("user") || "{}"));
-const currentTab = ref(user.value.role === "admin" ? "courses" : "users");
+const getDefaultTab = () => {
+  if (user.value.role === "admin") return "courses";
+  if (user.value.role === "operator" || user.value.role === "curator" || user.value.role === "teacher") return "groups";
+  return "groups";
+};
+const currentTab = ref(getDefaultTab());
 const isSidebarOpen = ref(false);
 
 const translatedRole = computed(() => {
@@ -129,7 +137,7 @@ const logout = () => {
 .logo-area {
   font-size: 1.2rem;
   font-weight: bold;
-  color: #00bfff;
+  color: #ff2e93;
   margin-bottom: 40px;
   text-align: center;
 }
@@ -147,13 +155,13 @@ const logout = () => {
   cursor: pointer;
 }
 .sidebar nav button:hover {
-  background: #f0f9ff;
-  color: #00bfff;
+  background: #fff0f6;
+  color: #ff2e93;
 }
 .sidebar nav button.active {
-  background: #00bfff;
+  background: linear-gradient(135deg, #ff2e93, #ff007a);
   color: white;
-  box-shadow: 0 4px 10px rgba(0, 191, 255, 0.3);
+  box-shadow: 0 4px 12px rgba(255, 46, 147, 0.35);
 }
 .content {
   flex: 1;
@@ -182,7 +190,7 @@ const logout = () => {
   display: block;
   width: 25px;
   height: 3px;
-  background-color: #00bfff;
+  background-color: #ff2e93;
   border-radius: 3px;
 }
 
