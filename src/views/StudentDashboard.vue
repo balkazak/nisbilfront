@@ -896,8 +896,9 @@
             <input
               type="tel"
               v-model="appPhone"
-              @input="handlePhoneInput"
-              placeholder="+7 (700) 000-00-00"
+              @input="(e) => formatPhoneInput(e, appPhone)"
+              maxlength="18"
+              placeholder="+7 (###) ### ## ##"
               style="padding: 10px; border: 1px solid #ddd; border-radius: 8px"
             />
             <textarea
@@ -933,10 +934,12 @@ import api from "../api";
 import TestRunner from "../components/TestRunner.vue";
 import { useToast } from "../composables/useToast";
 import { useLanguage } from "../composables/useLanguage";
+import { usePhoneMask } from "../composables/usePhoneMask";
 
 const router = useRouter();
 const toast = useToast();
 const { t, tm, format } = useLanguage();
+const { handlePhoneInput: formatPhoneInput, isValidPhoneNumber } = usePhoneMask();
 
 const nzmSchools = [
   { name: "Almaty FM", totalMin: 1261 },
@@ -1407,23 +1410,13 @@ const selectTariff = (id) => {
   selectedTariff.value = id;
 };
 
-const handlePhoneInput = (e) => {
-  let value = e.target.value.replace(/\D/g, "");
-  if (value.startsWith("7")) value = value.slice(1);
-
-  let formatted = "+7 ";
-  if (value.length > 0) formatted += "(" + value.substring(0, 3);
-  if (value.length >= 4) formatted += ") " + value.substring(3, 6);
-  if (value.length >= 7) formatted += "-" + value.substring(6, 8);
-  if (value.length >= 9) formatted += "-" + value.substring(8, 10);
-
-  appPhone.value = formatted.trim();
-  e.target.value = appPhone.value;
-};
-
 const submitApp = async () => {
   if (!appPhone.value) {
-    toast.error(t("tariffs.errorPhone") || "Введите номер телефона");
+    toast.error(t("tariffs.invalidPhone") || "Введите полный номер телефона в формате +7 (###) ### ## ##");
+    return;
+  }
+  if (!isValidPhoneNumber(appPhone.value)) {
+    toast.error(t("tariffs.invalidPhone") || "Введите полный номер телефона в формате +7 (###) ### ## ##");
     return;
   }
   await new Promise((r) => setTimeout(r, 1000));
@@ -1523,7 +1516,7 @@ onBeforeUnmount(() => {
 }
 .sidebar {
   width: 260px;
-  background: linear-gradient(180deg, var(--primary-color) 0%, #009acd 100%);
+  background: linear-gradient(180deg, var(--primary-color) 0%, #B51A71 100%);
   color: white;
   display: flex;
   flex-direction: column;
@@ -1979,18 +1972,18 @@ onBeforeUnmount(() => {
 }
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(0, 191, 255, 0.4);
+    box-shadow: 0 0 0 0 rgba(230, 45, 149, 0.4);
   }
   70% {
-    box-shadow: 0 0 0 10px rgba(0, 191, 255, 0);
+    box-shadow: 0 0 0 10px rgba(230, 45, 149, 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(0, 191, 255, 0);
+    box-shadow: 0 0 0 0 rgba(230, 45, 149, 0);
   }
 }
 .badge-blue {
-  background: #e3f2fd;
-  color: #1565c0;
+  background: #fdf2f8;
+  color: var(--primary-color);
   padding: 2px 8px;
   border-radius: 4px;
   font-size: 0.8rem;
@@ -2075,8 +2068,8 @@ onBeforeUnmount(() => {
   color: #166534;
 }
 .tag.blue {
-  background: #e0f2fe;
-  color: #0369a1;
+  background: #fdf2f8;
+  color: var(--primary-color);
 }
 .tag.orange {
   background: #ffedd5;
@@ -2459,9 +2452,9 @@ onBeforeUnmount(() => {
 }
 
 .nis-badge.badge-standard {
-  background: #eff6ff;
-  color: #1e40af;
-  border: 1px solid #bfdbfe;
+  background: #fdf2f8;
+  color: #db2777;
+  border: 1px solid #fbcfe8;
 }
 
 .nis-badge.badge-sandyk {

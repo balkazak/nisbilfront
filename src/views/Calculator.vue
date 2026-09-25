@@ -535,8 +535,8 @@ const resetBil = () => {
   color: #166534;
 }
 .tag.blue {
-  background: #e0f2fe;
-  color: #0369a1;
+  background: #fdf2f8;
+  color: var(--primary-color);
 }
 .tag.orange {
   background: #ffedd5;

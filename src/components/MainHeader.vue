@@ -252,7 +252,7 @@ onBeforeUnmount(() => {
 }
 
 .logo {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Onest', sans-serif;
   font-size: 1.45rem;
   font-weight: 800;
   letter-spacing: -0.01em;
@@ -300,7 +300,7 @@ nav {
 .nav-link {
   text-decoration: none;
   color: #cbd5e1;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Onest', sans-serif;
   font-weight: 600;
   font-size: 0.95rem;
   padding: 8px 18px;

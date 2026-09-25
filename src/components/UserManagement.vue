@@ -141,6 +141,8 @@
             <input
               v-model="newUser.phone"
               type="tel"
+              maxlength="18"
+              @input="(e) => handlePhoneInput(e, newUser, 'phone')"
               :placeholder="t('userManagement.phonePlaceholder')"
               class="input-field"
             />
@@ -243,6 +245,8 @@
             <input
               v-model="editForm.phone"
               type="tel"
+              maxlength="18"
+              @input="(e) => handlePhoneInput(e, editForm, 'phone')"
               :placeholder="t('userManagement.phonePlaceholder')"
               class="input-field"
             />
@@ -394,9 +398,11 @@ import { ref, reactive, computed, onMounted } from "vue";
 import api from "../api";
 import { useLanguage } from "../composables/useLanguage";
 import { useToast } from "../composables/useToast";
+import { usePhoneMask } from "../composables/usePhoneMask";
 
 const { t } = useLanguage();
 const toast = useToast();
+const { handlePhoneInput, isValidPhoneNumber, formatPhoneNumber } = usePhoneMask();
 
 const users = ref([]);
 const availableGroups = ref([]);
@@ -497,7 +503,7 @@ const openEditModal = (u) => {
   editForm.id = u.id;
   editForm.username = u.username || "";
   editForm.password = "";
-  editForm.phone = u.phone || "";
+  editForm.phone = u.phone ? formatPhoneNumber(u.phone) : "";
   editForm.role = u.role === "teacher" ? "curator" : u.role;
   editForm.groupId = u.groupId || null;
   editForm.curatedGroupIds = u.curatedGroups ? u.curatedGroups.map((g) => g.id) : [];
@@ -505,6 +511,10 @@ const openEditModal = (u) => {
 };
 
 const addUser = async () => {
+  if (newUser.phone && !isValidPhoneNumber(newUser.phone)) {
+    toast.error(t("userManagement.invalidPhone") || "Введите полный номер телефона в формате +7 (###) ### ## ##");
+    return;
+  }
   try {
     await api.post("/users", newUser);
     showAddForm.value = false;
@@ -516,6 +526,10 @@ const addUser = async () => {
 };
 
 const saveEditUser = async () => {
+  if (editForm.phone && !isValidPhoneNumber(editForm.phone)) {
+    toast.error(t("userManagement.invalidPhone") || "Введите полный номер телефона в формате +7 (###) ### ## ##");
+    return;
+  }
   try {
     await api.put(`/users/${editForm.id}`, {
       username: editForm.username,
@@ -642,9 +656,9 @@ onMounted(() => {
 }
 .search-input:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: var(--primary-color);
   width: 240px;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 3px var(--primary-glow);
 }
 
 .filter-select {
@@ -658,7 +672,7 @@ onMounted(() => {
 }
 .filter-select:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: var(--primary-color);
 }
 
 .table-container {
@@ -736,12 +750,12 @@ onMounted(() => {
   transition: all 0.2s;
 }
 .btn-outline {
-  border-color: #3b82f6;
-  color: #3b82f6;
+  border-color: var(--primary-color);
+  color: var(--primary-color);
   background: transparent;
 }
 .btn-outline:hover {
-  background: #3b82f6;
+  background: var(--primary-color);
   color: white;
 }
 .btn-outline-edit {
@@ -903,7 +917,7 @@ onMounted(() => {
 .check-item input[type="checkbox"] {
   width: 16px;
   height: 16px;
-  accent-color: #3b82f6;
+  accent-color: var(--primary-color);
 }
 
 .modal-footer {

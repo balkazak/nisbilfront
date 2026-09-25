@@ -124,7 +124,7 @@ const handleLogin = async () => {
 }
 
 .login-card h2 {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Onest', sans-serif;
   font-weight: 800;
   font-size: 1.8rem;
   letter-spacing: -0.01em;

@@ -44,9 +44,10 @@
                 <input
                   type="tel"
                   v-model="form.phone"
-                  @input="handlePhoneInput"
+                  @input="(e) => handlePhoneInput(e, form, 'phone')"
+                  maxlength="18"
                   required
-                  placeholder="+7 (700) 000-00-00"
+                  placeholder="+7 (###) ### ## ##"
                 />
               </div>
             </div>
@@ -89,9 +90,11 @@ import { ref, computed, reactive } from "vue";
 import { useToast } from "../composables/useToast";
 import MainHeader from "../components/MainHeader.vue";
 import { useLanguage } from "../composables/useLanguage";
+import { usePhoneMask } from "../composables/usePhoneMask";
 
 const toast = useToast();
 const { t } = useLanguage();
+const { handlePhoneInput, isValidPhoneNumber } = usePhoneMask();
 
 const loading = ref(false);
 const form = reactive({
@@ -154,26 +157,13 @@ const pricingPlans = computed(() => [
   },
 ]);
 
-const formatPhone = (val) => {
-  let value = val.replace(/\D/g, "");
-  if (value.startsWith("7")) value = value.slice(1);
-
-  let formatted = "+7 ";
-  if (value.length > 0) formatted += "(" + value.substring(0, 3);
-  if (value.length >= 4) formatted += ") " + value.substring(3, 6);
-  if (value.length >= 7) formatted += "-" + value.substring(6, 8);
-  if (value.length >= 9) formatted += "-" + value.substring(8, 10);
-
-  return formatted.trim();
-};
-
-const handlePhoneInput = (e) => {
-  form.phone = formatPhone(e.target.value);
-};
-
 const submitApplication = async () => {
   if (!form.plan) {
     toast.error(t("tariffs.selectPlanError"));
+    return;
+  }
+  if (!isValidPhoneNumber(form.phone)) {
+    toast.error(t("tariffs.invalidPhone") || "Пожалуйста, введите полный номер телефона: +7 (###) ### ## ##");
     return;
   }
   loading.value = true;
@@ -385,11 +375,11 @@ const submitApplication = async () => {
   cursor: pointer;
   transition: all 0.3s;
   margin-top: 10px;
-  box-shadow: 0 10px 20px rgba(0, 191, 255, 0.2);
+  box-shadow: 0 10px 20px rgba(230, 45, 149, 0.25);
 }
 .btn-submit:hover {
   transform: translateY(-2px);
-  box-shadow: 0 15px 30px rgba(0, 191, 255, 0.3);
+  box-shadow: 0 15px 30px rgba(230, 45, 149, 0.35);
 }
 .btn-submit:active {
   transform: translateY(0);

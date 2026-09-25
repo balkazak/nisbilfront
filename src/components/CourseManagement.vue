@@ -163,8 +163,8 @@
                 <div class="lesson-row">
                   <div class="lesson-main">
                     <span class="lesson-icon">{{ lIdx + 1 }}</span>
-                    <div>
-                      <strong>{{ lesson.title }}</strong>
+                    <div class="lesson-info">
+                      <strong class="lesson-title">{{ lesson.title }}</strong>
                       <div class="flex gap-2 mt-1 items-center flex-wrap">
                         <button
                           @click="startEditLesson(lesson)"
@@ -424,7 +424,7 @@
           </div>
 
           <div class="questions-section">
-            <h4 style="color: #00bfff; margin-bottom: 15px">
+            <h4 style="color: var(--primary-color); margin-bottom: 15px">
               {{ t("courseManagement.questions") }} ({{
                 newTest.questions.length
               }})
@@ -860,7 +860,7 @@ onMounted(fetchCourses);
 
 /* Buttons */
 .btn-primary {
-  background: linear-gradient(135deg, #00bfff 0%, #009acd 100%);
+  background: var(--gradient-color);
   color: white;
   border: none;
   padding: 10px 20px;
@@ -870,11 +870,11 @@ onMounted(fetchCourses);
   transition:
     transform 0.2s,
     box-shadow 0.2s;
-  box-shadow: 0 4px 6px rgba(0, 191, 255, 0.2);
+  box-shadow: 0 4px 12px var(--primary-glow);
 }
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 191, 255, 0.3);
+  box-shadow: 0 6px 16px var(--primary-glow-strong);
 }
 .btn-lg {
   padding: 12px 24px;
@@ -902,7 +902,7 @@ onMounted(fetchCourses);
   width: 100%;
   padding: 12px;
   background: white;
-  border: 2px solid #e0f2fe;
+  border: 2px solid rgba(230, 45, 149, 0.2);
   color: var(--primary-color);
   font-weight: 700;
   border-radius: 8px;
@@ -911,7 +911,7 @@ onMounted(fetchCourses);
 }
 .btn-outline:hover {
   border-color: var(--primary-color);
-  background: #f0faff;
+  background: var(--primary-light);
 }
 .btn-close {
   font-size: 2rem;
@@ -949,7 +949,7 @@ onMounted(fetchCourses);
   transform: scale(1.05);
 }
 .btn-icon-blue {
-  background: #e3f2fd;
+  background: #fdf2f8;
   color: var(--primary-color);
   border: none;
   width: 36px;
@@ -963,7 +963,7 @@ onMounted(fetchCourses);
   flex-shrink: 0;
 }
 .btn-icon-blue:hover {
-  background: #bbdefb;
+  background: #fce7f3;
 }
 .btn-icon-danger {
   background: #ffebee;
@@ -1148,7 +1148,7 @@ onMounted(fetchCourses);
 .input-field:focus {
   border-color: var(--primary-color);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.1);
+  box-shadow: 0 0 0 3px var(--primary-glow);
 }
 
 /* Course Editor Specifics */
@@ -1163,6 +1163,7 @@ onMounted(fetchCourses);
 }
 .course-content-area {
   flex: 1;
+  min-width: 0;
 }
 .section-title {
   font-size: 1.2rem;
@@ -1205,29 +1206,53 @@ onMounted(fetchCourses);
   transition: 0.2s;
 }
 .lesson-item:hover {
-  transform: translateX(5px);
-  border-color: #b3e5fc;
+  transform: translateX(4px);
+  border-color: rgba(230, 45, 149, 0.35);
+  box-shadow: 0 4px 14px rgba(230, 45, 149, 0.08);
 }
 .lesson-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 20px;
+  min-width: 0;
 }
 .lesson-main {
   display: flex;
-  gap: 15px;
+  gap: 16px;
   align-items: center;
+  flex: 1;
+  min-width: 0;
 }
 .lesson-icon {
-  font-size: 1.5rem;
-  background: #e1f5fe;
-  padding: 10px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  background: #fdf2f8;
+  color: var(--primary-color);
+  border: 1px solid rgba(230, 45, 149, 0.25);
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-shrink: 0;
+  white-space: nowrap;
+  line-height: 1;
+  padding: 0;
+}
+.lesson-info {
+  flex: 1;
+  min-width: 0;
+}
+.lesson-title {
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.4;
+  word-break: break-word;
 }
 .link-sm {
   color: var(--primary-color);
@@ -1235,30 +1260,52 @@ onMounted(fetchCourses);
   text-decoration: none;
   font-weight: 600;
 }
+.lesson-actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+.test-badge-wrapper {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-shrink: 0;
+}
 .test-badge {
-  background: #e8f5e9;
-  color: #2e7d32;
-  padding: 6px 12px;
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+  padding: 6px 14px;
   border-radius: 20px;
   font-weight: 600;
   font-size: 0.85rem;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  gap: 2px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
-.test-badge-wrapper {
-  display: flex;
-  gap: 8px;
-  align-items: center;
+.test-badge.bil-test {
+  background: #fef2f2;
+  color: #991b1b;
+  border-color: #fecaca;
 }
 .test-badge-actions {
   display: flex;
-  gap: 4px;
+  gap: 6px;
+  flex-shrink: 0;
+  align-items: center;
 }
 .small-circle {
-  width: 30px !important;
-  height: 30px !important;
-  font-size: 0.8rem !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px;
+  font-size: 0.85rem !important;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 .empty-state {
   text-align: center;
@@ -1355,7 +1402,7 @@ onMounted(fetchCourses);
   border: 1px dashed #ccc;
 }
 .upload-btn.has-image {
-  background: #e1f5fe;
+  background: #fdf2f8;
   color: var(--primary-color);
   border-color: var(--primary-color);
 }
@@ -1480,7 +1527,7 @@ onMounted(fetchCourses);
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 820px) {
   .course-grid {
     grid-template-columns: 1fr;
   }
@@ -1492,11 +1539,14 @@ onMounted(fetchCourses);
   }
   .lesson-row {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
+    align-items: stretch;
+    gap: 12px;
   }
-  .test-badge {
-    align-items: flex-start;
+  .lesson-actions {
+    width: 100%;
+    justify-content: space-between;
+    border-top: 1px dashed #eee;
+    padding-top: 10px;
   }
 }
 </style>

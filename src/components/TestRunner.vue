@@ -857,14 +857,14 @@ onBeforeUnmount(() => {
 .timer-badge {
   font-size: 1.1rem;
   font-weight: bold;
-  background: #e3f2fd;
-  color: #0277bd;
+  background: #fdf2f8;
+  color: var(--primary-color);
   padding: 8px 16px;
   border-radius: 30px;
   display: flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px rgba(230, 45, 149, 0.15);
 }
 .timer-badge.warning {
   background: #ffebee;
@@ -942,13 +942,13 @@ onBeforeUnmount(() => {
 }
 .option-label:hover {
   background: #fff;
-  border-color: #b3e5fc;
+  border-color: rgba(230, 45, 149, 0.3);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 .option-label.selected {
-  background: #e1f5fe;
+  background: #fdf2f8;
   border-color: var(--primary-color);
-  box-shadow: 0 4px 12px rgba(2, 119, 189, 0.15);
+  box-shadow: 0 4px 12px var(--primary-glow);
 }
 
 .radio-wrapper {
@@ -1317,9 +1317,9 @@ onBeforeUnmount(() => {
 }
 
 .nis-badge.badge-standard {
-  background: #eff6ff;
-  color: #1e40af;
-  border: 1px solid #bfdbfe;
+  background: #fdf2f8;
+  color: #db2777;
+  border: 1px solid #fbcfe8;
 }
 
 .nis-badge.badge-sandyk {

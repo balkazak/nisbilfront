@@ -800,7 +800,7 @@ const scrollToTop = () => {
 
 <style scoped>
 .landing-page-futuristic {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Onest', sans-serif;
   background-color: #070a14;
   color: #f1f5f9;
   min-height: 100vh;
@@ -898,7 +898,7 @@ const scrollToTop = () => {
 
 /* Hero Title */
 .hero-title {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Onest', sans-serif;
   font-size: 3.4rem;
   font-weight: 800;
   line-height: 1.15;
@@ -1969,7 +1969,7 @@ const scrollToTop = () => {
 }
 
 .footer-logo {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Onest', sans-serif;
   font-size: 1.8rem;
   font-weight: 900;
   margin-bottom: 16px;

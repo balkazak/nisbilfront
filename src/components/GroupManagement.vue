@@ -352,6 +352,8 @@
             <input
               v-model="studentEditForm.phone"
               type="tel"
+              maxlength="18"
+              @input="(e) => handlePhoneInput(e, studentEditForm, 'phone')"
               :placeholder="t('userManagement.phonePlaceholder')"
               class="input-field"
             />
@@ -587,8 +589,10 @@
 import { ref, computed, onMounted } from "vue";
 import api from "../api";
 import { useLanguage } from "../composables/useLanguage";
+import { usePhoneMask } from "../composables/usePhoneMask";
 
 const { t } = useLanguage();
+const { handlePhoneInput, isValidPhoneNumber, formatPhoneNumber } = usePhoneMask();
 
 const currentUser = ref(JSON.parse(localStorage.getItem("user") || "{}"));
 const canManage = computed(() => {
@@ -809,13 +813,17 @@ const openEditStudentModal = (student) => {
   studentEditForm.value = {
     id: student.id,
     username: student.username,
-    phone: student.phone || "",
+    phone: student.phone ? formatPhoneNumber(student.phone) : "",
     password: ""
   };
   showEditStudentModal.value = true;
 };
 
 const saveStudentData = async () => {
+  if (studentEditForm.value.phone && !isValidPhoneNumber(studentEditForm.value.phone)) {
+    alert(t("userManagement.invalidPhone") || "Введите полный номер телефона в формате +7 (###) ### ## ##");
+    return;
+  }
   savingStudent.value = true;
   try {
     const payload = {
@@ -954,8 +962,8 @@ onMounted(() => {
 
 .group-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
-  border-color: #3b82f6;
+  box-shadow: 0 10px 20px -3px rgba(230, 45, 149, 0.15);
+  border-color: var(--primary-color);
 }
 
 .group-card-header {
@@ -1020,8 +1028,8 @@ onMounted(() => {
 }
 
 .btn-open {
-  background: #eff6ff;
-  color: #2563eb;
+  background: #fdf2f8;
+  color: var(--primary-color);
   font-weight: 600;
   padding: 6px 12px;
   border-radius: 8px;
@@ -1032,7 +1040,7 @@ onMounted(() => {
 }
 
 .btn-open:hover {
-  background: #2563eb;
+  background: var(--primary-color);
   color: #fff;
 }
 
@@ -1144,8 +1152,8 @@ onMounted(() => {
 }
 
 .count-pill {
-  background: #eff6ff;
-  color: #2563eb;
+  background: #fdf2f8;
+  color: var(--primary-color);
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 0.85rem;
@@ -1411,7 +1419,7 @@ onMounted(() => {
   width: 32px;
   height: 32px;
   border: 3px solid #e5e7eb;
-  border-top-color: #3b82f6;
+  border-top-color: var(--primary-color);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
   margin: 0 auto;
@@ -1460,23 +1468,25 @@ onMounted(() => {
 /* Clickable Student Username */
 .clickable-student {
   cursor: pointer;
-  color: #1e40af;
+  color: #334155;
+  font-weight: 600;
   transition: color 0.15s;
 }
 .clickable-student:hover {
-  color: #E62D95;
+  color: var(--primary-color);
   text-decoration: underline;
 }
 
 /* Results action button */
 .btn-results {
-  background: #eff6ff;
-  color: #2563eb;
-  border: 1px solid #dbeafe;
+  background: #fdf2f8;
+  color: var(--primary-color);
+  border: 1px solid #fce7f3;
 }
 .btn-results:hover {
-  background: #dbeafe;
-  color: #1d4ed8;
+  background: var(--primary-color);
+  color: #fff;
+  border-color: var(--primary-color);
 }
 
 /* Results Modal Content */
@@ -1660,8 +1670,8 @@ onMounted(() => {
 .score-badge {
   font-size: 1rem;
   font-weight: 800;
-  background: #eff6ff;
-  color: #1d4ed8;
+  background: #f5f3ff;
+  color: #7c3aed;
   padding: 4px 10px;
   border-radius: 8px;
 }
@@ -1730,8 +1740,8 @@ onMounted(() => {
   border-radius: 6px;
 }
 .badge-standard {
-  background: #eff6ff;
-  color: #1e40af;
+  background: #fdf2f8;
+  color: #db2777;
 }
 .badge-sandyk {
   background: #f0fdf4;
@@ -1823,7 +1833,7 @@ onMounted(() => {
   color: #7c3aed;
 }
 .badge-std {
-  background: #eff6ff;
-  color: #2563eb;
+  background: #fdf2f8;
+  color: var(--primary-color);
 }
 </style>

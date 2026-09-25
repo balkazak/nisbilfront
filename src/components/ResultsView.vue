@@ -122,8 +122,8 @@ onMounted(async () => {
 }
 
 .category-tag.standard {
-  background: #f0f9ff;
-  color: #0369a1;
-  border: 1px solid #bae6fd;
+  background: #fdf2f8;
+  color: var(--primary-color);
+  border: 1px solid #fbcfe8;
 }
 </style>

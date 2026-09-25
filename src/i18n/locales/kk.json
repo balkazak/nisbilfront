@@ -12,6 +12,7 @@
     "success": "Өтінім сәтті жіберілді!",
     "error": "Өтінім жіберу кезінде қате кетті",
     "selectPlanError": "Тарифті таңдаңыз",
+    "invalidPhone": "Толық телефон нөмірін енгізіңіз: +7 (###) ### ## ##",
     "currency": "тг",
     "p1": {
       "name": "НИШ Online",
@@ -274,7 +275,8 @@
     "loginLabel": "Логин",
     "passwordLabel": "Құпия сөз",
     "phoneLabel": "Телефон нөмірі",
-    "phonePlaceholder": "+7 (777) 123-45-67",
+    "phonePlaceholder": "+7 (###) ### ## ##",
+    "invalidPhone": "Толық телефон нөмірін +7 (###) ### ## ## форматында енгізіңіз",
     "roleLabel": "Роль",
     "studentGroupLabel": "Оқушы тобы",
     "curatorGroupsLabel": "Кураторлық топтары",

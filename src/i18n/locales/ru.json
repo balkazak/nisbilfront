@@ -12,6 +12,7 @@
     "success": "Заявка успешно отправлена!",
     "error": "Произошла ошибка при отправке заявки",
     "selectPlanError": "Пожалуйста, выберите тариф",
+    "invalidPhone": "Пожалуйста, введите полный номер телефона: +7 (###) ### ## ##",
     "currency": "тг",
     "p1": {
       "name": "НИШ Online",
@@ -274,7 +275,8 @@
     "loginLabel": "Логин",
     "passwordLabel": "Пароль",
     "phoneLabel": "Номер телефона",
-    "phonePlaceholder": "+7 (777) 123-45-67",
+    "phonePlaceholder": "+7 (###) ### ## ##",
+    "invalidPhone": "Введите полный номер телефона в формате +7 (###) ### ## ##",
     "roleLabel": "Роль",
     "studentGroupLabel": "Группа ученика",
     "curatorGroupsLabel": "Курируемые группы",

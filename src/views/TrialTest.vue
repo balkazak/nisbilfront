@@ -60,7 +60,7 @@ const onCompleted = () => {
 
 <style scoped>
 .trial-test-page {
-  font-family: "Plus Jakarta Sans", sans-serif;
+  font-family: 'Onest', sans-serif;
   background-color: #070a14;
   min-height: 100vh;
   color: #f1f5f9;
@@ -96,7 +96,7 @@ const onCompleted = () => {
 }
 
 .title {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Onest', sans-serif;
   font-size: 3rem;
   margin-bottom: 20px;
   background: linear-gradient(135deg, #ffffff 20%, #ff2e93 60%, #ff007a 100%);

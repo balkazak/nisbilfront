@@ -36,7 +36,7 @@ export default {
   box-shadow: 0 10px 30px rgba(0,0,0,0.1);
   z-index: 9999;
   min-width: 300px;
-  border-left: 5px solid #00bfff;
+  border-left: 5px solid var(--primary-color);
 }
 
 .toast-card.success { border-left-color: #22c55e; }
@@ -55,7 +55,7 @@ export default {
 
 .success .toast-icon { background: #dcfce7; color: #166534; }
 .error .toast-icon { background: #fee2e2; color: #991b1b; }
-.info .toast-icon { background: #e0f2fe; color: #0369a1; }
+.info .toast-icon { background: #fdf2f8; color: var(--primary-color); }
 
 .toast-message {
   font-size: 0.95rem;

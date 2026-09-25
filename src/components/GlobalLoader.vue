@@ -183,7 +183,7 @@ onMounted(() => {
 }
 
 .symbol-text {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Onest', sans-serif;
   font-weight: 900;
   font-size: 1.15rem;
   color: white;

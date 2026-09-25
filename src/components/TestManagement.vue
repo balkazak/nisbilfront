@@ -744,7 +744,7 @@ onMounted(fetchTests);
   flex-direction: column;
   justify-content: space-between;
   min-height: 220px;
-  border-top: 4px solid #00bfff;
+  border-top: 4px solid var(--primary-color);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 .text-muted {
@@ -895,10 +895,10 @@ onMounted(fetchTests);
   width: 100%;
 }
 .input-field:focus {
-  border-color: #00bfff;
+  border-color: var(--primary-color);
   outline: none;
   background: white;
-  box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.1);
+  box-shadow: 0 0 0 3px var(--primary-glow);
 }
 .full-width {
   flex: 2;
@@ -917,7 +917,7 @@ onMounted(fetchTests);
   transition: transform 0.2s;
 }
 .question-card:hover {
-  border-color: #b3e5fc;
+  border-color: rgba(230, 45, 149, 0.25);
 }
 
 .question-header {
@@ -927,7 +927,7 @@ onMounted(fetchTests);
 }
 .q-number {
   font-weight: 700;
-  color: #00bfff;
+  color: var(--primary-color);
   font-size: 1.1rem;
 }
 .btn-icon-danger {
@@ -1005,9 +1005,9 @@ onMounted(fetchTests);
   border-color: #94a3b8;
 }
 .upload-btn.has-image {
-  background: #e0f2fe;
-  color: #00bfff;
-  border-color: #00bfff;
+  background: #fdf2f8;
+  color: var(--primary-color);
+  border-color: var(--primary-color);
 }
 
 .image-preview {
@@ -1149,9 +1149,9 @@ onMounted(fetchTests);
   transition: 0.2s;
 }
 .btn-add-question:hover {
-  border-color: #00bfff;
-  color: #00bfff;
-  background: #f0faff;
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  background: var(--primary-light);
 }
 
 .btn-outline {
@@ -1165,14 +1165,14 @@ onMounted(fetchTests);
   transition: 0.3s;
 }
 .btn-outline:hover {
-  border-color: #00bfff;
-  color: #00bfff;
-  background: #f0f9ff;
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  background: var(--primary-light);
 }
 
 .badge-blue {
-  background: #e0f2fe;
-  color: #0369a1;
+  background: #fdf2f8;
+  color: var(--primary-color);
   padding: 4px 10px;
   border-radius: 20px;
   font-size: 0.85rem;
@@ -1449,9 +1449,9 @@ onMounted(fetchTests);
   white-space: nowrap;
 }
 .nis-pill-sm.standard {
-  background: #eff6ff;
-  color: #1e40af;
-  border: 1px solid #bfdbfe;
+  background: #fdf2f8;
+  color: #db2777;
+  border: 1px solid #fbcfe8;
 }
 .nis-pill-sm.sandyk {
   background: #f0fdf4;
