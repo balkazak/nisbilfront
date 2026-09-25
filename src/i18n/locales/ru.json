@@ -189,6 +189,7 @@
     "coinsTooltip": "Это ваши монеты. Используйте их для покупки тестов.",
     "earnCoinsPrompt": "Чтобы заработать монеты, нужно пройти тесты в разделе курсы после просмотра уроков.",
     "courseProgress": "Прогресс",
+    "progress": "Прогресс",
     "continueBtn": "Продолжить",
     "currentPosition": "Вы остановились на",
     "prevLesson": "Предыдущий урок",
@@ -243,7 +244,16 @@
     "noStudentsInGroup": "В этой группе пока нет учеников",
     "selectStudentToAdd": "Выберите ученика для добавления...",
     "addStudentBtn": "Добавить ученика",
-    "removeFromGroup": "Исключить"
+    "removeFromGroup": "Исключить",
+    "resultsBtn": "Результаты",
+    "studentResultsTitle": "Успеваемость ученика",
+    "totalTests": "Всего тестов",
+    "avgScore": "Средний результат",
+    "earnedCoins": "Монеты",
+    "noStudentResults": "Ученик ещё не проходил тесты",
+    "reviewBtn": "Разбор ответов",
+    "closeBtn": "Закрыть",
+    "backToStudentResults": "← Назад к тестам ученика"
   },
   "userManagement": {
     "title": "Управление Пользователями",
@@ -277,6 +287,7 @@
     "noCourses": "Нет доступных курсов",
     "noTests": "Нет отдельных тестов",
     "saveBtn": "Сохранить",
+    "saveAccessBtn": "Сохранить",
     "successCreated": "Пользователь создан!",
     "successAccess": "Доступы обновлены!",
     "confirmDelete": "Удалить пользователя"
@@ -304,6 +315,7 @@
     "backToLesson": "Вернуться к уроку",
     "question": "Вопрос",
     "finishBtn": "Завершить Тест",
+    "progress": "Прогресс",
     "error": "Ошибка",
     "scoringBIL": "Система BIL: правильно (+4), ошибка (-1), пропуск (0)",
     "scoringNIS": "Система НИШ: Стандарт (+10), Сандық сипаттама (+5)",

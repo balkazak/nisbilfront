@@ -201,7 +201,7 @@
           <tbody>
             <tr v-for="student in selectedGroupStudents" :key="student.id">
               <td class="text-muted">#{{ student.id }}</td>
-              <td class="font-bold student-name">
+              <td class="font-bold student-name clickable-student" @click="openStudentResultsModal(student)" :title="t('groupManagement.resultsBtn')">
                 👤 {{ student.username }}
               </td>
               <td>
@@ -230,6 +230,14 @@
                   >
                     📞 {{ t("groupManagement.callBtn") }}
                   </a>
+                  <!-- Student Performance / Results Button -->
+                  <button
+                    @click="openStudentResultsModal(student)"
+                    class="btn-action btn-results"
+                    :title="t('groupManagement.resultsBtn')"
+                  >
+                    📊 {{ t("groupManagement.resultsBtn") }}
+                  </button>
                   <!-- Edit Student Button -->
                   <button
                     @click="openEditStudentModal(student)"
@@ -370,6 +378,208 @@
         </form>
       </div>
     </div>
+
+    <!-- MODAL 3: STUDENT RESULTS / PERFORMANCE MODAL -->
+    <div v-if="showResultsModal" class="modal-overlay" @click.self="closeStudentResultsModal">
+      <div class="card modal-content results-modal-content animate-zoom-in">
+        <!-- Modal Header -->
+        <div class="results-modal-header">
+          <div>
+            <h3 class="results-modal-title">
+              📊 {{ t("groupManagement.studentResultsTitle") }}: 
+              <span class="highlight-username">{{ currentResultStudent?.username }}</span>
+            </h3>
+            <p v-if="currentResultStudent?.phone" class="student-phone-sub">
+              📞 {{ currentResultStudent.phone }}
+            </p>
+          </div>
+          <button @click="closeStudentResultsModal" class="btn-icon-close" title="Закрыть">✕</button>
+        </div>
+
+        <!-- If Reviewing a single test result -->
+        <div v-if="activeTestReview" class="review-view-container">
+          <button @click="activeTestReview = null" class="btn-back-to-results">
+            {{ t("groupManagement.backToStudentResults") }}
+          </button>
+
+          <div class="review-test-header">
+            <h4>{{ activeTestReview.Test?.title || 'Тест' }}</h4>
+            <div class="flex gap-2 align-center">
+              <span class="score-badge">
+                {{ activeTestReview.score }} / {{ activeTestReview.max_score }}
+              </span>
+              <span class="pct-badge">
+                {{ activeTestReview.max_score > 0 ? Math.round((Math.max(0, activeTestReview.score) / activeTestReview.max_score) * 100) : 0 }}%
+              </span>
+            </div>
+          </div>
+
+          <div v-if="loadingReview" class="loading-state">
+            <div class="spinner"></div>
+          </div>
+
+          <div v-else class="review-questions-scroll">
+            <div
+              v-for="(q, qIndex) in (activeTestReview.questionsReview || [])"
+              :key="q.id"
+              class="review-question-card"
+            >
+              <div class="review-card-header">
+                <span class="q-number-pill">#{{ q.order || qIndex + 1 }}</span>
+                <span
+                  v-if="q.question_type"
+                  class="nis-badge"
+                  :class="q.question_type === 'sandyk_sippattama' ? 'badge-sandyk' : 'badge-standard'"
+                >
+                  {{ q.question_type === 'sandyk_sippattama' ? '📗 Сандық сипаттама' : '📘 Стандарт' }}
+                </span>
+                <span v-if="q.isCorrect" class="badge-status badge-success">
+                  ✅ {{ t("testRunner.correctStatus") }} (+{{ q.points_awarded || q.max_points }})
+                </span>
+                <span v-else-if="q.userAnswer !== null" class="badge-status badge-danger">
+                  ❌ {{ t("testRunner.errorStatus") }} ({{ q.points_awarded || 0 }})
+                </span>
+                <span v-else class="badge-status badge-warning">
+                  ⚠️ {{ t("testRunner.notAnsweredStatus") }} (0)
+                </span>
+              </div>
+
+              <p class="review-q-text">{{ q.text }}</p>
+              <div v-if="q.image_url" class="review-img-wrap">
+                <img :src="q.image_url" class="review-img" alt="Вопрос" />
+              </div>
+
+              <!-- Options -->
+              <div class="review-options">
+                <div
+                  v-for="(opt, optIdx) in q.options"
+                  :key="optIdx"
+                  class="review-opt-item"
+                  :class="{
+                    'opt-correct': optIdx === q.correct_option_index,
+                    'opt-wrong': optIdx === q.userAnswer && !q.isCorrect,
+                    'opt-user-correct': optIdx === q.userAnswer && q.isCorrect
+                  }"
+                >
+                  <span class="opt-letter">{{ String.fromCharCode(65 + optIdx) }}</span>
+                  <span class="opt-text">{{ opt.text || '' }}</span>
+                  <img v-if="opt.image_url" :src="opt.image_url" class="opt-img" alt="" />
+                  <span v-if="optIdx === q.correct_option_index" class="opt-mark mark-correct">✓ Правильный</span>
+                  <span v-else-if="optIdx === q.userAnswer && !q.isCorrect" class="opt-mark mark-wrong">✕ Ответ ученика</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Normal Student Results Overview -->
+        <div v-else>
+          <div v-if="loadingStudentResults" class="loading-state">
+            <div class="spinner"></div>
+          </div>
+
+          <div v-else>
+            <!-- Stats Summary Cards -->
+            <div class="results-stats-grid">
+              <div class="stat-box">
+                <div class="stat-icon">📝</div>
+                <div class="stat-info">
+                  <span class="stat-val">{{ studentResultsData?.summary?.totalTests || 0 }}</span>
+                  <span class="stat-desc">{{ t("groupManagement.totalTests") }}</span>
+                </div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-info">
+                  <span class="stat-val">{{ studentResultsData?.summary?.averagePercentage || 0 }}%</span>
+                  <span class="stat-desc">{{ t("groupManagement.avgScore") }}</span>
+                </div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-icon">🟡</div>
+                <div class="stat-info">
+                  <span class="stat-val">{{ studentResultsData?.user?.coins || 0 }}</span>
+                  <span class="stat-desc">{{ t("groupManagement.earnedCoins") }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tests List -->
+            <div class="results-table-wrap">
+              <div
+                v-if="!studentResultsData?.results || studentResultsData.results.length === 0"
+                class="empty-state"
+              >
+                <p>{{ t("groupManagement.noStudentResults") }}</p>
+              </div>
+
+              <table v-else class="data-table">
+                <thead>
+                  <tr>
+                    <th>{{ t("resultsView.thTest") }}</th>
+                    <th>{{ t("resultsView.thType") }}</th>
+                    <th>{{ t("resultsView.thScore") }}</th>
+                    <th>%</th>
+                    <th>{{ t("resultsView.thDate") }}</th>
+                    <th class="text-right">{{ t("groupManagement.thActions") }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="res in studentResultsData.results" :key="res.id">
+                    <td class="font-bold">{{ res.Test?.title || t("resultsView.deletedTest") }}</td>
+                    <td>
+                      <span
+                        class="badge"
+                        :class="{
+                          'badge-bil': res.Test?.category === 'bil',
+                          'badge-nis': res.Test?.category === 'nis',
+                          'badge-std': !res.Test?.category || res.Test?.category === 'standard'
+                        }"
+                      >
+                        {{ res.Test?.category === 'bil' ? 'BIL' : res.Test?.category === 'nis' ? 'НИШ' : 'Стандарт' }}
+                      </span>
+                    </td>
+                    <td>
+                      <strong>{{ res.score }}</strong> / {{ res.max_score }}
+                    </td>
+                    <td>
+                      <span
+                        class="pct-pill"
+                        :class="{
+                          'pct-high': res.percentage >= 70,
+                          'pct-mid': res.percentage >= 40 && res.percentage < 70,
+                          'pct-low': res.percentage < 40
+                        }"
+                      >
+                        {{ res.percentage }}%
+                      </span>
+                    </td>
+                    <td class="text-muted text-sm">
+                      {{ formatDate(res.completed_at) }}
+                    </td>
+                    <td class="text-right">
+                      <button
+                        @click="openSingleTestReview(res)"
+                        class="btn-action btn-review"
+                        :title="t('groupManagement.reviewBtn')"
+                      >
+                        🔍 {{ t("groupManagement.reviewBtn") }}
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="modal-footer-simple">
+            <button @click="closeStudentResultsModal" class="btn-secondary">
+              {{ t("groupManagement.closeBtn") }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -421,6 +631,14 @@ const studentEditForm = ref({
   phone: "",
   password: ""
 });
+
+// Student Results / Performance Modal State
+const showResultsModal = ref(false);
+const loadingStudentResults = ref(false);
+const currentResultStudent = ref(null);
+const studentResultsData = ref(null);
+const activeTestReview = ref(null);
+const loadingReview = ref(false);
 
 const availableCurators = computed(() => {
   return users.value.filter(
@@ -623,6 +841,55 @@ const saveStudentData = async () => {
   } finally {
     savingStudent.value = false;
   }
+};
+
+// Student Results Handlers
+const openStudentResultsModal = async (student) => {
+  currentResultStudent.value = student;
+  studentResultsData.value = null;
+  activeTestReview.value = null;
+  showResultsModal.value = true;
+  loadingStudentResults.value = true;
+  try {
+    const res = await api.get(`/results/user/${student.id}`);
+    studentResultsData.value = res.data;
+  } catch (err) {
+    alert(err.response?.data?.message || err.message);
+  } finally {
+    loadingStudentResults.value = false;
+  }
+};
+
+const closeStudentResultsModal = () => {
+  showResultsModal.value = false;
+  activeTestReview.value = null;
+  currentResultStudent.value = null;
+  studentResultsData.value = null;
+};
+
+const openSingleTestReview = async (resultItem) => {
+  loadingReview.value = true;
+  activeTestReview.value = { ...resultItem };
+  try {
+    const res = await api.get(`/results/${resultItem.id}/review`);
+    activeTestReview.value = res.data;
+  } catch (err) {
+    alert(err.response?.data?.message || err.message);
+  } finally {
+    loadingReview.value = false;
+  }
+};
+
+const formatDate = (dateString) => {
+  if (!dateString) return "";
+  const d = new Date(dateString);
+  return d.toLocaleDateString("ru-RU", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
 };
 
 onMounted(() => {
@@ -1188,5 +1455,375 @@ onMounted(() => {
 }
 .mt-4 {
   margin-top: 16px;
+}
+
+/* Clickable Student Username */
+.clickable-student {
+  cursor: pointer;
+  color: #1e40af;
+  transition: color 0.15s;
+}
+.clickable-student:hover {
+  color: #E62D95;
+  text-decoration: underline;
+}
+
+/* Results action button */
+.btn-results {
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #dbeafe;
+}
+.btn-results:hover {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+/* Results Modal Content */
+.results-modal-content {
+  max-width: 820px !important;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0 !important;
+}
+
+.results-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.results-modal-title {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #111827;
+}
+
+.highlight-username {
+  color: #E62D95;
+}
+
+.student-phone-sub {
+  margin: 4px 0 0 0;
+  font-size: 0.85rem;
+  color: #047857;
+  font-weight: 600;
+}
+
+.btn-icon-close {
+  background: transparent;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+  color: #9ca3af;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.15s;
+}
+
+.btn-icon-close:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* Stats Grid */
+.results-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  padding: 20px 24px;
+}
+
+.stat-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.stat-icon {
+  font-size: 2rem;
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-val {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.stat-desc {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+/* Results Table */
+.results-table-wrap {
+  padding: 0 24px 20px 24px;
+  max-height: 48vh;
+  overflow-y: auto;
+}
+
+.pct-pill {
+  display: inline-block;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+.pct-high {
+  background: #dcfce7;
+  color: #166534;
+}
+.pct-mid {
+  background: #fef3c7;
+  color: #92400e;
+}
+.pct-low {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.btn-review {
+  background: #fdf2f8;
+  color: #db2777;
+  border: 1px solid #fbcfe8;
+}
+.btn-review:hover {
+  background: #fce7f3;
+  color: #be185d;
+}
+
+.modal-footer-simple {
+  padding: 14px 24px;
+  border-top: 1px solid #e5e7eb;
+  background: #f9fafb;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Test Review Detail Screen */
+.review-view-container {
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  max-height: 75vh;
+  overflow: hidden;
+}
+
+.btn-back-to-results {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  align-self: flex-start;
+  margin-bottom: 12px;
+  transition: all 0.15s;
+}
+.btn-back-to-results:hover {
+  background: #e2e8f0;
+}
+
+.review-test-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #f1f5f9;
+  margin-bottom: 14px;
+}
+.review-test-header h4 {
+  margin: 0;
+  font-size: 1.15rem;
+  color: #1e293b;
+}
+
+.score-badge {
+  font-size: 1rem;
+  font-weight: 800;
+  background: #eff6ff;
+  color: #1d4ed8;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+.pct-badge {
+  font-size: 1rem;
+  font-weight: 800;
+  background: #fdf2f8;
+  color: #db2777;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+.review-questions-scroll {
+  overflow-y: auto;
+  padding-right: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.review-question-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.review-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.q-number-pill {
+  font-weight: 800;
+  color: #475569;
+  font-size: 0.85rem;
+}
+
+.badge-status {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+.badge-success {
+  background: #dcfce7;
+  color: #166534;
+}
+.badge-danger {
+  background: #fee2e2;
+  color: #991b1b;
+}
+.badge-warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.nis-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+.badge-standard {
+  background: #eff6ff;
+  color: #1e40af;
+}
+.badge-sandyk {
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.review-q-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 10px 0;
+  line-height: 1.4;
+}
+
+.review-img-wrap {
+  margin-bottom: 10px;
+}
+.review-img {
+  max-width: 100%;
+  max-height: 240px;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.review-options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.review-opt-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  font-size: 0.9rem;
+  transition: all 0.15s;
+}
+
+.review-opt-item.opt-correct {
+  border-color: #10b981;
+  background: #ecfdf5;
+}
+
+.review-opt-item.opt-wrong {
+  border-color: #ef4444;
+  background: #fef2f2;
+}
+
+.opt-letter {
+  font-weight: 800;
+  color: #64748b;
+  width: 20px;
+}
+
+.opt-text {
+  flex: 1;
+  color: #334155;
+}
+
+.opt-img {
+  max-height: 50px;
+}
+
+.opt-mark {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.mark-correct {
+  background: #10b981;
+  color: white;
+}
+.mark-wrong {
+  background: #ef4444;
+  color: white;
+}
+
+.badge-bil {
+  background: #fee2e2;
+  color: #dc2626;
+}
+.badge-nis {
+  background: #f5f3ff;
+  color: #7c3aed;
+}
+.badge-std {
+  background: #eff6ff;
+  color: #2563eb;
 }
 </style>

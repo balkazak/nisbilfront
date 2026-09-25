@@ -238,7 +238,7 @@
         <div class="question-nav-strip" v-if="test.Questions && test.Questions.length > 0">
           <div class="nav-progress-row">
             <span class="nav-count-text">
-              {{ t("dashboard.progress") || "Прогресс" }}: <strong>{{ answeredCount }}</strong> / {{ test.Questions.length }}
+              {{ t("testRunner.progress") }}: <strong>{{ answeredCount }}</strong> / {{ test.Questions.length }}
             </span>
             <span class="nav-pct-badge">{{ Math.round((answeredCount / (test.Questions.length || 1)) * 100) }}%</span>
           </div>
@@ -806,29 +806,53 @@ onBeforeUnmount(() => {
   font-weight: 600;
 }
 
+.test-content {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
 /* Test Header */
 .header {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
-  padding: 15px 20px;
-  border-radius: 12px;
-  margin-bottom: 30px;
-  border: 1px solid #eee;
+  padding: 16px 20px;
+  border-radius: 14px;
+  margin-bottom: 24px;
+  border: 1px solid #e2e8f0;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
 }
 .sticky-header {
   position: sticky;
-  top: 0;
+  top: 10px;
   z-index: 100;
 }
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
 .test-title {
-  font-size: 1.4rem;
-  color: #333;
+  font-size: 1.35rem;
+  color: #1e293b;
   margin: 0;
   font-weight: 700;
+  line-height: 1.3;
+  flex: 1;
+  min-width: 0;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 .timer-badge {
   font-size: 1.1rem;
@@ -1112,21 +1136,27 @@ onBeforeUnmount(() => {
 
 /* Question Navigator Strip */
 .question-nav-strip {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   background: #ffffff;
   border: 1px solid #f1f5f9;
-  border-radius: 14px;
-  padding: 12px 16px;
-  margin-top: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin-top: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
 }
 
 .nav-progress-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   font-size: 0.88rem;
   color: #64748b;
+  width: 100%;
+  min-width: 0;
 }
 
 .nav-count-text strong {
@@ -1147,7 +1177,11 @@ onBeforeUnmount(() => {
   display: flex;
   gap: 8px;
   overflow-x: auto;
-  padding-bottom: 4px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 2px 2px 8px 2px;
   scrollbar-width: thin;
   -webkit-overflow-scrolling: touch;
 }
@@ -1233,7 +1267,7 @@ onBeforeUnmount(() => {
   box-shadow: 0 4px 16px rgba(230, 45, 149, 0.15) !important;
 }
 
-/* Mobile Options Grid */
+/* Mobile Options Grid & Header */
 @media (max-width: 640px) {
   .options-list {
     grid-template-columns: 1fr !important;
@@ -1242,9 +1276,22 @@ onBeforeUnmount(() => {
   .option-label {
     padding: 14px 16px !important;
   }
+  .header {
+    padding: 12px 14px !important;
+    border-radius: 12px;
+    margin-bottom: 16px;
+  }
   .sticky-header {
     top: 0;
-    padding: 10px 0;
+  }
+  .header-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .test-title {
+    font-size: 1.15rem;
+    width: 100%;
   }
   .review-header {
     flex-direction: column;

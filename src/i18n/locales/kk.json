@@ -189,6 +189,7 @@
     "coinsTooltip": "Бұл сіздің монеталарыңыз. Тест сатып алу үшін қолданыңыз.",
     "earnCoinsPrompt": "Монеталарды табу үшін сабақтарды көргеннен кейін «Курстар» бөліміндегі тесттерден өту қажет.",
     "courseProgress": "Прогресс",
+    "progress": "Үлгерім",
     "continueBtn": "Жалғастыру",
     "currentPosition": "Сіз тоқтаған жеріңіз",
     "prevLesson": "Алдыңғы сабақ",
@@ -243,7 +244,16 @@
     "noStudentsInGroup": "Бұл топта әзірге оқушылар жоқ",
     "selectStudentToAdd": "Қосылатын оқушыны таңдаңыз...",
     "addStudentBtn": "Оқушыны қосу",
-    "removeFromGroup": "Шығару"
+    "removeFromGroup": "Шығару",
+    "resultsBtn": "Нәтижелер",
+    "studentResultsTitle": "Оқушының үлгерімі",
+    "totalTests": "Барлық тесттер",
+    "avgScore": "Орташа нәтиже",
+    "earnedCoins": "Монеталар",
+    "noStudentResults": "Оқушы әлі тест тапсырмаған",
+    "reviewBtn": "Талдау",
+    "closeBtn": "Жабу",
+    "backToStudentResults": "← Оқушы тесттеріне қайту"
   },
   "userManagement": {
     "title": "Пайдаланушыларды басқару",
@@ -277,6 +287,7 @@
     "noCourses": "Қолжетімді курстар жоқ",
     "noTests": "Жеке тесттер жоқ",
     "saveBtn": "Сақтау",
+    "saveAccessBtn": "Сақтау",
     "successCreated": "Пайдаланушы жасалды!",
     "successAccess": "Рұқсаттар жаңартылды!",
     "confirmDelete": "Пайдаланушыны жою"
@@ -304,6 +315,7 @@
     "backToLesson": "Сабақа оралу",
     "question": "Сұрақ",
     "finishBtn": "Тестті аяқтау",
+    "progress": "Үлгерім",
     "error": "Қате",
     "scoringBIL": "BIL жүйесі: дұрыс (+4), қате (-1), белгіленбеген (0)",
     "scoringNIS": "НЗМ жүйесі: Стандарт (+10), Сандық сипаттама (+5)",
