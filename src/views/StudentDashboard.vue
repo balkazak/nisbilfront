@@ -1147,6 +1147,22 @@ const selectView = (view) => {
 
 const fetchCourses = async () => {
   const res = await api.get("/courses");
+  if (Array.isArray(res.data)) {
+    res.data.forEach((c) => {
+      if (c && c.Lessons) {
+        c.Lessons.sort((a, b) => {
+          const numA = (a.order !== undefined && a.order !== null && a.order !== 0)
+            ? a.order
+            : parseInt((a.title || "").match(/^(\d+)/)?.[1] || "999999", 10);
+          const numB = (b.order !== undefined && b.order !== null && b.order !== 0)
+            ? b.order
+            : parseInt((b.title || "").match(/^(\d+)/)?.[1] || "999999", 10);
+          if (numA !== numB) return numA - numB;
+          return (a.id || 0) - (b.id || 0);
+        });
+      }
+    });
+  }
   courses.value = res.data;
 };
 
@@ -1227,6 +1243,18 @@ const getCourseProgress = (course) => {
 
 const openCourse = async (course) => {
   const res = await api.get(`/courses/${course.id}`);
+  if (res.data && res.data.Lessons) {
+    res.data.Lessons.sort((a, b) => {
+      const numA = (a.order !== undefined && a.order !== null && a.order !== 0)
+        ? a.order
+        : parseInt((a.title || "").match(/^(\d+)/)?.[1] || "999999", 10);
+      const numB = (b.order !== undefined && b.order !== null && b.order !== 0)
+        ? b.order
+        : parseInt((b.title || "").match(/^(\d+)/)?.[1] || "999999", 10);
+      if (numA !== numB) return numA - numB;
+      return (a.id || 0) - (b.id || 0);
+    });
+  }
   activeCourse.value = res.data;
   showTest.value = false;
   showSolution.value = false;

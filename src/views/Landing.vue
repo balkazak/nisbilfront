@@ -5,112 +5,130 @@
 
     <!-- HERO SECTION -->
     <section class="hero-section">
-      <!-- Ambient Cyber Glows -->
-      <div class="ambient-nebula nebula-1"></div>
-      <div class="ambient-nebula nebula-2"></div>
-      <div class="cyber-grid-overlay"></div>
+      <!-- Soft Ambient Rose Glows -->
+      <div class="ambient-glow glow-1"></div>
+      <div class="ambient-glow glow-2"></div>
 
       <div class="container hero-container">
         <!-- Left Content -->
         <div class="hero-left">
-          <!-- Live Badge -->
+          <!-- Live Badge (Exact from mockup) -->
           <div class="hero-badge animate-float">
-            <span class="badge-dot"></span>
-            <span class="badge-text">{{ t("landing.badge") }}</span>
+            <span class="badge-icon">⚡</span>
+            <span class="badge-text">
+              {{ currentLang === 'kk' 
+                ? 'ЖАҢА БУЫН ПЛАТФОРМАСЫ 2025/2026 • 98.4% ГРАНТ' 
+                : 'ПЛАТФОРМА НОВОГО ПОКОЛЕНИЯ 2025/2026 • 98.4% ГРАНТ' 
+              }}
+            </span>
           </div>
 
-          <!-- Main Title -->
+          <!-- Main Title (Exact from mockup) -->
           <h1 class="hero-title">
-            {{ currentLang === 'kk' ? 'НЗМ мен БИЛ-ге' : 'Поступи в НИШ и БИЛ' }}
-            <span class="hero-highlight-gradient">
-              {{ currentLang === 'kk' ? 'ГРАНТҚА түс' : 'на ГРАНТ' }}
+            <span class="title-line">{{ currentLang === 'kk' ? 'НЗМ мен БИЛ-ге' : 'Поступление в НИШ и БИЛ' }}</span>
+            <span class="title-line">
+              <span class="hero-highlight-gradient">{{ currentLang === 'kk' ? 'ГРАНТҚА' : 'НА ГРАНТ' }}</span>
+              {{ currentLang === 'kk' ? ' түсу бірінші' : ' с первой' }}
             </span>
-            {{ currentLang === 'kk' ? 'бірінші талпыныстан' : 'с первой попытки' }}
+            <span class="title-line">{{ currentLang === 'kk' ? 'талпыныстан' : 'попытки' }}</span>
           </h1>
 
-          <!-- Subtitle -->
+          <!-- Subtitle (Exact from mockup) -->
           <p class="hero-subtitle">
-            {{ t("landing.heroSub") }}
+            {{ currentLang === 'kk'
+              ? 'Жаңа буын зияткерлік онлайн дайындық жүйесі. Қателерді видеоталдаумен 15 000+ тест тапсырмасы, ақылды прогресс трекері және 24/7 жеке куратор.'
+              : 'Интеллектуальная онлайн-система подготовки нового поколения. 15 000+ тестовых заданий с видеоразбором ошибок, умный трекер прогресса и личный куратор 24/7.'
+            }}
           </p>
 
-          <!-- Action Buttons -->
+          <!-- Action Buttons (Exact from mockup) -->
           <div class="hero-actions">
-            <router-link to="/trial-test" class="btn-cyber btn-hero-primary">
+            <router-link to="/trial-test" class="btn-hero-primary">
               <span class="btn-icon">⚡</span>
-              <span>{{ t("landing.trialBtn") }}</span>
+              <span>{{ currentLang === 'kk' ? 'Тегін байқау тестін тапсыру' : 'Пройти пробный тест бесплатно' }}</span>
               <span class="btn-arrow">➔</span>
             </router-link>
 
-            <router-link to="/calculator" class="btn-cyber-outline">
+            <router-link to="/calculator" class="btn-hero-secondary">
               <span class="btn-icon">🎯</span>
-              <span>{{ t("landing.calcBtn") }}</span>
+              <span>{{ currentLang === 'kk' ? 'Мүмкіндікті есептеу' : 'Рассчитать шансы' }}</span>
             </router-link>
-
-            <a href="#system" class="btn-ghost-scroll">
-              <span>{{ t("landing.systemBtn") }}</span>
-              <span class="scroll-arrow">↓</span>
-            </a>
           </div>
 
-          <!-- Stats HUD -->
-          <div class="hero-stats-hud">
-            <div class="hud-stat-item">
-              <div class="hud-stat-value">98.4%</div>
-              <div class="hud-stat-label">{{ t("landing.stats.grantLabel") }}</div>
-            </div>
-            <div class="hud-stat-divider"></div>
-            <div class="hud-stat-item">
-              <div class="hud-stat-value">15 000+</div>
-              <div class="hud-stat-label">{{ t("landing.stats.tasksLabel") }}</div>
-            </div>
-            <div class="hud-stat-divider"></div>
-            <div class="hud-stat-item">
-              <div class="hud-stat-value">22+ {{ currentLang === 'kk' ? 'жыл' : 'года' }}</div>
-              <div class="hud-stat-label">{{ t("landing.stats.yearsLabel") }}</div>
-            </div>
-            <div class="hud-stat-divider"></div>
-            <div class="hud-stat-item">
-              <div class="hud-stat-value">24/7</div>
-              <div class="hud-stat-label">{{ t("landing.stats.curatorLabel") }}</div>
-            </div>
-          </div>
+          <!-- Scroll link -->
+          <a href="#system" class="btn-ghost-scroll">
+            <span>{{ currentLang === 'kk' ? 'Оқу жүйесі' : 'Система обучения' }}</span>
+            <span class="scroll-arrow">↓</span>
+          </a>
         </div>
 
-        <!-- Right Content: 3D Hologram Frame & Live Card -->
+        <!-- Right Content: The exact banner requested by user! -->
         <div class="hero-right">
-          <div class="hero-hologram-wrapper">
-            <div class="hologram-ring-orbit"></div>
-            <div class="hologram-card">
-              <img
-                src="/hero_cyber_hologram.jpg"
-                alt="NIS-BIL Futuristic Academy"
-                class="hero-hologram-img"
-              />
-              <div class="hologram-scanline"></div>
-              
-              <!-- Floating HUD Badge Top -->
-              <div class="floating-hud-pill hud-pill-top">
-                <span class="pill-dot green"></span>
-                <span>{{ currentLang === 'kk' ? 'База NIS & BIL 2025/2026' : 'База NIS & BIL 2025/2026' }}</span>
-              </div>
+          <div class="hero-banner-wrapper">
+            <img
+              src="/hero_banner_clean.png"
+              alt="НИШ & БИЛ 2025/2026 Дайындық платформасы"
+              class="hero-banner-img"
+            />
+          </div>
+        </div>
+      </div>
 
-              <!-- Floating HUD Badge Bottom -->
-              <div class="floating-hud-pill hud-pill-bottom">
-                <div class="pill-metric">99.2%</div>
-                <div class="pill-desc">
-                  <div class="pill-desc-title">{{ currentLang === 'kk' ? 'Грант ықтималдығы' : 'Шанс на грант' }}</div>
-                  <div class="pill-desc-sub">{{ currentLang === 'kk' ? 'Жоғары көрсеткіш' : 'Высокий уровень' }}</div>
-                </div>
-              </div>
-
-              <!-- Student Live Badge -->
-              <div class="floating-student-badge">
-                <div class="student-avatar">А</div>
-                <div class="student-info">
-                  <div class="student-name">Алихан С.</div>
-                  <div class="student-score">138 / 140 • НИШ ФМН</div>
-                </div>
-              </div>
+      <!-- Stats Cards Row (Exact 4 cards from mockup) -->
+      <div class="container hero-stats-container">
+        <div class="hero-stats-row">
+          <div class="stats-card">
+            <div class="stats-icon-circle">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff2e93" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                <polyline points="17 6 23 6 23 12"></polyline>
+              </svg>
+            </div>
+            <div class="stats-content">
+              <div class="stats-num">98.4%</div>
+              <div class="stats-label">{{ currentLang === 'kk' ? 'Грантқа түсті' : 'Поступили на грант' }}</div>
+            </div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-icon-circle">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff2e93" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </div>
+            <div class="stats-content">
+              <div class="stats-num">15 000+</div>
+              <div class="stats-label">{{ currentLang === 'kk' ? 'Тапсырған есептер' : 'Решенных заданий' }}</div>
+            </div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-icon-circle">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff2e93" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+            </div>
+            <div class="stats-content">
+              <div class="stats-num">22+ {{ currentLang === 'kk' ? 'жыл' : 'года' }}</div>
+              <div class="stats-label">{{ currentLang === 'kk' ? 'Сарапшылар тәжірибесі' : 'Опыт экспертов' }}</div>
+            </div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-icon-circle">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff2e93" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </div>
+            <div class="stats-content">
+              <div class="stats-num">24/7</div>
+              <div class="stats-label">{{ currentLang === 'kk' ? 'Куратор қолдауы' : 'Поддержка куратора' }}</div>
             </div>
           </div>
         </div>
@@ -138,89 +156,71 @@
     <!-- WHY US SECTION -->
     <section id="why-us" class="section-why-us">
       <div class="container">
-        <div class="section-heading text-center">
-          <div class="cyber-tag">{{ t("landing.whyUsTag") }}</div>
-          <h2 class="section-title">{{ t("landing.whyUs") }}</h2>
-          <p class="section-subtitle">{{ t("landing.whyUsSub") }}</p>
+        <div class="why-us-header-flex">
+          <div>
+            <div class="section-badge-pink">{{ currentLang === 'kk' ? 'БІЗДІҢ АРТЫҚШЫЛЫҒЫ →' : 'НАШИ ПРЕИМУЩЕСТВА →' }}</div>
+            <h2 class="section-title">
+              {{ currentLang === 'kk' ? 'Неліктен ' : 'Почему ' }}<span class="hero-highlight-gradient">{{ currentLang === 'kk' ? 'біз?' : 'мы?' }}</span>
+            </h2>
+          </div>
+          <a href="#system" class="link-all-features">
+            {{ currentLang === 'kk' ? 'Барлық мүмкіндіктер' : 'Все возможности' }} ➔
+          </a>
         </div>
 
         <div class="features-grid">
-          <!-- Card 1 -->
-          <div class="feature-cyber-card">
-            <div class="card-icon-halo">🏆</div>
-            <h3>{{ currentLang === 'kk' ? '22+ жыл академиялық тәжірибе' : '22+ года академической экспертизы' }}</h3>
-            <p>
-              {{ currentLang === 'kk'
-                ? 'Қазақстанның үздік олимпиадалық мұғалімдерінің авторлық әдістемесі. Біздің оқушылар жыл сайын грант рейтингінің басында.'
-                : 'Авторская методика сильнейших преподавателей РК. Наши ученики ежегодно возглавляют рейтинги грантов НИШ и БИЛ.'
-              }}
-            </p>
-            <div class="card-corner-accent"></div>
+          <!-- Card 1 (From mockup) -->
+          <div class="feature-luxury-card">
+            <div class="feature-icon-circle">🎯</div>
+            <div class="feature-content">
+              <h3>{{ currentLang === 'kk' ? 'Ақылды алгоритм' : 'Умный алгоритм' }}</h3>
+              <p>{{ currentLang === 'kk' ? 'Сіздің деңгейіңізге сай жеке оқу жолдары.' : 'Индивидуальная траектория под ваш уровень знаний.' }}</p>
+            </div>
           </div>
 
-          <!-- Card 2 -->
-          <div class="feature-cyber-card highlight-card">
-            <div class="card-icon-halo">🎯</div>
-            <h3>{{ currentLang === 'kk' ? '100% ресми стандарттар' : '100% стандарты NIS & BIL 2025' }}</h3>
-            <p>
-              {{ currentLang === 'kk'
-                ? 'Барлық есептер мен тесттер ресми емтихан форматына толық сәйкес келеді. Ешқандай артық су жоқ, тек нәтиже беретін есептер.'
-                : 'Все тестовые задания и спецификации обновлены по актуальным правилам вступительных экзаменов без лишней воды.'
-              }}
-            </p>
-            <div class="card-corner-accent"></div>
+          <!-- Card 2 (From mockup) -->
+          <div class="feature-luxury-card">
+            <div class="feature-icon-circle">▶️</div>
+            <div class="feature-content">
+              <h3>{{ currentLang === 'kk' ? 'Видеоталдау' : 'Видеоразбор' }}</h3>
+              <p>{{ currentLang === 'kk' ? 'Әр қателікке толық түсіндірме.' : 'Пошаговое объяснение каждого сложного задания.' }}</p>
+            </div>
           </div>
 
-          <!-- Card 3 -->
-          <div class="feature-cyber-card">
-            <div class="card-icon-halo">💡</div>
-            <h3>{{ currentLang === 'kk' ? 'Қателерді жылдам талдау' : 'Мгновенный разбор каждой ошибки' }}</h3>
-            <p>
-              {{ currentLang === 'kk'
-                ? 'Тесттен кейін оқушы қателескен сұрақтың дұрыс жауабын және бейне/мәтіндік шешу жолын көріп, кемшілігін бірден түзейді.'
-                : 'После каждого теста ученик видит не только правильный ответ, но и пошаговый алгоритм решения, исключая повторные промахи.'
-              }}
-            </p>
-            <div class="card-corner-accent"></div>
+          <!-- Card 3 (From mockup) -->
+          <div class="feature-luxury-card">
+            <div class="feature-icon-circle">👤</div>
+            <div class="feature-content">
+              <h3>{{ currentLang === 'kk' ? 'Жеке куратор' : 'Личный куратор' }}</h3>
+              <p>{{ currentLang === 'kk' ? '24/7 байланыс және қолдау.' : '24/7 обратная связь, мотивация и регулярный контроль.' }}</p>
+            </div>
           </div>
 
-          <!-- Card 4 -->
-          <div class="feature-cyber-card">
-            <div class="card-icon-halo">🚀</div>
-            <h3>{{ currentLang === 'kk' ? 'Ақылды прогресс трекері' : 'Умная память и трекер прогресса' }}</h3>
-            <p>
-              {{ currentLang === 'kk'
-                ? 'Жүйе оқушының қай сабақта тоқтағанын есте сақтап, тақырыпты аяқтау деңгейін және грантқа дайындық графигін көрсетеді.'
-                : 'Платформа автоматически сохраняет точку остановки, ведет прогресс-бар курса и рассчитывает точную динамику готовности.'
-              }}
-            </p>
-            <div class="card-corner-accent"></div>
+          <!-- Card 4 (From mockup) -->
+          <div class="feature-luxury-card">
+            <div class="feature-icon-circle">📊</div>
+            <div class="feature-content">
+              <h3>{{ currentLang === 'kk' ? 'Прогресс трекері' : 'Трекер прогресса' }}</h3>
+              <p>{{ currentLang === 'kk' ? 'Оқу динамикасы мен нақты статистика.' : 'Наглядная динамика подготовки и вероятность гранта.' }}</p>
+            </div>
           </div>
 
           <!-- Card 5 -->
-          <div class="feature-cyber-card highlight-card">
-            <div class="card-icon-halo">👥</div>
-            <h3>{{ currentLang === 'kk' ? 'Жеке куратор және топтар' : 'Личный куратор и онлайн-группы' }}</h3>
-            <p>
-              {{ currentLang === 'kk'
-                ? 'Әрбір оқушыға жеке наставник бекітіледі. Ол үй тапсырмасын тексереді, сұрақтарға жауап береді және ата-анамен байланыста болады.'
-                : 'Индивидуальный наставник контролирует выполнение домашних заданий, мотивирует ученика и держит регулярную связь с родителями.'
-              }}
-            </p>
-            <div class="card-corner-accent"></div>
+          <div class="feature-luxury-card">
+            <div class="feature-icon-circle">🏆</div>
+            <div class="feature-content">
+              <h3>{{ currentLang === 'kk' ? '22+ жыл академиялық тәжірибе' : '22+ года академической экспертизы' }}</h3>
+              <p>{{ currentLang === 'kk' ? 'Қазақстанның үздік олимпиадалық мұғалімдерінің авторлық әдістемесі.' : 'Авторская методика сильнейших олимпиадных педагогов РК.' }}</p>
+            </div>
           </div>
 
           <!-- Card 6 -->
-          <div class="feature-cyber-card">
-            <div class="card-icon-halo">🌐</div>
-            <h3>{{ currentLang === 'kk' ? 'Екі тілде толық оқу' : 'Обучение на двух языках (KZ / RU)' }}</h3>
-            <p>
-              {{ currentLang === 'kk'
-                ? 'Барлық видеосабақтар, терминдер мен тестілеу қазақ және орыс тілдерінде толыққанды дайындалған.'
-                : 'Полная синхронная база курсов, терминологических словарей и тестов на чистом казахском и русском языках.'
-              }}
-            </p>
-            <div class="card-corner-accent"></div>
+          <div class="feature-luxury-card">
+            <div class="feature-icon-circle">🌐</div>
+            <div class="feature-content">
+              <h3>{{ currentLang === 'kk' ? 'Екі тілде толық оқу (KZ / RU)' : 'Обучение на двух языках (KZ / RU)' }}</h3>
+              <p>{{ currentLang === 'kk' ? 'Барлық сабақтар, терминдер мен тесттер толықтай екі тілде синхрондалған.' : 'Синхронная база уроков и тестов на чистом казахском и русском.' }}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -418,70 +418,163 @@
       </div>
     </section>
 
-    <!-- RESULTS & STUDENT REVIEWS SECTION -->
+    <!-- RESULTS & STUDENT SUCCESS SECTION -->
     <section id="results" class="section-results">
       <div class="container">
         <div class="section-heading text-center">
           <div class="cyber-tag">{{ t("landing.resultsTag") }}</div>
           <h2 class="section-title">{{ t("landing.resultsTitle") }}</h2>
-          <p class="section-subtitle">{{ t("landing.resultsSub") }}</p>
+          <p class="section-subtitle">
+            {{ currentLang === 'kk' 
+              ? 'НИШ пен БИЛ-ге грант ұтып алған оқушыларымыздың нақты нәтижелері' 
+              : 'Реальные результаты наших учеников, поступивших на грант в НИШ и БИЛ' 
+            }}
+          </p>
+
+          <!-- Category Toggle Tabs -->
+          <div class="results-toggle-wrapper">
+            <button
+              class="result-tab-btn"
+              :class="{ active: activeResultTab === 'nis' }"
+              @click="activeResultTab = 'nis'"
+            >
+              🎓 {{ currentLang === 'kk' ? 'НИШ нәтижелері (25 оқушы)' : 'Результаты НИШ (25 учеников)' }}
+            </button>
+            <button
+              class="result-tab-btn"
+              :class="{ active: activeResultTab === 'bil' }"
+              @click="activeResultTab = 'bil'"
+            >
+              🏆 {{ currentLang === 'kk' ? 'БИЛ нәтижелері (10 оқушы)' : 'Результаты БИЛ (10 учеников)' }}
+            </button>
+          </div>
         </div>
 
-        <div class="results-grid">
-          <!-- Student 1 -->
-          <div class="student-result-card">
+        <!-- Meta Summary Stats Bar -->
+        <div v-if="activeResultTab === 'nis'" class="results-summary-strip">
+          <div class="summary-pill gold">🥇 1-орын: 1396 балл</div>
+          <div class="summary-pill bronze">🥉 3-орын: 1354 балл</div>
+          <div class="summary-pill purple">⭐ 6-орын: 1322 балл</div>
+          <div class="summary-pill green">✓ 25 грант иегері</div>
+        </div>
+
+        <div v-else class="results-summary-strip">
+          <div class="summary-pill pink">⚡ Ең жоғары: 220 балл</div>
+          <div class="summary-pill green">🔥 Орташа өсім: +117 балл</div>
+          <div class="summary-pill purple">🏫 Түркістан, Шымкент, Бурабай, Арыс БИЛ</div>
+          <button @click="showBilPosterModal = true" class="summary-pill btn-poster-link">
+            🖼️ {{ currentLang === 'kk' ? 'Ресми постерді көру' : 'Официальный постер' }}
+          </button>
+        </div>
+
+        <!-- NIS GRID -->
+        <div v-if="activeResultTab === 'nis'" class="results-grid">
+          <div
+            v-for="(student, idx) in displayedNisStudents"
+            :key="idx"
+            class="student-result-card"
+            :class="{
+              'gold-card': student.medal === 'gold',
+              'bronze-card': student.medal === 'bronze',
+              'top-card': student.medal === 'top'
+            }"
+          >
             <div class="card-top">
-              <div class="avatar-ring">АМ</div>
-              <div class="student-meta">
-                <h4>Айзере Мұрат</h4>
-                <span class="school-target">НИШ ФМН Алматы</span>
+              <div
+                class="avatar-ring"
+                :class="{
+                  'gold-ring': student.medal === 'gold',
+                  'bronze-ring': student.medal === 'bronze',
+                  'pink-ring': student.medal === 'top'
+                }"
+              >
+                {{ student.initials }}
               </div>
-              <div class="score-badge">138 / 140</div>
+              <div class="student-meta">
+                <h4>{{ student.name }}</h4>
+                <span class="school-target">
+                  {{ currentLang === 'kk' ? 'НИШ (НЗМ) гранты' : 'Грант НИШ (НЗМ)' }}
+                </span>
+              </div>
+              <div class="rank-badge" :class="student.medal">
+                {{ currentLang === 'kk' ? student.rank : student.rankRu }}
+              </div>
             </div>
-            <p class="student-quote">
-              "Платформадағы видеоталдаулар мен куратордың көмегі арқасында логика мен математикадан 100% нәтиже көрсеттім. Грант ұтып алдым!"
-            </p>
+
+            <div class="card-score-row">
+              <span class="score-label">{{ currentLang === 'kk' ? 'Қорытынды балл:' : 'Итоговый балл:' }}</span>
+              <span class="score-badge font-bold">{{ student.score }} балл</span>
+            </div>
+
             <div class="result-footer">
-              <span class="grant-pill">✓ ГРАНТ 2024</span>
-              <span class="verified-pill">Расталған нәтиже</span>
+              <span class="grant-pill">✓ {{ currentLang === 'kk' ? 'ГРАНТ ИЕГЕРІ' : 'ОБЛАДАТЕЛЬ ГРАНТА' }}</span>
+              <span class="verified-pill">#{{ idx + 1 }} {{ currentLang === 'kk' ? 'тізімде' : 'в списке' }}</span>
             </div>
           </div>
+        </div>
 
-          <!-- Student 2 -->
-          <div class="student-result-card highlight-card">
+        <!-- BIL GRID -->
+        <div v-else class="results-grid">
+          <div
+            v-for="(student, idx) in bilStudents"
+            :key="idx"
+            class="student-result-card bil-card"
+            :class="{ 'highlight-card': student.highlight }"
+          >
             <div class="card-top">
-              <div class="avatar-ring pink-ring">ДК</div>
-              <div class="student-meta">
-                <h4>Данияр Кенесов</h4>
-                <span class="school-target">БИЛ Астана</span>
+              <div class="avatar-ring pink-ring">
+                {{ student.initials }}
               </div>
-              <div class="score-badge">1240 балл</div>
+              <div class="student-meta">
+                <h4>{{ student.name }}</h4>
+                <span class="school-target">{{ currentLang === 'kk' ? student.school : student.schoolRu }}</span>
+              </div>
+              <div class="score-badge large-score">{{ student.finalScore }} БАЛЛ</div>
             </div>
-            <p class="student-quote">
-              "Олимпиадная математика БИЛ казалась нереальной, пока не начал решать банк из 15 000 задач на платформе. За 5 месяцев поднял результат с 65 до 98 баллов!"
-            </p>
+
+            <div class="progression-box">
+              <div class="progression-labels">
+                <span>{{ currentLang === 'kk' ? 'Бастапқы' : 'Было' }}: {{ student.initialScore }} балл</span>
+                <span class="growth-tag">+{{ student.growth }} балл өсім</span>
+                <span class="final-tag">{{ currentLang === 'kk' ? 'Нәтиже' : 'Стало' }}: {{ student.finalScore }} балл</span>
+              </div>
+              <div class="progression-bar-bg">
+                <div
+                  class="progression-bar-fill"
+                  :style="{ width: Math.min(100, Math.round((student.finalScore / 250) * 100)) + '%' }"
+                ></div>
+              </div>
+            </div>
+
             <div class="result-footer">
-              <span class="grant-pill">✓ ГРАНТ 2024</span>
-              <span class="verified-pill">Топ-3 рейтинг</span>
+              <span class="grant-pill">✓ {{ currentLang === 'kk' ? 'ГРАНТ ИЕГЕРІ' : 'ОБЛАДАТЕЛЬ ГРАНТА' }}</span>
+              <span class="verified-pill">{{ currentLang === 'kk' ? student.school : student.schoolRu }}</span>
             </div>
           </div>
+        </div>
 
-          <!-- Student 3 -->
-          <div class="student-result-card">
-            <div class="card-top">
-              <div class="avatar-ring">АС</div>
-              <div class="student-meta">
-                <h4>Амина Сейдахмет</h4>
-                <span class="school-target">НИШ ХБН Шымкент</span>
-              </div>
-              <div class="score-badge">136 / 140</div>
+        <!-- Show More / Show Less Toggle Button for NIS -->
+        <div v-if="activeResultTab === 'nis' && nisStudents.length > 9" class="text-center mt-8">
+          <button
+            @click="showAllNis = !showAllNis"
+            class="btn-cyber-outline"
+          >
+            {{ showAllNis
+              ? (currentLang === 'kk' ? 'Жинақтау ▲' : 'Свернуть ▲')
+              : (currentLang === 'kk' ? `Барлық 25 нәтижені көру (${nisStudents.length}) ▼` : `Показать все 25 результатов (${nisStudents.length}) ▼`)
+            }}
+          </button>
+        </div>
+
+        <!-- Poster Modal for BIL -->
+        <div v-if="showBilPosterModal" class="poster-modal-overlay" @click.self="showBilPosterModal = false">
+          <div class="poster-modal-card">
+            <div class="poster-modal-header">
+              <h3>{{ currentLang === 'kk' ? 'БИЛ Грант иегерлері — Ресми постер' : 'Обладатели грантов БИЛ — Официальный постер' }}</h3>
+              <button @click="showBilPosterModal = false" class="btn-close">&times;</button>
             </div>
-            <p class="student-quote">
-              "Ең ұнағаны — қатемен жұмыс істеу жүйесі. Қай есептен қателескенім бірден көрініп тұрады, ал мұғалімдердің түсіндіруі өте түсінікті."
-            </p>
-            <div class="result-footer">
-              <span class="grant-pill">✓ ГРАНТ 2024</span>
-              <span class="verified-pill">Расталған нәтиже</span>
+            <div class="poster-modal-body">
+              <img src="/bil_grants.png" alt="БИЛ Грант Иегерлері" class="poster-img" />
             </div>
           </div>
         </div>
@@ -796,68 +889,160 @@ const faqItems = [
 const scrollToTop = () => {
   window.scrollTo({ top: 0, behavior: "smooth" });
 };
+
+// Results Section State & Datasets
+const activeResultTab = ref("nis");
+const showAllNis = ref(false);
+const showBilPosterModal = ref(false);
+
+const nisStudents = [
+  { name: "Асқаров Нұрасыл", initials: "АН", score: 1396, rank: "1-орын", rankRu: "1-е место", medal: "gold" },
+  { name: "Асқар Нұрасыл", initials: "АН", score: 1354, rank: "3-орын", rankRu: "3-е место", medal: "bronze" },
+  { name: "Болат Адият", initials: "БА", score: 1322, rank: "6-орын", rankRu: "6-е место", medal: "top" },
+  { name: "Серік Ернұр", initials: "СЕ", score: 1284, rank: "15-орын", rankRu: "15-е место", medal: "top" },
+  { name: "Нәби Қайсар", initials: "НҚ", score: 1283, rank: "16-орын", rankRu: "16-е место", medal: "top" },
+  { name: "Әбдірәсіл Қазыбек", initials: "ӘҚ", score: 1269, rank: "18-орын", rankRu: "18-е место", medal: "top" },
+  { name: "Байдүйсен Інжу", initials: "БІ", score: 1229, rank: "26-орын", rankRu: "26-е место", medal: "top" },
+  { name: "Амирхан Алихан", initials: "АА", score: 1224, rank: "29-орын", rankRu: "29-е место", medal: "top" },
+  { name: "Нұржанұлы Алихан", initials: "НА", score: 1181, rank: "54-орын", rankRu: "54-е место", medal: "" },
+  { name: "Бақытжан Мадияр", initials: "БМ", score: 1159, rank: "58-орын", rankRu: "58-е место", medal: "" },
+  { name: "Тасқараев Қабылсая", initials: "ТҚ", score: 1164, rank: "61-орын", rankRu: "61-е место", medal: "" },
+  { name: "Тұрғанбаев Батырхан", initials: "ТБ", score: 1142, rank: "70-орын", rankRu: "70-е место", medal: "" },
+  { name: "Абизов Амир", initials: "АА", score: 1136, rank: "72-орын", rankRu: "72-е место", medal: "" },
+  { name: "Архат Ерасыл", initials: "АЕ", score: 1131, rank: "73-орын", rankRu: "73-е место", medal: "" },
+  { name: "Көктемқызы Ақбаян", initials: "КА", score: 1118, rank: "76-орын", rankRu: "76-е место", medal: "" },
+  { name: "Каһарманқызы Амина", initials: "КА", score: 1094, rank: "91-орын", rankRu: "91-е место", medal: "" },
+  { name: "Әділ Бақдаулет", initials: "ӘБ", score: 1079, rank: "95-орын", rankRu: "95-е место", medal: "" },
+  { name: "Жолдас Даулет", initials: "ЖД", score: 1074, rank: "99-орын", rankRu: "99-е место", medal: "" },
+  { name: "Тобыл Айару", initials: "ТА", score: 1073, rank: "100-орын", rankRu: "100-е место", medal: "" },
+  { name: "Байсугылов Нұрасыл", initials: "БН", score: 1066, rank: "110-орын", rankRu: "110-е место", medal: "" },
+  { name: "Аманбек Алинұр", initials: "АА", score: 1060, rank: "116-орын", rankRu: "116-е место", medal: "" },
+  { name: "Орынбасаров Расул", initials: "ОР", score: 1047, rank: "123-орын", rankRu: "123-е место", medal: "" },
+  { name: "Жандосұлы Мади", initials: "ЖМ", score: 1043, rank: "126-орын", rankRu: "126-е место", medal: "" },
+  { name: "Қалыбай Әліп", initials: "ҚӘ", score: 1040, rank: "128-орын", rankRu: "128-е место", medal: "" },
+  { name: "Ерланұлы Нұрасыл", initials: "ЕН", score: 1035, rank: "132-орын", rankRu: "132-е место", medal: "" }
+];
+
+const bilStudents = [
+  { name: "Бекежан Муслим", initials: "БМ", school: "Шымкент БИЛ", schoolRu: "Шымкент БИЛ", finalScore: 220, initialScore: 94, growth: 126, highlight: true },
+  { name: "Әуезхан Әбубәкір", initials: "ӘӘ", school: "Шымкент БИЛ", schoolRu: "Шымкент БИЛ", finalScore: 211, initialScore: 92, growth: 119, highlight: true },
+  { name: "Оралбай Нұрсерік", initials: "ОН", school: "Түркістан БИЛ", schoolRu: "Туркестан БИЛ", finalScore: 210, initialScore: 150, growth: 60, highlight: true },
+  { name: "Кәрім Қуаныш", initials: "КҚ", school: "Шымкент БИЛ", schoolRu: "Шымкент БИЛ", finalScore: 210, initialScore: 83, growth: 127, highlight: false },
+  { name: "Абишов Омарали", initials: "АО", school: "Түркістан БИЛ", schoolRu: "Туркестан БИЛ", finalScore: 203, initialScore: 71, growth: 132, highlight: false },
+  { name: "Кәрім Кәусар", initials: "КК", school: "Шымкент БИЛ", schoolRu: "Шымкент БИЛ", finalScore: 199, initialScore: 64, growth: 135, highlight: false },
+  { name: "Махсұт Бейбарыс", initials: "МБ", school: "Бурабай БИЛ", schoolRu: "Бурабай БИЛ", finalScore: 195, initialScore: 115, growth: 80, highlight: false },
+  { name: "Садық Әбубәкір", initials: "СӘ", school: "Арыс БИЛ", schoolRu: "Арыс БИЛ", finalScore: 189, initialScore: 70, growth: 119, highlight: false },
+  { name: "Жолшы Ержігіт", initials: "ЖЕ", school: "Арыс БИЛ", schoolRu: "Арыс БИЛ", finalScore: 183, initialScore: 61, growth: 122, highlight: false },
+  { name: "Абылқасым Нұрәділ", initials: "АН", school: "Арыс БИЛ", schoolRu: "Арыс БИЛ", finalScore: 170, initialScore: 22, growth: 148, highlight: false }
+];
+
+const displayedNisStudents = computed(() => {
+  return showAllNis.value ? nisStudents : nisStudents.slice(0, 9);
+});
 </script>
 
 <style scoped>
 .landing-page-futuristic {
   font-family: 'Onest', sans-serif;
-  background-color: #070a14;
-  color: #f1f5f9;
+  background-color: #ffffff;
+  color: #0f172a;
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
 }
 
-/* Ambient Cyber Glow Elements */
-.ambient-nebula {
+/* Ambient Rose Glows */
+.ambient-glow {
   position: absolute;
   border-radius: 50%;
-  filter: blur(120px);
   pointer-events: none;
+  filter: blur(100px);
   z-index: 0;
 }
 
-.nebula-1 {
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(255, 46, 147, 0.22) 0%, rgba(255, 46, 147, 0) 70%);
-  top: -100px;
-  left: -100px;
+.glow-1 {
+  width: 520px;
+  height: 520px;
+  background: radial-gradient(circle, rgba(255, 46, 147, 0.12) 0%, rgba(255, 182, 218, 0.04) 60%, rgba(255, 255, 255, 0) 80%);
+  top: -60px;
+  left: -80px;
 }
 
-.nebula-2 {
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(147, 51, 234, 0.2) 0%, rgba(147, 51, 234, 0) 70%);
-  top: 250px;
+.glow-2 {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(255, 82, 168, 0.1) 0%, rgba(255, 225, 240, 0.05) 50%, rgba(255, 255, 255, 0) 80%);
+  top: 100px;
   right: -100px;
 }
 
-.cyber-grid-overlay {
-  position: absolute;
-  inset: 0;
-  height: 1000px;
-  background-image: 
-    linear-gradient(rgba(255, 46, 147, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 46, 147, 0.035) 1px, transparent 1px);
-  background-size: 50px 50px;
-  mask-image: radial-gradient(circle at 50% 30%, black 30%, transparent 80%);
-  -webkit-mask-image: radial-gradient(circle at 50% 30%, black 30%, transparent 80%);
-  pointer-events: none;
+/* General Typography & Headers */
+.section-title {
+  font-size: clamp(2rem, 3.2vw, 2.75rem);
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
 }
 
-/* HERO SECTION */
+.section-subtitle {
+  font-size: 1.05rem;
+  color: #64748b;
+  max-width: 650px;
+  margin: 10px auto 0;
+  line-height: 1.6;
+}
+
+.section-badge-pink {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #ff2e93;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.cyber-tag {
+  display: inline-block;
+  background: #fdf2f8;
+  color: #ff2e93;
+  border: 1px solid rgba(255, 46, 147, 0.2);
+  border-radius: 999px;
+  padding: 4px 14px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.hero-highlight-gradient {
+  background: linear-gradient(135deg, #ff2e93 0%, #ff52a8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 900;
+}
+
+/* ==========================================================================
+   HERO SECTION (Exact Mockup Match)
+   ========================================================================== */
 .hero-section {
   position: relative;
-  padding: 70px 0 90px;
-  z-index: 1;
+  padding: 45px 0 60px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #fff7fb 0%, #ffffff 450px);
 }
 
 .hero-container {
   display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
+  grid-template-columns: 1.18fr 0.94fr;
+  gap: 32px;
   align-items: center;
-  gap: 50px;
+  gap: 40px;
+  position: relative;
+  z-index: 1;
 }
 
 .hero-left {
@@ -866,616 +1051,488 @@ const scrollToTop = () => {
   align-items: flex-start;
 }
 
-/* Live Badge */
 .hero-badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255, 46, 147, 0.12);
-  border: 1px solid rgba(255, 46, 147, 0.35);
+  background: #ffffff;
+  border: 1px solid rgba(255, 46, 147, 0.22);
+  border-radius: 999px;
   padding: 6px 16px;
-  border-radius: 30px;
-  margin-bottom: 24px;
-  box-shadow: 0 0 15px rgba(255, 46, 147, 0.2);
-}
-
-.badge-dot {
-  width: 8px;
-  height: 8px;
-  background-color: #ff2e93;
-  border-radius: 50%;
-  box-shadow: 0 0 10px #ff2e93;
-  animation: pulse-dot 1.5s infinite;
-}
-
-.badge-text {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: #ff5ca8;
-}
-
-/* Hero Title */
-.hero-title {
-  font-family: 'Onest', sans-serif;
-  font-size: 3.4rem;
+  font-size: 0.76rem;
   font-weight: 800;
-  line-height: 1.15;
+  color: #ff2e93;
+  letter-spacing: 0.04em;
+  box-shadow: 0 4px 16px rgba(255, 46, 147, 0.08);
   margin-bottom: 22px;
-  letter-spacing: -0.02em;
-  color: #ffffff;
 }
 
-.hero-highlight-gradient {
-  background: var(--gradient-color);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 20px rgba(230, 45, 149, 0.4));
-  display: inline;
+.badge-icon {
+  font-size: 0.9rem;
+}
+
+.title-line {
+  display: block;
+  white-space: nowrap;
+}
+
+.hero-title {
+  font-size: clamp(2.2rem, 3.3vw, 3.3rem);
+  font-weight: 900;
+  line-height: 1.15;
+  color: #0f172a;
+  letter-spacing: -0.03em;
+  margin-bottom: 20px;
 }
 
 .hero-subtitle {
-  font-size: 1.15rem;
-  line-height: 1.65;
-  color: #cbd5e1;
-  max-width: 580px;
-  margin-bottom: 36px;
+  font-size: 1.04rem;
+  line-height: 1.62;
+  color: #475569;
+  max-width: 530px;
+  margin-bottom: 32px;
 }
 
-/* Hero Actions */
 .hero-actions {
   display: flex;
   align-items: center;
   gap: 16px;
   flex-wrap: wrap;
-  margin-bottom: 48px;
+  margin-bottom: 24px;
 }
 
 .btn-hero-primary {
-  padding: 16px 36px;
-  font-size: 1.05rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #ff2e93 0%, #ff52a8 100%);
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 14px 28px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 8px 25px rgba(255, 46, 147, 0.35);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-hero-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(255, 46, 147, 0.48);
 }
 
 .btn-hero-primary .btn-arrow {
-  transition: transform 0.25s ease;
+  transition: transform 0.2s ease;
 }
 
 .btn-hero-primary:hover .btn-arrow {
-  transform: translateX(4px);
+  transform: translateX(3px);
 }
 
-.btn-cyber-outline {
+.btn-hero-secondary {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 14px 28px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1.5px solid rgba(255, 46, 147, 0.4);
-  color: #ffffff;
+  gap: 10px;
+  background: #ffffff;
+  color: #0f172a;
+  border: 1.5px solid rgba(255, 46, 147, 0.22);
+  border-radius: 999px;
+  padding: 13px 24px;
+  font-size: 0.95rem;
   font-weight: 700;
-  font-size: 0.98rem;
-  border-radius: 50px;
   text-decoration: none;
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  transition: all 0.25s ease;
 }
 
-.btn-cyber-outline:hover {
-  background: rgba(255, 46, 147, 0.15);
+.btn-hero-secondary:hover {
   border-color: #ff2e93;
-  box-shadow: 0 0 25px rgba(255, 46, 147, 0.35);
   transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 46, 147, 0.15);
 }
 
 .btn-ghost-scroll {
-  color: #94a3b8;
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-decoration: none;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 14px;
-  transition: color 0.25s ease;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #ff2e93;
+  text-decoration: none;
+  transition: opacity 0.2s;
 }
 
 .btn-ghost-scroll:hover {
-  color: #ff2e93;
+  opacity: 0.8;
 }
 
 .scroll-arrow {
-  animation: bounce-down 1.6s infinite ease-in-out;
+  font-size: 1rem;
 }
 
-/* Stats HUD */
-.hero-stats-hud {
-  display: flex;
-  align-items: center;
-  background: rgba(18, 24, 43, 0.7);
-  border: 1px solid rgba(255, 46, 147, 0.2);
-  border-radius: 18px;
-  padding: 16px 28px;
-  gap: 24px;
-  backdrop-filter: blur(12px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-}
-
-.hud-stat-item {
-  display: flex;
-  flex-direction: column;
-}
-
-.hud-stat-value {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 1.45rem;
-  font-weight: 800;
-  color: #ffffff;
-  text-shadow: 0 0 12px rgba(255, 46, 147, 0.5);
-}
-
-.hud-stat-label {
-  font-size: 0.76rem;
-  color: #94a3b8;
-  font-weight: 600;
-  margin-top: 2px;
-}
-
-.hud-stat-divider {
-  width: 1px;
-  height: 36px;
-  background: rgba(255, 255, 255, 0.1);
-}
-
-/* HERO RIGHT: 3D Hologram Frame */
+/* Hero Right Banner */
 .hero-right {
   display: flex;
   justify-content: center;
   position: relative;
 }
 
-.hero-hologram-wrapper {
+.hero-banner-wrapper {
   position: relative;
   width: 100%;
-  max-width: 440px;
+  max-width: 580px;
+  border-radius: 28px;
+  background: radial-gradient(circle at center, rgba(255, 225, 240, 0.6) 0%, rgba(255, 255, 255, 0) 70%);
+  padding: 10px;
+  transition: transform 0.3s ease;
 }
 
-.hologram-ring-orbit {
-  position: absolute;
-  inset: -15px;
-  border-radius: 30px;
-  border: 1.5px dashed rgba(255, 46, 147, 0.4);
-  pointer-events: none;
-  animation: rotate-slow 24s linear infinite;
-}
-
-.hologram-card {
-  position: relative;
+.hero-banner-img {
+  width: 100%;
+  height: auto;
+  display: block;
   border-radius: 24px;
-  overflow: hidden;
-  border: 2px solid rgba(255, 46, 147, 0.35);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 35px rgba(255, 46, 147, 0.25);
-  background: #0f1426;
-  aspect-ratio: 1/1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.hero-hologram-img {
-  width: 100%;
-  height: 100%;
+  box-shadow: 0 16px 45px rgba(255, 46, 147, 0.14), 0 4px 18px rgba(0, 0, 0, 0.04);
   object-fit: cover;
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.hologram-card:hover .hero-hologram-img {
-  transform: scale(1.04);
+/* ==========================================================================
+   STATS CARDS ROW (Exact 4 Cards from Mockup)
+   ========================================================================== */
+.hero-stats-container {
+  margin-top: 50px;
+  position: relative;
+  z-index: 2;
 }
 
-.hologram-scanline {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, transparent, rgba(255, 46, 147, 0.8), transparent);
-  box-shadow: 0 0 15px #ff2e93;
-  animation: scan-vertical 4s linear infinite;
-  pointer-events: none;
+.hero-stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
 }
 
-/* Floating HUD Pills */
-.floating-hud-pill {
-  position: absolute;
-  background: rgba(13, 18, 33, 0.88);
-  border: 1px solid rgba(255, 46, 147, 0.35);
-  backdrop-filter: blur(16px);
-  padding: 8px 16px;
-  border-radius: 30px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+.stats-card {
+  background: #ffffff;
+  border: 1px solid rgba(255, 46, 147, 0.14);
+  border-radius: 20px;
+  padding: 20px 22px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  z-index: 5;
+  gap: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
 }
 
-.hud-pill-top {
-  top: 18px;
-  right: 18px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #f1f5f9;
+.stats-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 46, 147, 0.35);
+  box-shadow: 0 10px 28px rgba(255, 46, 147, 0.1);
 }
 
-.pill-dot.green {
-  width: 8px;
-  height: 8px;
-  background-color: #22c55e;
+.stats-icon-circle {
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
-  box-shadow: 0 0 10px #22c55e;
-}
-
-.hud-pill-bottom {
-  bottom: 20px;
-  left: 20px;
-  padding: 10px 18px;
-}
-
-.pill-metric {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: #ff2e93;
-  text-shadow: 0 0 12px rgba(255, 46, 147, 0.6);
-}
-
-.pill-desc {
-  display: flex;
-  flex-direction: column;
-}
-
-.pill-desc-title {
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: #ffffff;
-}
-
-.pill-desc-sub {
-  font-size: 0.68rem;
-  color: #a855f7;
-}
-
-.floating-student-badge {
-  position: absolute;
-  bottom: 85px;
-  right: -15px;
-  background: rgba(13, 18, 33, 0.9);
-  border: 1px solid rgba(255, 46, 147, 0.4);
-  backdrop-filter: blur(16px);
-  padding: 8px 14px;
-  border-radius: 40px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
-  z-index: 5;
-  animation: float-smooth 5s infinite ease-in-out;
-}
-
-.student-avatar {
-  width: 32px;
-  height: 32px;
-  background: linear-gradient(135deg, #ff2e93, #9333ea);
-  color: white;
-  border-radius: 50%;
+  background: #fdf2f8;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 800;
-  font-size: 0.85rem;
+  font-size: 1.35rem;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 46, 147, 0.15);
 }
 
-.student-info {
+.stats-content {
   display: flex;
   flex-direction: column;
 }
 
-.student-name {
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: #ffffff;
+.stats-num {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #0f172a;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
 }
 
-.student-score {
-  font-size: 0.68rem;
-  color: #ff5ca8;
-  font-weight: 600;
+.stats-label {
+  font-size: 0.85rem;
+  color: #64748b;
+  font-weight: 500;
+  margin-top: 3px;
 }
 
-/* PROMO VIDEO SECTION */
+/* ==========================================================================
+   PROMO VIDEO SECTION
+   ========================================================================== */
 .section-promo {
-  padding: 40px 0 80px;
+  padding: 70px 0 50px;
   position: relative;
 }
 
 .promo-wrapper {
-  max-width: 980px;
-  margin: 0 auto;
+  background: #ffffff;
+  border: 1px solid rgba(255, 46, 147, 0.16);
+  border-radius: 30px;
+  padding: 44px 30px;
+  box-shadow: 0 12px 40px rgba(255, 46, 147, 0.07);
+  text-align: center;
 }
 
 .promo-header {
-  text-align: center;
   margin-bottom: 28px;
 }
 
 .promo-header h2 {
-  font-size: 2rem;
-  color: #ffffff;
-  margin-top: 10px;
+  font-size: clamp(1.8rem, 2.8vw, 2.4rem);
+  font-weight: 900;
+  color: #0f172a;
+  margin-top: 8px;
 }
 
 .promo-screen-frame {
   position: relative;
-  border-radius: 22px;
+  max-width: 920px;
+  margin: 0 auto;
+  border-radius: 20px;
   overflow: hidden;
-  border: 2px solid rgba(255, 46, 147, 0.35);
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 35px rgba(255, 46, 147, 0.2);
-  background: #090c17;
-  aspect-ratio: 16/9;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .promo-video-player {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.screen-frame-glow {
-  position: absolute;
-  inset: 0;
-  box-shadow: inset 0 0 30px rgba(255, 46, 147, 0.15);
-  pointer-events: none;
-}
-
-/* SECTION HEADINGS */
-.section-heading {
-  margin-bottom: 50px;
-}
-
-.cyber-tag {
-  display: inline-block;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  color: #ff2e93;
-  background: rgba(255, 46, 147, 0.1);
-  border: 1px solid rgba(255, 46, 147, 0.3);
-  padding: 4px 14px;
+  height: auto;
+  display: block;
   border-radius: 20px;
-  margin-bottom: 14px;
 }
 
-.section-title {
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: #ffffff;
-  letter-spacing: -0.02em;
-  margin-bottom: 12px;
-}
-
-.section-subtitle {
-  font-size: 1.05rem;
-  color: #94a3b8;
-  max-width: 640px;
-  margin: 0 auto;
-}
-
-/* WHY US SECTION */
+/* ==========================================================================
+   WHY US SECTION ("Неліктен біз?")
+   ========================================================================== */
 .section-why-us {
-  padding: 80px 0;
-  background: linear-gradient(180deg, #070a14 0%, #0d1222 50%, #070a14 100%);
+  padding: 70px 0 80px;
+}
+
+.why-us-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.link-all-features {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ff2e93;
+  text-decoration: none;
+  transition: transform 0.2s;
+}
+
+.link-all-features:hover {
+  transform: translateX(3px);
 }
 
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 26px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 22px;
 }
 
-.feature-cyber-card {
-  background: rgba(18, 24, 43, 0.7);
-  border: 1px solid rgba(255, 46, 147, 0.18);
-  border-radius: 20px;
-  padding: 32px 28px;
-  position: relative;
-  overflow: hidden;
-  backdrop-filter: blur(16px);
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+.feature-luxury-card {
+  background: #ffffff;
+  border: 1px solid rgba(255, 46, 147, 0.14);
+  border-radius: 22px;
+  padding: 26px 22px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.feature-cyber-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(255, 46, 147, 0.6);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), 0 0 25px rgba(255, 46, 147, 0.2);
-}
-
-.card-icon-halo {
-  font-size: 2.2rem;
-  margin-bottom: 20px;
-  display: inline-block;
-  filter: drop-shadow(0 0 12px rgba(255, 46, 147, 0.5));
-}
-
-.feature-cyber-card h3 {
-  font-size: 1.22rem;
-  color: #ffffff;
-  margin-bottom: 12px;
-  line-height: 1.35;
-}
-
-.feature-cyber-card p {
-  font-size: 0.92rem;
-  color: #cbd5e1;
-  line-height: 1.6;
-  margin: 0;
-}
-
-.card-corner-accent {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 30px;
-  height: 30px;
-  background: linear-gradient(135deg, transparent 50%, rgba(255, 46, 147, 0.3) 50%);
-}
-
-.highlight-card {
+.feature-luxury-card:hover {
+  transform: translateY(-4px);
   border-color: rgba(255, 46, 147, 0.35);
-  background: rgba(25, 32, 58, 0.75);
+  box-shadow: 0 12px 30px rgba(255, 46, 147, 0.12);
 }
 
-/* COURSE SYSTEM (TIMELINE) */
+.feature-icon-circle {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #fdf2f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  border: 1px solid rgba(255, 46, 147, 0.15);
+}
+
+.feature-content h3 {
+  font-size: 1.12rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.feature-content p {
+  font-size: 0.88rem;
+  color: #64748b;
+  line-height: 1.55;
+}
+
+/* ==========================================================================
+   ROADMAP TIMELINE SECTION (6 Steps)
+   ========================================================================== */
 .section-system {
-  padding: 90px 0;
-  position: relative;
+  padding: 70px 0 80px;
+  background: linear-gradient(180deg, #ffffff 0%, #fffbfd 100%);
+}
+
+.section-heading {
+  margin-bottom: 45px;
 }
 
 .system-timeline {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
+  gap: 24px;
 }
 
 .timeline-step-item {
-  position: relative;
+  background: #ffffff;
+  border: 1px solid rgba(255, 46, 147, 0.14);
+  border-radius: 22px;
+  padding: 30px 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.timeline-step-item:hover {
+  transform: translateY(-4px);
+  border-color: #ff2e93;
+  box-shadow: 0 12px 30px rgba(255, 46, 147, 0.12);
+}
+
+.timeline-step-item.highlight-step {
+  border: 1.5px solid #ff2e93;
+  background: linear-gradient(180deg, #fffafd 0%, #ffffff 100%);
 }
 
 .step-badge {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 1.6rem;
-  font-weight: 800;
-  color: #ff2e93;
-  margin-bottom: 12px;
-  text-shadow: 0 0 15px rgba(255, 46, 147, 0.6);
-}
-
-.step-card {
-  background: rgba(18, 24, 43, 0.75);
-  border: 1px solid rgba(255, 46, 147, 0.2);
-  border-radius: 18px;
-  padding: 24px;
-  height: calc(100% - 45px);
-  backdrop-filter: blur(12px);
-  transition: all 0.3s ease;
-}
-
-.step-card:hover {
-  border-color: #ff2e93;
-  transform: translateY(-4px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 46, 147, 0.18);
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ff2e93 0%, #ff52a8 100%);
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 1.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+  box-shadow: 0 4px 16px rgba(255, 46, 147, 0.3);
 }
 
 .step-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 12px;
+  align-items: baseline;
   gap: 10px;
+  margin-bottom: 12px;
 }
 
 .step-header h4 {
-  font-size: 1.12rem;
-  color: #ffffff;
-  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
 }
 
 .step-time {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  color: #a855f7;
-  background: rgba(168, 85, 247, 0.15);
-  border: 1px solid rgba(168, 85, 247, 0.3);
-  padding: 3px 8px;
+  color: #ff2e93;
+  background: #fdf2f8;
+  padding: 3px 9px;
   border-radius: 6px;
   white-space: nowrap;
 }
 
 .step-card p {
   font-size: 0.88rem;
-  color: #cbd5e1;
-  line-height: 1.55;
-  margin: 0;
+  color: #64748b;
+  line-height: 1.58;
 }
 
-.highlight-step .step-card {
-  border-color: rgba(255, 46, 147, 0.5);
-  background: linear-gradient(135deg, rgba(255, 46, 147, 0.12) 0%, rgba(18, 24, 43, 0.85) 100%);
-}
-
-/* LIVE EXPRESS CALCULATOR WIDGET */
+/* ==========================================================================
+   LIVE EXPRESS CALCULATOR WIDGET
+   ========================================================================== */
 .section-calc-preview {
-  padding: 80px 0;
+  padding: 70px 0 80px;
 }
 
 .calc-preview-card {
-  background: rgba(15, 21, 38, 0.85);
-  border: 1.5px solid rgba(255, 46, 147, 0.35);
-  border-radius: 28px;
-  padding: 48px;
+  background: linear-gradient(135deg, #ffffff 0%, #fffcfd 100%);
+  border: 1.5px solid rgba(255, 46, 147, 0.22);
+  border-radius: 30px;
+  padding: 44px;
+  box-shadow: 0 16px 45px rgba(255, 46, 147, 0.08);
   display: grid;
   grid-template-columns: 1.2fr 0.8fr;
   gap: 40px;
   align-items: center;
-  backdrop-filter: blur(20px);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 35px rgba(255, 46, 147, 0.2);
 }
 
 .calc-title {
-  font-size: 2.2rem;
-  color: #ffffff;
-  margin: 10px 0 12px;
+  font-size: clamp(1.8rem, 2.6vw, 2.3rem);
+  font-weight: 900;
+  color: #0f172a;
+  margin-bottom: 12px;
 }
 
 .calc-subtitle {
-  font-size: 0.98rem;
-  color: #cbd5e1;
-  line-height: 1.6;
+  font-size: 0.95rem;
+  color: #64748b;
+  line-height: 1.55;
   margin-bottom: 24px;
 }
 
 .calc-type-switch {
   display: inline-flex;
-  gap: 6px;
-  background: rgba(255, 255, 255, 0.06);
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
   padding: 4px;
-  border-radius: 30px;
-  border: 1px solid rgba(255, 46, 147, 0.25);
   margin-bottom: 24px;
 }
 
 .calc-type-switch button {
   padding: 8px 20px;
-  border-radius: 24px;
+  font-size: 0.9rem;
   font-weight: 700;
-  font-size: 0.88rem;
+  border-radius: 999px;
   background: transparent;
-  color: #94a3b8;
-  transition: all 0.25s ease;
+  color: #64748b;
+  border: none;
+  transition: all 0.2s ease;
 }
 
 .calc-type-switch button.active {
-  background: linear-gradient(135deg, #ff2e93, #ff007a);
-  color: white;
-  box-shadow: 0 0 15px rgba(255, 46, 147, 0.6);
+  background: linear-gradient(135deg, #ff2e93, #ff52a8);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(255, 46, 147, 0.35);
 }
 
 .calc-slider-block {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .calc-slider-header {
@@ -1483,28 +1540,27 @@ const scrollToTop = () => {
   justify-content: space-between;
   align-items: center;
   font-size: 0.95rem;
-  font-weight: 600;
-  color: #e2e8f0;
-  margin-bottom: 12px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 10px;
 }
 
 .calc-score-val {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 1.25rem;
-  font-weight: 800;
   color: #ff2e93;
+  font-size: 1.25rem;
+  font-weight: 900;
 }
 
 .cyber-range-input {
   width: 100%;
-  accent-color: #ff2e93;
   height: 8px;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 10px;
-  cursor: pointer;
+  border-radius: 999px;
+  background: #f1f5f9;
+  outline: none;
+  accent-color: #ff2e93;
 }
 
-/* Gauge styling */
+/* Gauge Circle */
 .calc-preview-gauge {
   display: flex;
   flex-direction: column;
@@ -1516,67 +1572,64 @@ const scrollToTop = () => {
   width: 220px;
   height: 220px;
   border-radius: 50%;
-  border: 3px dashed rgba(255, 46, 147, 0.4);
+  background: conic-gradient(#ff2e93 0%, #ff52a8 calc(v-bind('calcPercent') * 1%), #f1f5f9 calc(v-bind('calcPercent') * 1%) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
-  box-shadow: 0 0 30px rgba(255, 46, 147, 0.25);
+  box-shadow: 0 10px 30px rgba(255, 46, 147, 0.2);
+  margin-bottom: 22px;
+  transition: all 0.4s ease;
 }
 
 .gauge-circle-inner {
-  width: 190px;
-  height: 190px;
-  background: linear-gradient(135deg, #13192f, #0d1222);
+  width: 184px;
+  height: 184px;
   border-radius: 50%;
-  border: 2px solid rgba(255, 46, 147, 0.5);
+  background: #ffffff;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 12px;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .gauge-percent {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 3rem;
+  font-size: 2.8rem;
   font-weight: 900;
-  color: #ffffff;
-  text-shadow: 0 0 20px rgba(255, 46, 147, 0.7);
+  color: #0f172a;
+  line-height: 1;
 }
 
 .gauge-caption {
-  font-family: 'JetBrains Mono', monospace;
   font-size: 0.68rem;
-  letter-spacing: 0.1em;
-  color: #94a3b8;
-  margin-top: -4px;
-  margin-bottom: 6px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #ff2e93;
+  margin-top: 6px;
 }
 
 .gauge-status-badge {
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   font-weight: 700;
+  border-radius: 999px;
   padding: 3px 10px;
-  border-radius: 20px;
+  margin-top: 8px;
 }
 
 .status-high {
-  background: rgba(34, 197, 94, 0.15);
-  color: #4ade80;
-  border: 1px solid rgba(34, 197, 94, 0.4);
+  background: #f0fdf4;
+  color: #16a34a;
 }
 
 .status-mid {
-  background: rgba(234, 179, 8, 0.15);
-  color: #facc15;
-  border: 1px solid rgba(234, 179, 8, 0.4);
+  background: #fffbeb;
+  color: #d97706;
 }
 
 .status-low {
-  background: rgba(239, 68, 68, 0.15);
-  color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.4);
+  background: #fef2f2;
+  color: #dc2626;
 }
 
 .gauge-school-targets {
@@ -1584,63 +1637,167 @@ const scrollToTop = () => {
 }
 
 .target-title {
-  font-size: 0.8rem;
-  color: #94a3b8;
-  font-weight: 600;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #64748b;
   margin-bottom: 8px;
 }
 
 .target-list {
   display: flex;
   flex-wrap: wrap;
+  gap: 8px;
   justify-content: center;
-  gap: 6px;
 }
 
 .target-tag {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #ffffff;
-  background: rgba(255, 46, 147, 0.12);
-  border: 1px solid rgba(255, 46, 147, 0.3);
-  padding: 3px 9px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 4px 10px;
   border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #0f172a;
 }
 
-/* RESULTS SECTION */
+/* ==========================================================================
+   RESULTS & STUDENT SUCCESS SECTION
+   ========================================================================== */
 .section-results {
-  padding: 80px 0;
-  background: linear-gradient(180deg, #070a14 0%, #0d1224 50%, #070a14 100%);
+  padding: 70px 0 80px;
+  background: #ffffff;
 }
 
+.results-toggle-wrapper {
+  display: inline-flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.result-tab-btn {
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 999px;
+  padding: 10px 24px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.result-tab-btn.active {
+  background: linear-gradient(135deg, #ff2e93, #ff52a8);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 4px 18px rgba(255, 46, 147, 0.32);
+}
+
+.results-summary-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  margin: 28px 0 36px;
+}
+
+.summary-pill {
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.summary-pill.gold {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #b45309;
+}
+
+.summary-pill.bronze {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  color: #c2410c;
+}
+
+.summary-pill.purple {
+  background: #faf5ff;
+  border: 1px solid #e9d5ff;
+  color: #7e22ce;
+}
+
+.summary-pill.pink {
+  background: #fdf2f8;
+  border: 1px solid #fbcfe8;
+  color: #db2777;
+}
+
+.summary-pill.green {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #15803d;
+}
+
+.btn-poster-link {
+  background: #ffffff;
+  border: 1.5px solid #ff2e93;
+  color: #ff2e93;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-poster-link:hover {
+  background: #fdf2f8;
+}
+
+/* Results Grid */
 .results-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 26px;
+  gap: 22px;
 }
 
 .student-result-card {
-  background: rgba(18, 24, 43, 0.72);
-  border: 1px solid rgba(255, 46, 147, 0.2);
+  background: #ffffff;
+  border: 1px solid rgba(255, 46, 147, 0.15);
   border-radius: 20px;
-  padding: 28px;
+  padding: 22px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  transition: all 0.25s ease;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  backdrop-filter: blur(14px);
-  transition: all 0.3s ease;
 }
 
 .student-result-card:hover {
-  transform: translateY(-5px);
-  border-color: #ff2e93;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), 0 0 25px rgba(255, 46, 147, 0.2);
+  transform: translateY(-3px);
+  border-color: rgba(255, 46, 147, 0.4);
+  box-shadow: 0 10px 28px rgba(255, 46, 147, 0.1);
+}
+
+.student-result-card.gold-card {
+  border: 1.5px solid #f59e0b;
+  background: linear-gradient(180deg, #fffdf8 0%, #ffffff 100%);
+}
+
+.student-result-card.bronze-card {
+  border: 1.5px solid #f97316;
+  background: linear-gradient(180deg, #fffaf5 0%, #ffffff 100%);
+}
+
+.student-result-card.top-card {
+  border: 1.5px solid rgba(255, 46, 147, 0.35);
+}
+
+.student-result-card.bil-card {
+  border-color: rgba(255, 46, 147, 0.18);
 }
 
 .card-top {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   margin-bottom: 16px;
 }
 
@@ -1648,19 +1805,33 @@ const scrollToTop = () => {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #a855f7, #6366f1);
-  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
   font-size: 0.95rem;
-  box-shadow: 0 0 12px rgba(168, 85, 247, 0.4);
+  flex-shrink: 0;
+  background: #f8fafc;
+  color: #0f172a;
+  border: 2px solid #e2e8f0;
+}
+
+.avatar-ring.gold-ring {
+  background: #fef3c7;
+  color: #b45309;
+  border-color: #f59e0b;
+}
+
+.avatar-ring.bronze-ring {
+  background: #ffedd5;
+  color: #c2410c;
+  border-color: #f97316;
 }
 
 .avatar-ring.pink-ring {
-  background: linear-gradient(135deg, #ff2e93, #ff007a);
-  box-shadow: 0 0 15px rgba(255, 46, 147, 0.5);
+  background: #fdf2f8;
+  color: #ff2e93;
+  border-color: #ff2e93;
 }
 
 .student-meta {
@@ -1668,141 +1839,288 @@ const scrollToTop = () => {
 }
 
 .student-meta h4 {
-  font-size: 1rem;
-  color: #ffffff;
-  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.25;
 }
 
 .school-target {
-  font-size: 0.75rem;
-  color: #a855f7;
+  font-size: 0.78rem;
+  color: #64748b;
+  margin-top: 2px;
+  display: block;
+}
+
+.rank-badge {
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #f8fafc;
+  color: #475569;
+}
+
+.rank-badge.gold {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.rank-badge.bronze {
+  background: #ffedd5;
+  color: #c2410c;
+}
+
+.rank-badge.top {
+  background: #fdf2f8;
+  color: #ff2e93;
+}
+
+.card-score-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  background: #f8fafc;
+  border-radius: 12px;
+  margin-bottom: 14px;
+}
+
+.score-label {
+  font-size: 0.85rem;
+  color: #64748b;
+  font-weight: 600;
 }
 
 .score-badge {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.85rem;
-  font-weight: 800;
   color: #ff2e93;
-  background: rgba(255, 46, 147, 0.12);
-  border: 1px solid rgba(255, 46, 147, 0.3);
-  padding: 4px 10px;
-  border-radius: 8px;
+  font-size: 1.15rem;
+  font-weight: 900;
 }
 
-.student-quote {
-  font-size: 0.92rem;
-  color: #cbd5e1;
-  line-height: 1.55;
-  font-style: italic;
-  margin: 0 0 20px;
+.score-badge.large-score {
+  font-size: 1.25rem;
+}
+
+.progression-box {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+
+.progression-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.growth-tag {
+  color: #16a34a;
+}
+
+.progression-bar-bg {
+  width: 100%;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progression-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff2e93, #ff52a8);
+  border-radius: 999px;
 }
 
 .result-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid #f1f5f9;
 }
 
 .grant-pill {
   font-size: 0.74rem;
-  font-weight: 700;
-  color: #22c55e;
+  font-weight: 800;
+  color: #16a34a;
+  background: #f0fdf4;
+  padding: 3px 10px;
+  border-radius: 999px;
 }
 
 .verified-pill {
-  font-size: 0.7rem;
+  font-size: 0.74rem;
   color: #94a3b8;
+  font-weight: 600;
 }
 
-/* TARIFFS SECTION */
+/* Cyber Outline Button */
+.btn-cyber-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: #ffffff;
+  color: #ff2e93;
+  border: 1.5px solid #ff2e93;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(255, 46, 147, 0.1);
+}
+
+.btn-cyber-outline:hover {
+  background: #fdf2f8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 46, 147, 0.2);
+}
+
+/* Modal */
+.poster-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.poster-modal-card {
+  background: #ffffff;
+  border-radius: 24px;
+  max-width: 750px;
+  width: 100%;
+  overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+}
+
+.poster-modal-header {
+  padding: 18px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.poster-modal-header h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.poster-modal-body {
+  padding: 16px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.poster-img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+
+/* ==========================================================================
+   TARIFFS SECTION
+   ========================================================================== */
 .section-tariffs {
-  padding: 90px 0;
-  position: relative;
+  padding: 70px 0 80px;
+  background: linear-gradient(180deg, #ffffff 0%, #fffbfd 100%);
 }
 
 .tariffs-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
+  gap: 26px;
   align-items: stretch;
 }
 
 .tariff-cyber-card {
-  background: rgba(18, 24, 43, 0.75);
-  border: 1px solid rgba(255, 46, 147, 0.22);
-  border-radius: 24px;
-  padding: 36px 30px;
+  background: #ffffff;
+  border: 1px solid rgba(255, 46, 147, 0.16);
+  border-radius: 26px;
+  padding: 38px 30px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   position: relative;
-  backdrop-filter: blur(16px);
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .tariff-cyber-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(255, 46, 147, 0.5);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), 0 0 25px rgba(255, 46, 147, 0.2);
+  transform: translateY(-5px);
+  border-color: rgba(255, 46, 147, 0.4);
+  box-shadow: 0 15px 35px rgba(255, 46, 147, 0.12);
 }
 
-.featured-tariff {
-  background: rgba(22, 28, 52, 0.9);
+.tariff-cyber-card.featured-tariff {
   border: 2px solid #ff2e93;
-  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.5), 0 0 35px rgba(255, 46, 147, 0.3);
-  transform: scale(1.03);
+  box-shadow: 0 16px 45px rgba(255, 46, 147, 0.18);
+  transform: translateY(-6px);
 }
 
-.featured-tariff:hover {
-  transform: scale(1.05) translateY(-6px);
+.tariff-cyber-card.featured-tariff:hover {
+  transform: translateY(-10px);
 }
 
 .popular-ribbon {
   position: absolute;
-  top: 16px;
-  right: 16px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.68rem;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #ff2e93, #ff52a8);
+  color: #ffffff;
+  font-size: 0.74rem;
   font-weight: 800;
-  color: white;
-  background: linear-gradient(135deg, #ff2e93, #ff007a);
-  padding: 4px 12px;
-  border-radius: 20px;
-  box-shadow: 0 0 12px rgba(255, 46, 147, 0.6);
-}
-
-.tariff-header {
-  margin-bottom: 24px;
+  letter-spacing: 0.08em;
+  padding: 5px 18px;
+  border-radius: 999px;
+  box-shadow: 0 4px 15px rgba(255, 46, 147, 0.4);
 }
 
 .tariff-name {
-  font-size: 1.8rem;
-  font-weight: 800;
-  color: #ffffff;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #0f172a;
   margin-bottom: 6px;
 }
 
 .tariff-for {
   font-size: 0.88rem;
-  color: #94a3b8;
-  margin: 0;
+  color: #64748b;
+  margin-bottom: 24px;
 }
 
 .tariff-features {
   list-style: none;
   padding: 0;
-  margin: 0 0 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  margin: 0 0 32px 0;
   flex: 1;
 }
 
 .tariff-features li {
   font-size: 0.92rem;
-  color: #cbd5e1;
+  color: #334155;
+  margin-bottom: 14px;
   display: flex;
   align-items: flex-start;
   gap: 10px;
@@ -1811,49 +2129,50 @@ const scrollToTop = () => {
 
 .check-icon {
   color: #ff2e93;
-  font-weight: 800;
-  font-size: 1rem;
+  font-weight: 900;
+  flex-shrink: 0;
 }
 
 .btn-featured {
-  background: linear-gradient(135deg, #ff2e93 0%, #ff007a 50%, #9333ea 100%);
-  box-shadow: 0 0 25px rgba(255, 46, 147, 0.6);
+  background: linear-gradient(135deg, #ff2e93 0%, #ff52a8 100%) !important;
+  box-shadow: 0 8px 25px rgba(255, 46, 147, 0.4) !important;
 }
 
-/* FAQ SECTION */
+/* ==========================================================================
+   FAQ SECTION
+   ========================================================================== */
 .section-faq {
-  padding: 80px 0;
+  padding: 70px 0 80px;
+  background: #ffffff;
 }
 
 .faq-accordion-list {
-  max-width: 840px;
+  max-width: 860px;
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
 }
 
 .faq-accordion-item {
-  background: rgba(18, 24, 43, 0.7);
-  border: 1px solid rgba(255, 46, 147, 0.2);
-  border-radius: 16px;
-  padding: 20px 24px;
-  cursor: pointer;
-  backdrop-filter: blur(12px);
+  background: #ffffff;
+  border: 1px solid rgba(255, 46, 147, 0.14);
+  border-radius: 18px;
+  margin-bottom: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
   transition: all 0.25s ease;
+  cursor: pointer;
 }
 
 .faq-accordion-item:hover {
-  border-color: rgba(255, 46, 147, 0.5);
-  background: rgba(24, 32, 56, 0.8);
+  border-color: rgba(255, 46, 147, 0.35);
 }
 
 .faq-accordion-item.open {
   border-color: #ff2e93;
-  box-shadow: 0 0 25px rgba(255, 46, 147, 0.18);
+  box-shadow: 0 8px 24px rgba(255, 46, 147, 0.1);
 }
 
 .faq-question {
+  padding: 20px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1863,77 +2182,70 @@ const scrollToTop = () => {
 .faq-q-text {
   font-size: 1.05rem;
   font-weight: 700;
-  color: #ffffff;
+  color: #0f172a;
 }
 
 .faq-toggle-icon {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   font-weight: 700;
   color: #ff2e93;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #fdf2f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .faq-answer {
-  margin-top: 14px;
-  padding-top: 14px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.faq-answer p {
+  padding: 0 24px 22px;
+  color: #475569;
   font-size: 0.95rem;
-  color: #cbd5e1;
-  line-height: 1.6;
-  margin: 0;
+  line-height: 1.62;
+  border-top: 1px solid #f8fafc;
+  padding-top: 16px;
 }
 
-/* FINAL CTA BANNER */
+/* ==========================================================================
+   FINAL CTA BANNER SECTION
+   ========================================================================== */
 .section-cta-banner {
-  padding: 90px 0 100px;
+  padding: 60px 0 80px;
 }
 
 .cta-banner-card {
-  position: relative;
-  background: linear-gradient(135deg, rgba(255, 46, 147, 0.18) 0%, rgba(147, 51, 234, 0.15) 100%);
-  border: 1.5px solid rgba(255, 46, 147, 0.45);
+  background: linear-gradient(135deg, #ff2e93 0%, #ff52a8 50%, #f43f5e 100%);
   border-radius: 32px;
-  padding: 70px 40px;
+  padding: 65px 40px;
   text-align: center;
-  overflow: hidden;
-  backdrop-filter: blur(20px);
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(255, 46, 147, 0.25);
-}
-
-.cta-banner-glow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(255, 46, 147, 0.4) 0%, transparent 70%);
-  transform: translate(-50%, -50%);
-  filter: blur(80px);
-  pointer-events: none;
-}
-
-.cta-banner-content {
+  color: #ffffff;
   position: relative;
-  z-index: 5;
-  max-width: 680px;
-  margin: 0 auto;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(255, 46, 147, 0.32);
+}
+
+.cta-banner-card .cyber-tag {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.35);
 }
 
 .cta-banner-title {
-  font-size: 2.6rem;
-  font-weight: 800;
+  font-size: clamp(2rem, 3.4vw, 3rem);
+  font-weight: 900;
   color: #ffffff;
-  margin: 16px 0 14px;
+  margin: 16px 0;
   line-height: 1.2;
 }
 
 .cta-banner-sub {
   font-size: 1.1rem;
-  color: #cbd5e1;
-  margin-bottom: 34px;
+  color: rgba(255, 255, 255, 0.92);
+  max-width: 620px;
+  margin: 0 auto 34px;
+  line-height: 1.6;
 }
 
 .cta-banner-buttons {
@@ -1944,51 +2256,76 @@ const scrollToTop = () => {
 }
 
 .btn-cta-primary {
-  padding: 16px 36px;
-  font-size: 1.05rem;
+  background: #ffffff;
+  color: #ff2e93;
+  font-weight: 800;
+  border-radius: 999px;
+  padding: 15px 34px;
+  font-size: 1rem;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.btn-cta-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
 }
 
 .btn-cta-wa {
-  padding: 16px 32px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  border-radius: 999px;
+  padding: 14px 30px;
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+  transition: all 0.25s ease;
 }
 
-/* FOOTER */
+.btn-cta-wa:hover {
+  background: rgba(255, 255, 255, 0.28);
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
 .footer-futuristic {
-  background: #05070f;
-  border-top: 1px solid rgba(255, 46, 147, 0.2);
-  padding: 70px 0 0;
-  position: relative;
-  z-index: 1;
+  background: #fff6f9;
+  border-top: 1px solid rgba(255, 46, 147, 0.14);
+  padding: 60px 0 0;
+  color: #475569;
 }
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-columns: 1.5fr 1fr 1fr;
   gap: 40px;
   margin-bottom: 50px;
 }
 
 .footer-logo {
-  font-family: 'Onest', sans-serif;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-weight: 900;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .logo-white {
-  color: #ffffff;
+  color: #0f172a;
 }
 
 .logo-pink {
   color: #ff2e93;
-  text-shadow: 0 0 15px rgba(255, 46, 147, 0.6);
 }
 
 .footer-tagline {
-  font-size: 0.95rem;
-  color: #94a3b8;
+  font-size: 0.92rem;
   line-height: 1.6;
-  margin-bottom: 22px;
+  color: #64748b;
+  margin-bottom: 20px;
 }
 
 .social-links {
@@ -1999,30 +2336,30 @@ const scrollToTop = () => {
 .social-icon-btn {
   width: 40px;
   height: 40px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 46, 147, 0.3);
   border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid rgba(255, 46, 147, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  text-decoration: none;
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 700;
+  color: #ff2e93;
+  font-weight: 800;
   font-size: 0.85rem;
-  transition: all 0.25s ease;
+  text-decoration: none;
+  transition: all 0.2s ease;
 }
 
 .social-icon-btn:hover {
   background: #ff2e93;
-  box-shadow: 0 0 15px #ff2e93;
+  color: #ffffff;
   transform: translateY(-2px);
 }
 
 .footer-col h4 {
-  font-size: 1.1rem;
-  color: #ffffff;
-  margin-bottom: 20px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 18px;
 }
 
 .footer-col ul {
@@ -2031,72 +2368,56 @@ const scrollToTop = () => {
   margin: 0;
 }
 
-.footer-col ul li {
-  margin-bottom: 12px;
+.footer-col li {
+  margin-bottom: 10px;
 }
 
-.footer-col ul li a {
-  color: #94a3b8;
+.footer-col a {
+  color: #64748b;
   text-decoration: none;
   font-size: 0.92rem;
-  transition: all 0.2s ease;
+  transition: color 0.2s;
 }
 
-.footer-col ul li a:hover {
+.footer-col a:hover {
   color: #ff2e93;
-  padding-left: 4px;
 }
 
 .footer-support-hours {
-  color: #64748b;
-  font-size: 0.85rem;
+  font-size: 0.88rem;
+  color: #94a3b8;
 }
 
 .footer-bottom-bar {
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  padding: 24px 0;
-  background: #030408;
-}
-
-.bottom-flex {
-  font-size: 0.85rem;
-  color: #64748b;
+  border-top: 1px solid rgba(255, 46, 147, 0.1);
+  padding: 22px 0;
+  font-size: 0.88rem;
 }
 
 .btn-back-to-top {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 46, 147, 0.3);
-  color: #e2e8f0;
+  background: #ffffff;
+  border: 1px solid rgba(255, 46, 147, 0.22);
+  border-radius: 999px;
   padding: 6px 16px;
-  border-radius: 20px;
-  font-size: 0.78rem;
+  color: #ff2e93;
   font-weight: 700;
-  transition: all 0.2s ease;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
 .btn-back-to-top:hover {
-  background: rgba(255, 46, 147, 0.2);
-  color: white;
-  border-color: #ff2e93;
+  background: #fdf2f8;
 }
 
-/* Animations */
-@keyframes bounce-down {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(4px); }
-}
-
-@keyframes scan-vertical {
-  0% { top: 0; }
-  100% { top: 100%; }
-}
-
-/* Responsive */
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS
+   ========================================================================== */
 @media (max-width: 1080px) {
   .hero-container {
     grid-template-columns: 1fr;
     text-align: center;
-    gap: 40px;
+    gap: 36px;
   }
   .hero-left {
     align-items: center;
@@ -2108,7 +2429,9 @@ const scrollToTop = () => {
   .hero-actions {
     justify-content: center;
   }
-  .features-grid,
+  .hero-stats-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
   .system-timeline,
   .results-grid,
   .tariffs-grid {
@@ -2116,63 +2439,54 @@ const scrollToTop = () => {
   }
   .calc-preview-card {
     grid-template-columns: 1fr;
+    padding: 32px 24px;
   }
 }
 
 @media (max-width: 768px) {
   .hero-section {
-    padding: 40px 0 60px;
+    padding: 30px 0 50px;
   }
   .hero-title {
     font-size: 2.1rem;
     line-height: 1.2;
   }
   .hero-subtitle {
-    font-size: 0.98rem;
-    margin-bottom: 24px;
-  }
-  .hero-badge {
-    padding: 5px 12px;
-    font-size: 0.72rem;
+    font-size: 0.95rem;
   }
   .hero-actions {
     flex-direction: column;
     width: 100%;
-    gap: 12px;
   }
-  .hero-actions .btn-cyber,
-  .hero-actions .btn-cyber-outline {
+  .hero-actions a {
     width: 100%;
     justify-content: center;
+  }
+  .hero-stats-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .stats-card {
+    padding: 14px 12px;
+    gap: 10px;
+    border-radius: 16px;
+  }
+  .stats-icon-circle {
+    width: 38px;
+    height: 38px;
+    font-size: 1.1rem;
+  }
+  .stats-num {
+    font-size: 1.25rem;
+  }
+  .stats-label {
+    font-size: 0.74rem;
   }
   .features-grid,
   .system-timeline,
   .results-grid,
   .tariffs-grid {
     grid-template-columns: 1fr;
-    gap: 18px;
-  }
-  .hero-stats-hud {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    width: 100%;
-    gap: 16px;
-    padding: 16px;
-  }
-  .hud-stat-divider {
-    display: none;
-  }
-  .hero-hologram-wrapper {
-    max-width: 320px;
-  }
-  .floating-hud-pill {
-    padding: 6px 12px;
-    font-size: 0.7rem;
-  }
-  .floating-student-badge {
-    right: 10px;
-    bottom: 60px;
-    padding: 6px 10px;
   }
   .footer-grid {
     grid-template-columns: 1fr;
@@ -2183,39 +2497,28 @@ const scrollToTop = () => {
     gap: 12px;
     text-align: center;
   }
-  .calc-preview-card {
-    padding: 24px 16px;
-    border-radius: 20px;
-  }
-  .calc-title {
-    font-size: 1.7rem;
-  }
   .gauge-circle-outer {
     width: 180px;
     height: 180px;
   }
   .gauge-circle-inner {
-    width: 154px;
-    height: 154px;
+    width: 150px;
+    height: 150px;
   }
   .gauge-percent {
-    font-size: 2.4rem;
+    font-size: 2.3rem;
   }
-  .section-title {
-    font-size: 1.9rem;
-  }
-  .cta-banner-card {
-    padding: 40px 18px;
-    border-radius: 22px;
-  }
-  .cta-banner-title {
-    font-size: 1.85rem;
+  .promo-wrapper {
+    padding: 24px 14px;
   }
 }
 
 @media (max-width: 480px) {
   .hero-title {
     font-size: 1.8rem;
+  }
+  .hero-stats-row {
+    grid-template-columns: 1fr;
   }
   .calc-type-switch {
     width: 100%;
@@ -2224,7 +2527,7 @@ const scrollToTop = () => {
   .calc-type-switch button {
     flex: 1;
     padding: 8px 10px;
-    font-size: 0.8rem;
+    font-size: 0.82rem;
   }
   .cta-banner-buttons {
     flex-direction: column;

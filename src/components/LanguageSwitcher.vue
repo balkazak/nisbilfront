@@ -20,12 +20,11 @@ const { currentLang, setLanguage } = useLanguage();
 <style scoped>
 .lang-switcher-cyber {
   display: flex;
-  gap: 4px;
-  background: rgba(255, 255, 255, 0.08);
+  gap: 3px;
+  background: #f8fafc;
   padding: 3px;
   border-radius: 20px;
-  border: 1px solid rgba(255, 46, 147, 0.25);
-  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 46, 147, 0.2);
 }
 
 .lang-switcher-cyber button {
@@ -37,19 +36,19 @@ const { currentLang, setLanguage } = useLanguage();
   letter-spacing: 0.05em;
   transition: all 0.25s ease;
   background: transparent;
-  color: #94a3b8;
+  color: #64748b;
   border: none;
   cursor: pointer;
 }
 
 .lang-switcher-cyber button.active {
-  background: linear-gradient(135deg, #ff2e93, #ff007a);
+  background: linear-gradient(135deg, #ff2e93, #ff52a8);
   color: #ffffff;
-  box-shadow: 0 0 10px rgba(255, 46, 147, 0.6);
+  box-shadow: 0 2px 8px rgba(255, 46, 147, 0.4);
 }
 
 .lang-switcher-cyber button:hover:not(.active) {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.1);
+  color: #ff2e93;
+  background: rgba(255, 46, 147, 0.06);
 }
 </style>

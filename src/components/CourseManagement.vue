@@ -136,18 +136,28 @@
 
           <!-- Content Area -->
           <div class="course-content-area">
-            <div class="flex justify-between items-center mb-4">
+            <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
               <h4 class="section-title">
                 {{ t("courseManagement.lessonsList") }}
               </h4>
-              <button @click="openAddLessonModal" class="btn-primary">
-                + {{ t("courseManagement.addLessonBtn") }}
-              </button>
+              <div class="flex gap-2">
+                <button
+                  type="button"
+                  @click="sortLessonsByNumber"
+                  class="btn-secondary"
+                  title="Реттеу / Упорядочить по номерам"
+                >
+                  🔢 {{ currentLang === 'kk' ? 'Реттеу' : 'Упорядочить' }}
+                </button>
+                <button @click="openAddLessonModal" class="btn-primary">
+                  + {{ t("courseManagement.addLessonBtn") }}
+                </button>
+              </div>
             </div>
 
             <div
               v-if="
-                !selectedCourse.Lessons || selectedCourse.Lessons.length === 0
+                !sortedLessons || sortedLessons.length === 0
               "
               class="empty-state"
             >
@@ -156,7 +166,7 @@
 
             <ul class="lesson-list">
               <li
-                v-for="(lesson, lIdx) in selectedCourse.Lessons"
+                v-for="(lesson, lIdx) in sortedLessons"
                 :key="lesson.id"
                 class="lesson-item"
               >
@@ -563,7 +573,7 @@ import { useToast } from "../composables/useToast";
 import { useLanguage } from "../composables/useLanguage";
 
 const toast = useToast();
-const { t } = useLanguage();
+const { t, currentLang } = useLanguage();
 
 const courses = ref([]);
 const showAddCourse = ref(false);
@@ -583,6 +593,7 @@ const newLesson = reactive({
   video_urls: [""],
   solution_video_urls: [],
   materials: [],
+  order: 0,
 });
 const newTest = ref({
   id: null,
@@ -594,6 +605,36 @@ const newTest = ref({
 });
 
 const isAdmin = computed(() => currentUser.value.role === "admin");
+
+const sortedLessons = computed(() => {
+  if (!selectedCourse.value || !selectedCourse.value.Lessons) return [];
+  return [...selectedCourse.value.Lessons].sort((a, b) => {
+    const numA = (a.order !== undefined && a.order !== null && a.order !== 0)
+      ? a.order
+      : parseInt((a.title || "").match(/^(\d+)/)?.[1] || "999999", 10);
+    const numB = (b.order !== undefined && b.order !== null && b.order !== 0)
+      ? b.order
+      : parseInt((b.title || "").match(/^(\d+)/)?.[1] || "999999", 10);
+    if (numA !== numB) return numA - numB;
+    return (a.id || 0) - (b.id || 0);
+  });
+});
+
+const sortLessonsByNumber = async () => {
+  if (!selectedCourse.value) return;
+  try {
+    const res = await api.post(`/courses/${selectedCourse.value.id}/sort-lessons`);
+    if (res.data) {
+      selectedCourse.value = res.data;
+    }
+    toast.success("Уроки успешно упорядочены по номерам!");
+  } catch (err) {
+    if (selectedCourse.value.Lessons) {
+      selectedCourse.value.Lessons = [...sortedLessons.value];
+    }
+    toast.info("Уроки упорядочены");
+  }
+};
 
 const fetchCourses = async () => {
   const res = await api.get("/courses");
@@ -611,6 +652,18 @@ const createCourse = async () => {
 
 const editCourse = async (course) => {
   const res = await api.get(`/courses/${course.id}`);
+  if (res.data && res.data.Lessons) {
+    res.data.Lessons.sort((a, b) => {
+      const numA = (a.order !== undefined && a.order !== null && a.order !== 0)
+        ? a.order
+        : parseInt((a.title || "").match(/^(\d+)/)?.[1] || "999999", 10);
+      const numB = (b.order !== undefined && b.order !== null && b.order !== 0)
+        ? b.order
+        : parseInt((b.title || "").match(/^(\d+)/)?.[1] || "999999", 10);
+      if (numA !== numB) return numA - numB;
+      return (a.id || 0) - (b.id || 0);
+    });
+  }
   selectedCourse.value = res.data;
 };
 
@@ -621,12 +674,14 @@ const openAddLessonModal = () => {
   newLesson.video_urls = [""];
   newLesson.solution_video_urls = [];
   newLesson.materials = [];
+  newLesson.order = 0;
   showAddLesson.value = true;
 };
 
 const startEditLesson = (lesson) => {
   newLesson.id = lesson.id;
   newLesson.title = lesson.title;
+  newLesson.order = lesson.order || 0;
   newLesson.video_urls =
     lesson.video_urls && lesson.video_urls.length
       ? [...lesson.video_urls]
@@ -642,11 +697,15 @@ const startEditLesson = (lesson) => {
 };
 
 const addLesson = async () => {
+  const match = newLesson.title.trim().match(/^(\d+)[\.\s]/);
+  const targetOrder = match ? parseInt(match[1], 10) : (newLesson.order || 0);
+
   const payload = {
     title: newLesson.title,
     video_urls: newLesson.video_urls.filter((u) => u.trim()),
     solution_video_urls: newLesson.solution_video_urls.filter((u) => u.trim()),
     materials: newLesson.materials,
+    order: targetOrder,
   };
 
   if (isEditingLesson.value) {
@@ -674,11 +733,14 @@ const handleDeleteLesson = async (lesson) => {
 
 const duplicateLesson = async (lesson) => {
   try {
+    const match = lesson.title.trim().match(/^(\d+)[\.\s]/);
+    const targetOrder = match ? parseInt(match[1], 10) : (lesson.order || 0);
     const payload = {
       title: `${lesson.title} (Копия)`,
       video_urls: lesson.video_urls ? [...lesson.video_urls] : [],
       solution_video_urls: lesson.solution_video_urls ? [...lesson.solution_video_urls] : [],
       materials: lesson.materials ? [...lesson.materials] : [],
+      order: targetOrder,
     };
     await api.post(`/courses/${selectedCourse.value.id}/lessons`, payload);
     toast.success("Урок успешно скопирован");
