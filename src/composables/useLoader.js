@@ -1,6 +1,8 @@
 import { ref } from 'vue';
 
-const isLoading = ref(true);
+const MAINTENANCE_MODE = true;
+
+const isLoading = ref(!MAINTENANCE_MODE);
 const progress = ref(0);
 const statusMessage = ref('Инициализация квантовой платформы...');
 
@@ -16,6 +18,13 @@ let intervalId = null;
 
 export function useLoader() {
   const startInitialLoad = () => {
+    if (MAINTENANCE_MODE) {
+      isLoading.value = false;
+      progress.value = 0;
+      statusMessage.value = 'Maintenance mode';
+      return;
+    }
+
     isLoading.value = true;
     progress.value = 0;
     statusMessage.value = statusSteps[0];
@@ -49,6 +58,11 @@ export function useLoader() {
   };
 
   const triggerFastNav = () => {
+    if (MAINTENANCE_MODE) {
+      isLoading.value = false;
+      return;
+    }
+
     isLoading.value = true;
     progress.value = 30;
     statusMessage.value = 'Синхронизация данных...';
@@ -68,12 +82,22 @@ export function useLoader() {
   };
 
   const showLoader = (msg = 'Загрузка данных...') => {
+    if (MAINTENANCE_MODE) {
+      isLoading.value = false;
+      return;
+    }
+
     isLoading.value = true;
     progress.value = 50;
     statusMessage.value = msg;
   };
 
   const hideLoader = () => {
+    if (MAINTENANCE_MODE) {
+      isLoading.value = false;
+      return;
+    }
+
     progress.value = 100;
     setTimeout(() => {
       isLoading.value = false;

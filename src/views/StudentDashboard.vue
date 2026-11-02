@@ -305,6 +305,27 @@
                     frameborder="0"
                     allowfullscreen
                   ></iframe>
+                  <!-- Nis-Bil Brand Overlay Cover -->
+                  <div class="video-brand-cover">
+                    <div class="brand-bubble-icon-cover">
+                      <svg viewBox="0 0 32 32" fill="none" class="bubble-svg">
+                        <circle cx="16" cy="16" r="14" fill="url(#pinkBubbleGradCover)" />
+                        <circle cx="11.5" cy="14" r="2" fill="#ffffff" />
+                        <circle cx="20.5" cy="14" r="2" fill="#ffffff" />
+                        <path d="M11 19c1.2 1.3 3 2 5 2s3.8-.7 5-2" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" />
+                        <defs>
+                          <linearGradient id="pinkBubbleGradCover" x1="2" y1="2" x2="30" y2="30" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#ff2e93" />
+                            <stop offset="1" stop-color="#ff52a8" />
+                          </linearGradient>
+                        </defs>
+                      </svg>
+                    </div>
+                    <div class="brand-text-cover">
+                      <div class="cover-brand-title">nis-bil<span class="cover-brand-accent">.online</span></div>
+                      <div class="cover-brand-sub">БІЛІМ ПЛАТФОРМАСЫ</div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -405,6 +426,27 @@
                       frameborder="0"
                       allowfullscreen
                     ></iframe>
+                    <!-- Nis-Bil Brand Overlay Cover -->
+                    <div class="video-brand-cover">
+                      <div class="brand-bubble-icon-cover">
+                        <svg viewBox="0 0 32 32" fill="none" class="bubble-svg">
+                          <circle cx="16" cy="16" r="14" fill="url(#pinkBubbleGradCoverSol)" />
+                          <circle cx="11.5" cy="14" r="2" fill="#ffffff" />
+                          <circle cx="20.5" cy="14" r="2" fill="#ffffff" />
+                          <path d="M11 19c1.2 1.3 3 2 5 2s3.8-.7 5-2" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" />
+                          <defs>
+                            <linearGradient id="pinkBubbleGradCoverSol" x1="2" y1="2" x2="30" y2="30" gradientUnits="userSpaceOnUse">
+                              <stop stop-color="#ff2e93" />
+                              <stop offset="1" stop-color="#ff52a8" />
+                            </linearGradient>
+                          </defs>
+                        </svg>
+                      </div>
+                      <div class="brand-text-cover">
+                        <div class="cover-brand-title">nis-bil<span class="cover-brand-accent">.online</span></div>
+                        <div class="cover-brand-sub">БІЛІМ ПЛАТФОРМАСЫ</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1355,12 +1397,38 @@ const markCurrentLessonDone = () => {
   toast.success("Урок пройден! Прогресс обновлен");
 };
 
+const isContainerFullscreen = ref(false);
+
+const toggleContainerFullscreen = (e) => {
+  const container = e.currentTarget.closest(".video-container");
+  if (!container) return;
+  if (!document.fullscreenElement) {
+    if (container.requestFullscreen) {
+      container.requestFullscreen();
+    } else if (container.webkitRequestFullscreen) {
+      container.webkitRequestFullscreen();
+    } else if (container.msRequestFullscreen) {
+      container.msRequestFullscreen();
+    }
+  } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    }
+  }
+};
+
+const handleFullscreenChange = () => {
+  isContainerFullscreen.value = !!document.fullscreenElement;
+};
+
 const getEmbedUrl = (url) => {
   if (!url) return "";
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
   const match = url.match(regExp);
   return match && match[2].length === 11
-    ? `https://www.youtube.com/embed/${match[2]}`
+    ? `https://www.youtube.com/embed/${match[2]}?rel=0&modestbranding=1&iv_load_policy=3&controls=1&showinfo=0&fs=0`
     : url;
 };
 
@@ -1529,10 +1597,14 @@ onMounted(() => {
   fetchResults();
   fetchStandaloneTests();
   window.addEventListener("resize", checkMobile);
+  document.addEventListener("fullscreenchange", handleFullscreenChange);
+  document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener("resize", checkMobile);
+  document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  document.removeEventListener("webkitfullscreenchange", handleFullscreenChange);
 });
 </script>
 
@@ -2384,6 +2456,17 @@ onBeforeUnmount(() => {
   overflow: hidden;
   background: #090c15;
   box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+  container-type: inline-size;
+}
+
+.video-container:fullscreen {
+  width: 100vw;
+  height: 100vh;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
 }
 
 .video-container iframe {
@@ -2393,6 +2476,186 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 100%;
   border: 0;
+}
+
+/* Video Brand Cover Overlay */
+.video-brand-cover {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  width: 25%;
+  height: 18%;
+  min-width: 175px;
+  min-height: 56px;
+  max-width: 320px;
+  max-height: 95px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 14px;
+  background: #ffffff;
+  border-radius: 0 0 0 16px;
+  border-left: 1px solid rgba(226, 232, 240, 0.95);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.95);
+  box-shadow: -4px 6px 20px rgba(15, 23, 42, 0.12);
+  pointer-events: none;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+.brand-bubble-icon-cover {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  width: clamp(24px, 3.6cqw, 36px);
+  height: clamp(24px, 3.6cqw, 36px);
+}
+
+.brand-bubble-icon-cover .bubble-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.brand-text-cover {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  flex: 1;
+  line-height: 1.15;
+}
+
+.cover-brand-title {
+  font-family: 'Onest', sans-serif;
+  font-weight: 800;
+  font-size: 14px;
+  font-size: clamp(13px, 2.1cqw, 18px);
+  color: #0f172a;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.cover-brand-accent {
+  color: #ff2e93;
+}
+
+.cover-brand-sub {
+  font-family: 'Onest', sans-serif;
+  font-size: 9px;
+  font-size: clamp(8px, 1.2cqw, 11px);
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.btn-cover-fullscreen {
+  pointer-events: auto;
+  cursor: pointer;
+  flex-shrink: 0;
+  background: rgba(241, 245, 249, 0.9);
+  border: 1px solid rgba(203, 213, 225, 0.8);
+  border-radius: 6px;
+  color: #475569;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.btn-cover-fullscreen:hover {
+  background: #ff2e93;
+  border-color: #ff2e93;
+  color: #ffffff;
+  transform: scale(1.05);
+}
+
+/* Bigger, prominent logo in Fullscreen Mode */
+.video-container:fullscreen .video-brand-cover,
+.video-container:-webkit-full-screen .video-brand-cover {
+  top: 0;
+  right: 0;
+  margin: 0;
+  width: 26%;
+  min-width: 290px;
+  max-width: 480px;
+  height: 19%;
+  min-height: 95px;
+  max-height: 160px;
+  padding: 0 24px;
+  gap: 16px;
+  border-radius: 0 0 0 24px;
+  box-shadow: -8px 10px 35px rgba(0, 0, 0, 0.35);
+}
+
+.video-container:fullscreen .brand-bubble-icon-cover,
+.video-container:-webkit-full-screen .brand-bubble-icon-cover {
+  width: 46px;
+  height: 46px;
+  width: clamp(38px, 4.5cqw, 58px);
+  height: clamp(38px, 4.5cqw, 58px);
+}
+
+.video-container:fullscreen .cover-brand-title,
+.video-container:-webkit-full-screen .cover-brand-title {
+  font-size: 24px;
+  font-size: clamp(20px, 2.7cqw, 34px);
+  letter-spacing: -0.03em;
+}
+
+.video-container:fullscreen .cover-brand-sub,
+.video-container:-webkit-full-screen .cover-brand-sub {
+  font-size: 13px;
+  font-size: clamp(12px, 1.4cqw, 18px);
+  letter-spacing: 0.08em;
+}
+
+.video-container:fullscreen .btn-cover-fullscreen,
+.video-container:-webkit-full-screen .btn-cover-fullscreen {
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.video-container:fullscreen .btn-cover-fullscreen svg,
+.video-container:-webkit-full-screen .btn-cover-fullscreen svg {
+  width: 18px;
+  height: 18px;
+}
+
+@media (max-width: 640px) {
+  .video-brand-cover {
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0 8px;
+    gap: 6px;
+    width: 32%;
+    min-width: 125px;
+    height: 20%;
+    min-height: 40px;
+    border-radius: 0 0 0 10px;
+  }
+  .cover-brand-title {
+    font-size: 11px;
+  }
+  .cover-brand-sub {
+    font-size: 7px;
+  }
+  .brand-bubble-icon-cover {
+    width: 18px;
+    height: 18px;
+  }
+  .btn-cover-fullscreen {
+    display: none;
+  }
 }
 
 /* Mobile Player Adaptations */

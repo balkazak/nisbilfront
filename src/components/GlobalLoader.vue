@@ -57,10 +57,13 @@
 import { onMounted } from 'vue';
 import { useLoader } from '../composables/useLoader';
 
+const MAINTENANCE_MODE = true;
 const { isLoading, progress, statusMessage, startInitialLoad } = useLoader();
 
 onMounted(() => {
-  startInitialLoad();
+  if (!MAINTENANCE_MODE) {
+    startInitialLoad();
+  }
 });
 </script>
 

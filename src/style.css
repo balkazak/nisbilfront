@@ -79,23 +79,28 @@ p, span, a, label {
   word-break: break-word;
 }
 
-/* Custom Scrollbar */
+/* Default browser scrollbar */
 ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+  width: auto;
+  height: auto;
 }
 
 ::-webkit-scrollbar-track {
-  background: #fdf2f8;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--gradient-color);
-  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #D02484, #E62D95);
+  background: rgba(0, 0, 0, 0.5);
+}
+
+html {
+  scrollbar-color: rgba(0, 0, 0, 0.35) transparent;
+  scrollbar-width: auto;
 }
 
 button {
