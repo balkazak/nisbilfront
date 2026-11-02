@@ -9,7 +9,7 @@ import TrialTest from '../views/TrialTest.vue';
 import Calculator from '../views/Calculator.vue';
 import Tariffs from '../views/Tariffs.vue';
 
-const MAINTENANCE_MODE = true;
+const MAINTENANCE_MODE = false;
 
 const routes = MAINTENANCE_MODE
     ? [
