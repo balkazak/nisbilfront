@@ -309,12 +309,12 @@
                   <div class="video-brand-cover">
                     <div class="brand-bubble-icon-cover">
                       <svg viewBox="0 0 32 32" fill="none" class="bubble-svg">
-                        <circle cx="16" cy="16" r="14" fill="url(#pinkBubbleGradCover)" />
+                        <circle cx="16" cy="16" r="14" :fill="`url(#pinkBubbleGradCover-${index})`" />
                         <circle cx="11.5" cy="14" r="2" fill="#ffffff" />
                         <circle cx="20.5" cy="14" r="2" fill="#ffffff" />
                         <path d="M11 19c1.2 1.3 3 2 5 2s3.8-.7 5-2" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" />
                         <defs>
-                          <linearGradient id="pinkBubbleGradCover" x1="2" y1="2" x2="30" y2="30" gradientUnits="userSpaceOnUse">
+                          <linearGradient :id="`pinkBubbleGradCover-${index}`" x1="2" y1="2" x2="30" y2="30" gradientUnits="userSpaceOnUse">
                             <stop stop-color="#ff2e93" />
                             <stop offset="1" stop-color="#ff52a8" />
                           </linearGradient>
@@ -325,6 +325,20 @@
                       <div class="cover-brand-title">nis-bil<span class="cover-brand-accent">.online</span></div>
                       <div class="cover-brand-sub">БІЛІМ ПЛАТФОРМАСЫ</div>
                     </div>
+                    <button
+                      type="button"
+                      class="btn-cover-fullscreen"
+                      @click="toggleContainerFullscreen"
+                      title="Толық экран / На весь экран"
+                      aria-label="Toggle Fullscreen"
+                    >
+                      <svg class="icon-enter-fs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                      </svg>
+                      <svg class="icon-exit-fs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" />
+                      </svg>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -430,12 +444,12 @@
                     <div class="video-brand-cover">
                       <div class="brand-bubble-icon-cover">
                         <svg viewBox="0 0 32 32" fill="none" class="bubble-svg">
-                          <circle cx="16" cy="16" r="14" fill="url(#pinkBubbleGradCoverSol)" />
+                          <circle cx="16" cy="16" r="14" :fill="`url(#pinkBubbleGradCoverSol-${sIdx})`" />
                           <circle cx="11.5" cy="14" r="2" fill="#ffffff" />
                           <circle cx="20.5" cy="14" r="2" fill="#ffffff" />
                           <path d="M11 19c1.2 1.3 3 2 5 2s3.8-.7 5-2" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" />
                           <defs>
-                            <linearGradient id="pinkBubbleGradCoverSol" x1="2" y1="2" x2="30" y2="30" gradientUnits="userSpaceOnUse">
+                            <linearGradient :id="`pinkBubbleGradCoverSol-${sIdx}`" x1="2" y1="2" x2="30" y2="30" gradientUnits="userSpaceOnUse">
                               <stop stop-color="#ff2e93" />
                               <stop offset="1" stop-color="#ff52a8" />
                             </linearGradient>
@@ -446,6 +460,20 @@
                         <div class="cover-brand-title">nis-bil<span class="cover-brand-accent">.online</span></div>
                         <div class="cover-brand-sub">БІЛІМ ПЛАТФОРМАСЫ</div>
                       </div>
+                      <button
+                        type="button"
+                        class="btn-cover-fullscreen"
+                        @click="toggleContainerFullscreen"
+                        title="Толық экран / На весь экран"
+                        aria-label="Toggle Fullscreen"
+                      >
+                        <svg class="icon-enter-fs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                        </svg>
+                        <svg class="icon-exit-fs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" />
+                        </svg>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -1398,29 +1426,71 @@ const markCurrentLessonDone = () => {
 };
 
 const isContainerFullscreen = ref(false);
+const activeFullscreenContainer = ref(null);
 
 const toggleContainerFullscreen = (e) => {
   const container = e.currentTarget.closest(".video-container");
   if (!container) return;
-  if (!document.fullscreenElement) {
+
+  const isCurrentFullscreen =
+    document.fullscreenElement === container ||
+    document.webkitFullscreenElement === container ||
+    container.classList.contains("is-fullscreen");
+
+  if (!isCurrentFullscreen) {
     if (container.requestFullscreen) {
-      container.requestFullscreen();
+      container.requestFullscreen().catch(() => {
+        container.classList.add("is-fullscreen");
+        isContainerFullscreen.value = true;
+        activeFullscreenContainer.value = container;
+      });
     } else if (container.webkitRequestFullscreen) {
       container.webkitRequestFullscreen();
     } else if (container.msRequestFullscreen) {
       container.msRequestFullscreen();
+    } else {
+      container.classList.add("is-fullscreen");
+      isContainerFullscreen.value = true;
+      activeFullscreenContainer.value = container;
     }
   } else {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
+    if (document.fullscreenElement || document.webkitFullscreenElement) {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
     }
+    container.classList.remove("is-fullscreen");
+    isContainerFullscreen.value = false;
+    activeFullscreenContainer.value = null;
   }
 };
 
 const handleFullscreenChange = () => {
-  isContainerFullscreen.value = !!document.fullscreenElement;
+  const fsElem = document.fullscreenElement || document.webkitFullscreenElement;
+  if (fsElem && fsElem.classList.contains("video-container")) {
+    isContainerFullscreen.value = true;
+    activeFullscreenContainer.value = fsElem;
+    fsElem.classList.add("is-fullscreen");
+  } else {
+    isContainerFullscreen.value = false;
+    if (activeFullscreenContainer.value) {
+      activeFullscreenContainer.value.classList.remove("is-fullscreen");
+      activeFullscreenContainer.value = null;
+    }
+    document.querySelectorAll(".video-container.is-fullscreen").forEach((el) => {
+      el.classList.remove("is-fullscreen");
+    });
+  }
+};
+
+const handleFullscreenKeydown = (e) => {
+  if (e.key === "Escape" && activeFullscreenContainer.value) {
+    activeFullscreenContainer.value.classList.remove("is-fullscreen");
+    isContainerFullscreen.value = false;
+    activeFullscreenContainer.value = null;
+  }
 };
 
 const getEmbedUrl = (url) => {
@@ -1599,12 +1669,14 @@ onMounted(() => {
   window.addEventListener("resize", checkMobile);
   document.addEventListener("fullscreenchange", handleFullscreenChange);
   document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
+  window.addEventListener("keydown", handleFullscreenKeydown);
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener("resize", checkMobile);
   document.removeEventListener("fullscreenchange", handleFullscreenChange);
   document.removeEventListener("webkitfullscreenchange", handleFullscreenChange);
+  window.removeEventListener("keydown", handleFullscreenKeydown);
 });
 </script>
 
@@ -2459,14 +2531,39 @@ onBeforeUnmount(() => {
   container-type: inline-size;
 }
 
-.video-container:fullscreen {
+.video-container:fullscreen,
+.video-container.is-fullscreen {
   width: 100vw;
   height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999999;
   border-radius: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #000;
+  margin: 0;
+}
+
+.video-container:-webkit-full-screen {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999999;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  margin: 0;
 }
 
 .video-container iframe {
@@ -2484,11 +2581,11 @@ onBeforeUnmount(() => {
   top: 0;
   right: 0;
   margin: 0;
-  width: 25%;
+  width: 28%;
   height: 18%;
-  min-width: 175px;
-  min-height: 56px;
-  max-width: 320px;
+  min-width: 195px;
+  min-height: 58px;
+  max-width: 340px;
   max-height: 95px;
   z-index: 10;
   display: flex;
@@ -2497,10 +2594,10 @@ onBeforeUnmount(() => {
   gap: 10px;
   padding: 0 14px;
   background: #ffffff;
-  border-radius: 0 0 0 16px;
+  border-radius: 0 0 0 18px;
   border-left: 1px solid rgba(226, 232, 240, 0.95);
   border-bottom: 1px solid rgba(226, 232, 240, 0.95);
-  box-shadow: -4px 6px 20px rgba(15, 23, 42, 0.12);
+  box-shadow: -4px 6px 20px rgba(15, 23, 42, 0.14);
   pointer-events: none;
   user-select: none;
   box-sizing: border-box;
@@ -2560,74 +2657,149 @@ onBeforeUnmount(() => {
   pointer-events: auto;
   cursor: pointer;
   flex-shrink: 0;
-  background: rgba(241, 245, 249, 0.9);
-  border: 1px solid rgba(203, 213, 225, 0.8);
-  border-radius: 6px;
+  background: rgba(241, 245, 249, 0.95);
+  border: 1px solid rgba(203, 213, 225, 0.85);
+  border-radius: 8px;
   color: #475569;
-  padding: 5px;
+  padding: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-cover-fullscreen:hover {
   background: #ff2e93;
   border-color: #ff2e93;
   color: #ffffff;
-  transform: scale(1.05);
+  transform: scale(1.08);
+  box-shadow: 0 4px 12px rgba(255, 46, 147, 0.35);
 }
 
-/* Bigger, prominent logo in Fullscreen Mode */
+.btn-cover-fullscreen:active {
+  transform: scale(0.96);
+}
+
+.btn-cover-fullscreen svg {
+  width: 15px;
+  height: 15px;
+}
+
+.btn-cover-fullscreen .icon-enter-fs {
+  display: block;
+}
+
+.btn-cover-fullscreen .icon-exit-fs {
+  display: none;
+}
+
+/* Bigger, prominent logo in Fullscreen Mode - completely covers YouTube top-right controls */
 .video-container:fullscreen .video-brand-cover,
+.video-container.is-fullscreen .video-brand-cover {
+  top: 0;
+  right: 0;
+  margin: 0;
+  width: 32%;
+  min-width: 380px;
+  max-width: 580px;
+  height: 22%;
+  min-height: 120px;
+  max-height: 190px;
+  padding: 0 32px;
+  gap: 20px;
+  border-radius: 0 0 0 32px;
+  box-shadow: -12px 16px 50px rgba(0, 0, 0, 0.5);
+}
+
 .video-container:-webkit-full-screen .video-brand-cover {
   top: 0;
   right: 0;
   margin: 0;
-  width: 26%;
-  min-width: 290px;
-  max-width: 480px;
-  height: 19%;
-  min-height: 95px;
-  max-height: 160px;
-  padding: 0 24px;
-  gap: 16px;
-  border-radius: 0 0 0 24px;
-  box-shadow: -8px 10px 35px rgba(0, 0, 0, 0.35);
+  width: 32%;
+  min-width: 380px;
+  max-width: 580px;
+  height: 22%;
+  min-height: 120px;
+  max-height: 190px;
+  padding: 0 32px;
+  gap: 20px;
+  border-radius: 0 0 0 32px;
+  box-shadow: -12px 16px 50px rgba(0, 0, 0, 0.5);
 }
 
 .video-container:fullscreen .brand-bubble-icon-cover,
+.video-container.is-fullscreen .brand-bubble-icon-cover {
+  width: 56px;
+  height: 56px;
+  width: clamp(46px, 5.2cqw, 68px);
+  height: clamp(46px, 5.2cqw, 68px);
+}
+
 .video-container:-webkit-full-screen .brand-bubble-icon-cover {
-  width: 46px;
-  height: 46px;
-  width: clamp(38px, 4.5cqw, 58px);
-  height: clamp(38px, 4.5cqw, 58px);
+  width: 56px;
+  height: 56px;
+  width: clamp(46px, 5.2cqw, 68px);
+  height: clamp(46px, 5.2cqw, 68px);
 }
 
 .video-container:fullscreen .cover-brand-title,
+.video-container.is-fullscreen .cover-brand-title {
+  font-size: 28px;
+  font-size: clamp(22px, 3.2cqw, 38px);
+  letter-spacing: -0.03em;
+}
+
 .video-container:-webkit-full-screen .cover-brand-title {
-  font-size: 24px;
-  font-size: clamp(20px, 2.7cqw, 34px);
+  font-size: 28px;
+  font-size: clamp(22px, 3.2cqw, 38px);
   letter-spacing: -0.03em;
 }
 
 .video-container:fullscreen .cover-brand-sub,
+.video-container.is-fullscreen .cover-brand-sub {
+  font-size: 14px;
+  font-size: clamp(12px, 1.6cqw, 20px);
+  letter-spacing: 0.08em;
+}
+
 .video-container:-webkit-full-screen .cover-brand-sub {
-  font-size: 13px;
-  font-size: clamp(12px, 1.4cqw, 18px);
+  font-size: 14px;
+  font-size: clamp(12px, 1.6cqw, 20px);
   letter-spacing: 0.08em;
 }
 
 .video-container:fullscreen .btn-cover-fullscreen,
+.video-container.is-fullscreen .btn-cover-fullscreen {
+  padding: 10px;
+  border-radius: 10px;
+}
+
 .video-container:-webkit-full-screen .btn-cover-fullscreen {
-  padding: 8px;
-  border-radius: 8px;
+  padding: 10px;
+  border-radius: 10px;
 }
 
 .video-container:fullscreen .btn-cover-fullscreen svg,
+.video-container.is-fullscreen .btn-cover-fullscreen svg {
+  width: 22px;
+  height: 22px;
+}
+
 .video-container:-webkit-full-screen .btn-cover-fullscreen svg {
-  width: 18px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
+}
+
+.video-container:fullscreen .btn-cover-fullscreen .icon-enter-fs,
+.video-container.is-fullscreen .btn-cover-fullscreen .icon-enter-fs,
+.video-container:-webkit-full-screen .btn-cover-fullscreen .icon-enter-fs {
+  display: none !important;
+}
+
+.video-container:fullscreen .btn-cover-fullscreen .icon-exit-fs,
+.video-container.is-fullscreen .btn-cover-fullscreen .icon-exit-fs,
+.video-container:-webkit-full-screen .btn-cover-fullscreen .icon-exit-fs {
+  display: block !important;
 }
 
 @media (max-width: 640px) {
@@ -2635,13 +2807,13 @@ onBeforeUnmount(() => {
     top: 0;
     right: 0;
     margin: 0;
-    padding: 0 8px;
-    gap: 6px;
-    width: 32%;
-    min-width: 125px;
-    height: 20%;
-    min-height: 40px;
-    border-radius: 0 0 0 10px;
+    padding: 0 10px;
+    gap: 8px;
+    width: auto;
+    min-width: 170px;
+    height: 44px;
+    min-height: 44px;
+    border-radius: 0 0 0 12px;
   }
   .cover-brand-title {
     font-size: 11px;
@@ -2650,11 +2822,50 @@ onBeforeUnmount(() => {
     font-size: 7px;
   }
   .brand-bubble-icon-cover {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
   }
   .btn-cover-fullscreen {
-    display: none;
+    display: flex;
+    padding: 4px;
+    border-radius: 6px;
+  }
+  .btn-cover-fullscreen svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  /* Fullscreen on mobile */
+  .video-container:fullscreen .video-brand-cover,
+  .video-container.is-fullscreen .video-brand-cover {
+    min-width: 260px;
+    height: 64px;
+    min-height: 64px;
+    padding: 0 16px;
+    gap: 12px;
+    border-radius: 0 0 0 18px;
+  }
+  .video-container:fullscreen .cover-brand-title,
+  .video-container.is-fullscreen .cover-brand-title {
+    font-size: 16px;
+  }
+  .video-container:fullscreen .cover-brand-sub,
+  .video-container.is-fullscreen .cover-brand-sub {
+    font-size: 9px;
+  }
+  .video-container:fullscreen .brand-bubble-icon-cover,
+  .video-container.is-fullscreen .brand-bubble-icon-cover {
+    width: 28px;
+    height: 28px;
+  }
+  .video-container:fullscreen .btn-cover-fullscreen,
+  .video-container.is-fullscreen .btn-cover-fullscreen {
+    padding: 6px;
+  }
+  .video-container:fullscreen .btn-cover-fullscreen svg,
+  .video-container.is-fullscreen .btn-cover-fullscreen svg {
+    width: 16px;
+    height: 16px;
   }
 }
 
