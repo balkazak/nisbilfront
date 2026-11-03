@@ -143,10 +143,54 @@
             <span class="cyber-tag">VIDEO TOUR</span>
             <h2>{{ currentLang === 'kk' ? 'Платформаның жұмыс істеу принципі' : 'Как устроена экосистема подготовки' }}</h2>
           </div>
-          <div class="promo-screen-frame">
-            <video autoplay loop muted playsinline controls class="promo-video-player">
+          <div class="promo-screen-frame" ref="promoFrameRef" :class="{ 'is-fullscreen': isPromoFullscreen }">
+            <video
+              autoplay
+              loop
+              muted
+              playsinline
+              controls
+              controlslist="nofullscreen"
+              class="promo-video-player"
+              @dblclick="togglePromoFullscreen"
+            >
               <source src="/promo.webm" type="video/webm" />
             </video>
+            <!-- Nis-Bil Brand Overlay Cover -->
+            <div class="video-brand-cover">
+              <div class="brand-bubble-icon-cover">
+                <svg viewBox="0 0 32 32" fill="none" class="bubble-svg">
+                  <circle cx="16" cy="16" r="14" fill="url(#pinkBubbleGradLandingCover)" />
+                  <circle cx="11.5" cy="14" r="2" fill="#ffffff" />
+                  <circle cx="20.5" cy="14" r="2" fill="#ffffff" />
+                  <path d="M11 19c1.2 1.3 3 2 5 2s3.8-.7 5-2" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" />
+                  <defs>
+                    <linearGradient id="pinkBubbleGradLandingCover" x1="2" y1="2" x2="30" y2="30" gradientUnits="userSpaceOnUse">
+                      <stop stop-color="#ff2e93" />
+                      <stop offset="1" stop-color="#ff52a8" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </div>
+              <div class="brand-text-cover">
+                <div class="cover-brand-title">nis-bil<span class="cover-brand-accent">.online</span></div>
+                <div class="cover-brand-sub">БІЛІМ ПЛАТФОРМАСЫ</div>
+              </div>
+              <button
+                type="button"
+                class="btn-cover-fullscreen"
+                @click="togglePromoFullscreen"
+                :title="isPromoFullscreen ? (currentLang === 'kk' ? 'Экраннан шығу' : 'Выйти из полноэкранного режима') : (currentLang === 'kk' ? 'Толық экран' : 'На весь экран')"
+                aria-label="Toggle Fullscreen"
+              >
+                <svg class="icon-enter-fs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                </svg>
+                <svg class="icon-exit-fs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" />
+                </svg>
+              </button>
+            </div>
             <div class="screen-frame-glow"></div>
           </div>
         </div>
@@ -776,7 +820,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import MainHeader from "../components/MainHeader.vue";
 import { useLanguage } from "../composables/useLanguage";
 
@@ -938,6 +982,84 @@ const bilStudents = [
 
 const displayedNisStudents = computed(() => {
   return showAllNis.value ? nisStudents : nisStudents.slice(0, 9);
+});
+
+// Promo Video Fullscreen Handling
+const promoFrameRef = ref(null);
+const isPromoFullscreen = ref(false);
+
+const togglePromoFullscreen = () => {
+  const container = promoFrameRef.value;
+  if (!container) return;
+
+  const isCurrentFullscreen =
+    document.fullscreenElement === container ||
+    document.webkitFullscreenElement === container ||
+    container.classList.contains("is-fullscreen");
+
+  if (!isCurrentFullscreen) {
+    if (container.requestFullscreen) {
+      container.requestFullscreen().catch(() => {
+        container.classList.add("is-fullscreen");
+        isPromoFullscreen.value = true;
+      });
+    } else if (container.webkitRequestFullscreen) {
+      container.webkitRequestFullscreen();
+    } else if (container.msRequestFullscreen) {
+      container.msRequestFullscreen();
+    } else {
+      container.classList.add("is-fullscreen");
+      isPromoFullscreen.value = true;
+    }
+  } else {
+    if (document.fullscreenElement || document.webkitFullscreenElement) {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
+    }
+    container.classList.remove("is-fullscreen");
+    isPromoFullscreen.value = false;
+  }
+};
+
+const handlePromoFullscreenChange = () => {
+  const fsElem = document.fullscreenElement || document.webkitFullscreenElement;
+  if (fsElem && (fsElem === promoFrameRef.value || promoFrameRef.value?.contains(fsElem))) {
+    isPromoFullscreen.value = true;
+    promoFrameRef.value?.classList.add("is-fullscreen");
+  } else if (!fsElem) {
+    isPromoFullscreen.value = false;
+    if (promoFrameRef.value) {
+      promoFrameRef.value.classList.remove("is-fullscreen");
+    }
+  }
+};
+
+const handlePromoKeydown = (e) => {
+  if (e.key === "Escape" && (isPromoFullscreen.value || promoFrameRef.value?.classList.contains("is-fullscreen"))) {
+    if (document.fullscreenElement || document.webkitFullscreenElement) {
+      if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+      else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+    }
+    if (promoFrameRef.value) {
+      promoFrameRef.value.classList.remove("is-fullscreen");
+    }
+    isPromoFullscreen.value = false;
+  }
+};
+
+onMounted(() => {
+  document.addEventListener("fullscreenchange", handlePromoFullscreenChange);
+  document.addEventListener("webkitfullscreenchange", handlePromoFullscreenChange);
+  window.addEventListener("keydown", handlePromoKeydown);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("fullscreenchange", handlePromoFullscreenChange);
+  document.removeEventListener("webkitfullscreenchange", handlePromoFullscreenChange);
+  window.removeEventListener("keydown", handlePromoKeydown);
 });
 </script>
 
@@ -1298,6 +1420,28 @@ const displayedNisStudents = computed(() => {
   overflow: hidden;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
   border: 1px solid rgba(0, 0, 0, 0.06);
+  background: #090c15;
+  container-type: inline-size;
+}
+
+.promo-screen-frame:fullscreen,
+.promo-screen-frame.is-fullscreen,
+.promo-screen-frame:-webkit-full-screen {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999999;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  margin: 0;
+  max-width: none;
 }
 
 .promo-video-player {
@@ -1305,6 +1449,238 @@ const displayedNisStudents = computed(() => {
   height: auto;
   display: block;
   border-radius: 20px;
+}
+
+.promo-screen-frame:fullscreen .promo-video-player,
+.promo-screen-frame.is-fullscreen .promo-video-player,
+.promo-screen-frame:-webkit-full-screen .promo-video-player {
+  width: 100%;
+  height: 100%;
+  max-width: 100vw;
+  max-height: 100vh;
+  object-fit: contain;
+  border-radius: 0;
+}
+
+/* Video Brand Cover Overlay */
+.promo-screen-frame .video-brand-cover {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  width: 28%;
+  height: 18%;
+  min-width: 195px;
+  min-height: 58px;
+  max-width: 340px;
+  max-height: 95px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 14px;
+  background: #ffffff;
+  border-radius: 0 0 0 18px;
+  border-left: 1px solid rgba(226, 232, 240, 0.95);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.95);
+  box-shadow: -4px 6px 20px rgba(15, 23, 42, 0.14);
+  pointer-events: none;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+.promo-screen-frame .brand-bubble-icon-cover {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  width: clamp(24px, 3.6cqw, 36px);
+  height: clamp(24px, 3.6cqw, 36px);
+}
+
+.promo-screen-frame .brand-bubble-icon-cover .bubble-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.promo-screen-frame .brand-text-cover {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  flex: 1;
+  line-height: 1.15;
+}
+
+.promo-screen-frame .cover-brand-title {
+  font-family: 'Onest', sans-serif;
+  font-weight: 800;
+  font-size: 14px;
+  font-size: clamp(13px, 2.1cqw, 18px);
+  color: #0f172a;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.promo-screen-frame .cover-brand-accent {
+  color: #ff2e93;
+}
+
+.promo-screen-frame .cover-brand-sub {
+  font-family: 'Onest', sans-serif;
+  font-size: 9px;
+  font-size: clamp(8px, 1.2cqw, 11px);
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.promo-screen-frame .btn-cover-fullscreen {
+  pointer-events: auto;
+  cursor: pointer;
+  flex-shrink: 0;
+  background: rgba(241, 245, 249, 0.95);
+  border: 1px solid rgba(203, 213, 225, 0.85);
+  border-radius: 8px;
+  color: #475569;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.promo-screen-frame .btn-cover-fullscreen:hover {
+  background: #ff2e93;
+  border-color: #ff2e93;
+  color: #ffffff;
+  transform: scale(1.08);
+  box-shadow: 0 4px 12px rgba(255, 46, 147, 0.35);
+}
+
+.promo-screen-frame .btn-cover-fullscreen:active {
+  transform: scale(0.96);
+}
+
+.promo-screen-frame .btn-cover-fullscreen svg {
+  width: 15px;
+  height: 15px;
+}
+
+.promo-screen-frame .btn-cover-fullscreen .icon-enter-fs {
+  display: block;
+}
+
+.promo-screen-frame .btn-cover-fullscreen .icon-exit-fs {
+  display: none;
+}
+
+/* Bigger, prominent logo in Fullscreen Mode */
+.promo-screen-frame:fullscreen .video-brand-cover,
+.promo-screen-frame.is-fullscreen .video-brand-cover,
+.promo-screen-frame:-webkit-full-screen .video-brand-cover {
+  top: 0;
+  right: 0;
+  margin: 0;
+  width: 32%;
+  min-width: 380px;
+  max-width: 580px;
+  height: 22%;
+  min-height: 120px;
+  max-height: 190px;
+  padding: 0 32px;
+  gap: 20px;
+  border-radius: 0 0 0 32px;
+  box-shadow: -12px 16px 50px rgba(0, 0, 0, 0.5);
+}
+
+.promo-screen-frame:fullscreen .brand-bubble-icon-cover,
+.promo-screen-frame.is-fullscreen .brand-bubble-icon-cover,
+.promo-screen-frame:-webkit-full-screen .brand-bubble-icon-cover {
+  width: 56px;
+  height: 56px;
+  width: clamp(46px, 5.2cqw, 68px);
+  height: clamp(46px, 5.2cqw, 68px);
+}
+
+.promo-screen-frame:fullscreen .cover-brand-title,
+.promo-screen-frame.is-fullscreen .cover-brand-title,
+.promo-screen-frame:-webkit-full-screen .cover-brand-title {
+  font-size: 28px;
+  font-size: clamp(22px, 3.2cqw, 38px);
+  letter-spacing: -0.03em;
+}
+
+.promo-screen-frame:fullscreen .cover-brand-sub,
+.promo-screen-frame.is-fullscreen .cover-brand-sub,
+.promo-screen-frame:-webkit-full-screen .cover-brand-sub {
+  font-size: 14px;
+  font-size: clamp(12px, 1.6cqw, 20px);
+  letter-spacing: 0.08em;
+}
+
+.promo-screen-frame:fullscreen .btn-cover-fullscreen,
+.promo-screen-frame.is-fullscreen .btn-cover-fullscreen,
+.promo-screen-frame:-webkit-full-screen .btn-cover-fullscreen {
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.promo-screen-frame:fullscreen .btn-cover-fullscreen svg,
+.promo-screen-frame.is-fullscreen .btn-cover-fullscreen svg,
+.promo-screen-frame:-webkit-full-screen .btn-cover-fullscreen svg {
+  width: 22px;
+  height: 22px;
+}
+
+.promo-screen-frame:fullscreen .btn-cover-fullscreen .icon-enter-fs,
+.promo-screen-frame.is-fullscreen .btn-cover-fullscreen .icon-enter-fs,
+.promo-screen-frame:-webkit-full-screen .btn-cover-fullscreen .icon-enter-fs {
+  display: none !important;
+}
+
+.promo-screen-frame:fullscreen .btn-cover-fullscreen .icon-exit-fs,
+.promo-screen-frame.is-fullscreen .btn-cover-fullscreen .icon-exit-fs,
+.promo-screen-frame:-webkit-full-screen .btn-cover-fullscreen .icon-exit-fs {
+  display: block !important;
+}
+
+@media (max-width: 640px) {
+  .promo-screen-frame .video-brand-cover {
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0 10px;
+    gap: 8px;
+    width: auto;
+    min-width: 170px;
+    height: 44px;
+    min-height: 44px;
+    border-radius: 0 0 0 12px;
+  }
+  .promo-screen-frame .cover-brand-title {
+    font-size: 11px;
+  }
+  .promo-screen-frame .cover-brand-sub {
+    font-size: 7px;
+  }
+  .promo-screen-frame .brand-bubble-icon-cover {
+    width: 20px;
+    height: 20px;
+  }
+  .promo-screen-frame .btn-cover-fullscreen {
+    display: flex;
+    padding: 4px;
+  }
+  .promo-screen-frame .btn-cover-fullscreen svg {
+    width: 13px;
+    height: 13px;
+  }
 }
 
 /* ==========================================================================
