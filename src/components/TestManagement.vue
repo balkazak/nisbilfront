@@ -198,6 +198,16 @@
                   >
                     {{ q.question_type === 'sandyk_sippattama' ? 'Сандық (+5)' : 'Стандарт (+10)' }}
                   </span>
+                  <span
+                    v-if="getQuestionTopicLabel(q)"
+                    class="q-topic-pill"
+                    :title="getQuestionTopicLabel(q)"
+                  >
+                    📂 {{ getQuestionTopicLabel(q) }}
+                  </span>
+                  <span v-else class="q-topic-pill missing">
+                    ⚠️ {{ t("testManagement.categoryNotSelected") }}
+                  </span>
                   <span class="q-correct-badge">
                     Ответ: <strong>{{ String.fromCharCode(65 + (q.correct_option_index || 0)) }}</strong>
                   </span>
@@ -243,6 +253,64 @@
 
               <!-- Question Form Body (Collapsible) -->
               <div v-show="!collapsedQuestions[index]" class="question-body animate-fade-in">
+                <!-- Required Question Category & Subcategory Selector (Standalone Tests Only) -->
+                <div class="topic-selector-box" :class="{ 'topic-missing': !q.subcategoryId }">
+                  <div class="topic-selector-grid">
+                    <div class="topic-field">
+                      <label class="topic-label">{{ t("testManagement.questionCategoryLabel") }}</label>
+                      <select
+                        v-model="q.selectedCategoryId"
+                        @change="onCategoryChange(q)"
+                        class="input-field topic-select"
+                        required
+                      >
+                        <option :value="null" disabled>
+                          {{ t("testManagement.selectCategoryPlaceholder") }}
+                        </option>
+                        <option
+                          v-for="cat in questionCategories"
+                          :key="cat.id"
+                          :value="cat.id"
+                        >
+                          {{ getLocalizedName(cat) }}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="topic-field">
+                      <label class="topic-label">{{ t("testManagement.questionSubcategoryLabel") }}</label>
+                      <select
+                        v-model="q.subcategoryId"
+                        class="input-field topic-select"
+                        :disabled="!q.selectedCategoryId"
+                        required
+                      >
+                        <option :value="null" disabled>
+                          {{ t("testManagement.selectSubcategoryPlaceholder") }}
+                        </option>
+                        <option
+                          v-for="sub in getSubcategoriesFor(q.selectedCategoryId)"
+                          :key="sub.id"
+                          :value="sub.id"
+                        >
+                          {{ getLocalizedName(sub) }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div
+                    v-if="q.subcategoryId && currentTest.questions.length > 1"
+                    class="topic-actions-row"
+                  >
+                    <button
+                      type="button"
+                      class="btn-apply-topic"
+                      @click="applyTopicToEmpty(q)"
+                    >
+                      ✨ {{ t("testManagement.applyToEmpty") }}
+                    </button>
+                  </div>
+                </div>
+
                 <!-- NIS Question Type Selector -->
                 <div v-if="currentTest.category === 'nis'" class="nis-type-selector">
                   <label class="nis-type-label">{{ t("testManagement.questionTypeLabel") }}</label>
@@ -445,9 +513,62 @@ const props = defineProps({
 });
 
 const toast = useToast();
-const { t } = useLanguage();
+const { t, currentLang, format } = useLanguage();
 
 const allTests = ref([]);
+const questionCategories = ref([]);
+
+const getLocalizedName = (item) => {
+  if (!item) return "";
+  return currentLang.value === "kk"
+    ? item.name_kk || item.name_ru || ""
+    : item.name_ru || item.name_kk || "";
+};
+
+const fetchQuestionCategories = async () => {
+  try {
+    const res = await api.get("/question-categories");
+    questionCategories.value = Array.isArray(res.data) ? res.data : [];
+  } catch (err) {
+    console.error("Failed to fetch question categories:", err);
+  }
+};
+
+const getSubcategoriesFor = (categoryId) => {
+  if (!categoryId) return [];
+  const cat = questionCategories.value.find((c) => c.id === categoryId);
+  return cat && Array.isArray(cat.subcategories) ? cat.subcategories : [];
+};
+
+const onCategoryChange = (q) => {
+  q.subcategoryId = null;
+};
+
+const getQuestionTopicLabel = (q) => {
+  if (!q.subcategoryId) return "";
+  for (const cat of questionCategories.value) {
+    const sub = (cat.subcategories || []).find((s) => s.id === q.subcategoryId);
+    if (sub) {
+      return `${getLocalizedName(cat)} — ${getLocalizedName(sub)}`;
+    }
+  }
+  return "";
+};
+
+const applyTopicToEmpty = (sourceQ) => {
+  if (!sourceQ.selectedCategoryId || !sourceQ.subcategoryId) return;
+  let count = 0;
+  currentTest.value.questions.forEach((item) => {
+    if (!item.subcategoryId) {
+      item.selectedCategoryId = sourceQ.selectedCategoryId;
+      item.subcategoryId = sourceQ.subcategoryId;
+      count++;
+    }
+  });
+  if (count > 0) {
+    toast.success(format(t("testManagement.appliedToEmpty"), { count }));
+  }
+};
 const tests = computed(() => {
   if (props.isTrialView) {
     return allTests.value.filter((t) => t.is_trial);
@@ -488,6 +609,8 @@ const createEmptyQuestion = () => {
     ],
     correct_option_index: 0,
     question_type: "standard",
+    selectedCategoryId: null,
+    subcategoryId: null,
   };
 };
 
@@ -607,6 +730,9 @@ const parseBulkText = () => {
         image_url: "",
         options: [],
         correct_option_index: 0,
+        question_type: "standard",
+        selectedCategoryId: null,
+        subcategoryId: null,
       };
     } else if (currentQ && currentQ.options.length === 0) {
       // Continuation of question text
@@ -641,12 +767,32 @@ const parseBulkText = () => {
 };
 
 const editTest = async (test) => {
+  if (questionCategories.value.length === 0) {
+    await fetchQuestionCategories();
+  }
   const res = await api.get(`/tests/${test.id}`);
   const data = res.data;
+  const rawQuestions = data.Questions || data.questions || [];
+  const mappedQuestions = rawQuestions.map((q) => {
+    let selectedCategoryId = q.subcategory?.categoryId || q.subcategory?.category?.id || null;
+    if (!selectedCategoryId && q.subcategoryId) {
+      const foundCat = questionCategories.value.find((cat) =>
+        (cat.subcategories || []).some((s) => s.id === q.subcategoryId),
+      );
+      if (foundCat) selectedCategoryId = foundCat.id;
+    }
+    return {
+      ...q,
+      selectedCategoryId,
+      subcategoryId: q.subcategoryId || null,
+    };
+  });
   currentTest.value = {
     ...data,
-    questions: data.Questions || data.questions || [],
+    questions: mappedQuestions,
   };
+  collapsedQuestions.value = {};
+  isAllCollapsed.value = false;
   isEditing.value = true;
   showTestModal.value = true;
 };
@@ -670,6 +816,16 @@ const uploadImage = async (event, targetObject) => {
 };
 
 const saveTest = async () => {
+  // Validate that every question has a category & subcategory selected
+  for (let i = 0; i < currentTest.value.questions.length; i++) {
+    const q = currentTest.value.questions[i];
+    if (!q.subcategoryId) {
+      collapsedQuestions.value[i] = false;
+      toast.error(format(t("testManagement.categoryRequiredError"), { num: i + 1 }));
+      return;
+    }
+  }
+
   try {
     const payload = {
       title: currentTest.value.title,
@@ -688,6 +844,7 @@ const saveTest = async () => {
         })),
         correct_option_index: q.correct_option_index,
         question_type: q.question_type || 'standard',
+        subcategoryId: q.subcategoryId,
       })),
     };
 
@@ -717,7 +874,10 @@ const handleDelete = async (test) => {
   }
 };
 
-onMounted(fetchTests);
+onMounted(() => {
+  fetchTests();
+  fetchQuestionCategories();
+});
 </script>
 
 <style scoped>
@@ -1457,5 +1617,80 @@ onMounted(fetchTests);
   background: #f0fdf4;
   color: #166534;
   border: 1px solid #bbf7d0;
+}
+
+/* Question Topic Category / Subcategory Selector */
+.q-topic-pill {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+  max-width: 280px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.q-topic-pill.missing {
+  background: #fef2f2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+.topic-selector-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+.topic-selector-box.topic-missing {
+  background: #fff5f5;
+  border-color: #fca5a5;
+}
+.topic-selector-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 12px;
+}
+.topic-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.topic-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #334155;
+}
+.topic-select {
+  font-size: 0.88rem;
+  padding: 8px 10px;
+  background: white;
+}
+.topic-actions-row {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+.btn-apply-topic {
+  background: #eef2ff;
+  color: #4338ca;
+  border: 1px solid #c7d2fe;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-apply-topic:hover {
+  background: #e0e7ff;
+}
+@media (max-width: 700px) {
+  .topic-selector-grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

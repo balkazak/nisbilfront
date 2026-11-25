@@ -24,6 +24,12 @@
           {{ t("dashboard.testing") }}
         </button>
         <button
+          @click="selectView('test-results')"
+          :class="{ active: currentView === 'test-results' }"
+        >
+          {{ t("dashboard.testResults") }}
+        </button>
+        <button
           @click="selectView('results')"
           :class="{ active: currentView === 'results' }"
         >
@@ -183,7 +189,17 @@
           :testId="activeTestId"
           :isStandalone="true"
           @completed="onTestCompleted"
+          @open-analytics="onOpenTestAnalytics"
           @cancel="onTestCancel"
+        />
+      </div>
+
+      <!-- Dedicated Test Results & Topic Analytics Page (Standalone Tests Only) -->
+      <div v-if="currentView === 'test-results' && !activeTestId" class="fade-in">
+        <TestResultsAnalytics
+          :initialResultId="selectedAnalyticsResultId"
+          @go-to-tests="selectView('tests')"
+          @clear-initial="selectedAnalyticsResultId = null"
         />
       </div>
 
@@ -1002,6 +1018,7 @@ import { ref, reactive, computed, onMounted, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
 import api from "../api";
 import TestRunner from "../components/TestRunner.vue";
+import TestResultsAnalytics from "../components/TestResultsAnalytics.vue";
 import { useToast } from "../composables/useToast";
 import { useLanguage } from "../composables/useLanguage";
 import { usePhoneMask } from "../composables/usePhoneMask";
@@ -1082,6 +1099,7 @@ const user = ref(JSON.parse(localStorage.getItem("user") || "{}"));
 const activeCourse = ref(null);
 const currentLesson = ref(null);
 const activeTestId = ref(null);
+const selectedAnalyticsResultId = ref(null);
 const showTest = ref(false);
 const showSolution = ref(false);
 const isSidebarOpen = ref(false);
@@ -1213,6 +1231,9 @@ const selectView = (view) => {
   isSidebarOpen.value = false;
   activeCourse.value = null;
   activeTestId.value = null;
+  if (view !== "test-results") {
+    selectedAnalyticsResultId.value = null;
+  }
 };
 
 const fetchCourses = async () => {
@@ -1564,6 +1585,16 @@ const onTestCompleted = async () => {
 const onTestCancel = () => {
   showTest.value = false;
   activeTestId.value = null;
+};
+
+const onOpenTestAnalytics = async (resultId) => {
+  showTest.value = false;
+  activeTestId.value = null;
+  await fetchResults();
+  await fetchStandaloneTests();
+  await fetchUser();
+  selectedAnalyticsResultId.value = resultId || null;
+  currentView.value = "test-results";
 };
 
 const logout = () => {

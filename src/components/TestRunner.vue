@@ -56,7 +56,14 @@
             </div>
           </div>
 
-          <div class="flex gap-4 justify-center mt-6">
+          <div class="flex gap-4 justify-center mt-6 flex-wrap">
+            <button
+              v-if="isStandalone && resultData?.id && resultData?.topicAnalysis?.length > 0"
+              @click="openAnalytics"
+              class="btn-analytics btn-lg"
+            >
+              📊 {{ t("testAnalytics.openAnalyticsAfterTest") }}
+            </button>
             <button @click="finish" class="btn-primary btn-lg">
               {{
                 isStandalone
@@ -348,7 +355,7 @@ import { useToast } from "../composables/useToast";
 import { useLanguage } from "../composables/useLanguage";
 
 const props = defineProps(["testId", "isStandalone"]);
-const emit = defineEmits(["completed", "cancel"]);
+const emit = defineEmits(["completed", "cancel", "open-analytics"]);
 
 const toast = useToast();
 const { t, format } = useLanguage();
@@ -455,6 +462,10 @@ const submitTest = async () => {
 
 const finish = () => {
   emit("completed");
+};
+
+const openAnalytics = () => {
+  emit("open-analytics", resultData.value?.id || null);
 };
 
 onMounted(async () => {
@@ -1333,5 +1344,22 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+}
+
+.btn-analytics {
+  background: linear-gradient(135deg, #0d9488, #0f766e);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.3);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.btn-analytics:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(13, 148, 136, 0.4);
 }
 </style>
