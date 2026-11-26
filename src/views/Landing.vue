@@ -773,7 +773,7 @@
           </p>
           <div class="social-links">
             <a href="https://wa.me/77761555433" target="_blank" class="social-icon-btn" title="WhatsApp">WA</a>
-            <a href="https://www.instagram.com/dostyq.kyzylorda/" target="_blank" class="social-icon-btn" title="Instagram">IG</a>
+            <!-- <a href="https://www.instagram.com/dostyq.kyzylorda/" target="_blank" class="social-icon-btn" title="Instagram">IG</a> -->
           </div>
         </div>
 
