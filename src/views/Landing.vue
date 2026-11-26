@@ -795,11 +795,11 @@
                 WhatsApp: +7 776 155 54 33
               </a>
             </li>
-            <li>
+            <!-- <li>
               <a href="https://www.instagram.com/dostyq.kyzylorda/" target="_blank">
                 Instagram: @dostyq.kyzylorda
               </a>
-            </li>
+            </li> -->
             <li>
               <span class="footer-support-hours">Пн-Вс: 09:00 - 21:00</span>
             </li>
